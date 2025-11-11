@@ -1,0 +1,37 @@
+.backup-restore-form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.custom-label {
+  font-weight: bold;
+}
+
+.custom-select {
+  height: auto;
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #ced4da;
+}
+
+.custom-file-input {
+  padding: 5px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+}
+
+hr {
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.mt-3 {
+  margin-top: 15px;
+}
+
+.mb-4 {
+  margin-bottom: 20px;
+}

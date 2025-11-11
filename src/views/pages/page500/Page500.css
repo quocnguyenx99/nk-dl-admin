@@ -1,0 +1,52 @@
+.error-container {
+  background-color: #ffffff; /* Màu nền trắng để làm nổi bật thông báo */
+  border: 1px solid #dc3545; /* Đường viền màu đỏ */
+  border-radius: 8px; /* Bo góc */
+  padding: 30px; /* Khoảng cách bên trong */
+  text-align: center; /* Căn giữa nội dung */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+  transition: transform 0.3s; /* Hiệu ứng chuyển động */
+}
+
+.error-container:hover {
+  transform: translateY(-5px); /* Hiệu ứng nâng lên khi hover */
+}
+
+.error-container h1 {
+  color: #dc3545; /* Màu chữ cho mã lỗi */
+  font-weight: bold; /* Đậm */
+}
+
+.error-container h4 {
+  color: #343a40; /* Màu chữ cho tiêu đề */
+}
+
+.error-container p {
+  color: #6c757d; /* Màu chữ cho thông báo */
+  margin-bottom: 20px; /* Khoảng cách dưới thông báo */
+}
+
+.btn-home {
+  background-color: #007bff; /* Màu nền cho nút */
+  border: none; /* Bỏ đường viền */
+  color: white; /* Màu chữ cho nút */
+  padding: 12px 25px; /* Khoảng cách bên trong nút */
+  border-radius: 30px; /* Bo góc cho nút */
+  font-size: 16px; /* Kích thước chữ */
+  font-weight: bold; /* Chữ đậm */
+  text-transform: uppercase; /* Chữ in hoa */
+  transition:
+    background-color 0.3s,
+    transform 0.3s; /* Hiệu ứng chuyển màu và nâng lên */
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3); /* Đổ bóng nhẹ */
+}
+
+.btn-home:hover {
+  background-color: #0056b3; /* Màu nền khi hover */
+  transform: translateY(-3px); /* Hiệu ứng nâng lên khi hover */
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4); /* Đổ bóng khi hover */
+}
+
+.btn-home:focus {
+  outline: none; /* Bỏ viền khi focused */
+}

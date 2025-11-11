@@ -1,0 +1,47 @@
+.system-info {
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 300px;
+  padding: 16px;
+  margin: 0 auto;
+}
+
+/* .system-info h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #333;
+} */
+
+.system-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.system-info li {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.system-info li:last-child {
+  border-bottom: none;
+}
+
+.system-info span[role='img'] {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.system-info strong {
+  font-weight: 600;
+  color: #000;
+  margin-right: 8px;
+}
+
+table th {
+  white-space: nowrap;
+}

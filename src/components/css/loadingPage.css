@@ -1,0 +1,45 @@
+.loading-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #1c1f26;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #ffa500;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+  background: url('../../assets/images/logo/logoCN_notext.png') no-repeat center center;
+  background-size: contain;
+}
+
+.processing {
+  font-style: italic;
+  margin-top: 20px;
+}
+
+.footer {
+  margin-top: 10px;
+  font-size: 14px;
+}

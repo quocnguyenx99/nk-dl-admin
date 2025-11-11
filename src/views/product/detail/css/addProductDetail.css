@@ -1,0 +1,80 @@
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    color 0.3s ease,
+    border-bottom 0.3s ease;
+}
+
+.tabs button.active {
+  border-bottom: 2px solid #007bff;
+  color: #007bff;
+}
+
+.tab-content {
+  margin-top: 8px;
+  display: none;
+  transition: display 0.1s ease;
+  position: absolute;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+  position: relative;
+}
+
+.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tech-table th {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  background-color: #f9f9f9;
+}
+
+.tech-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.sticky-button {
+  position: sticky !important;
+  top: 90px !important;
+  right: 174px;
+  z-index: 1000 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.table-combo tbody tr:hover {
+  background-color: greenyellow;
+  cursor: pointer;
+}
+
+.combo-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+.discount-box label {
+  display: block;
+  margin-bottom: 10px;
+}
+.discount-box input {
+  margin-top: 5px;
+}
+
+.combo-list p {
+  margin-bottom: 0;
+}

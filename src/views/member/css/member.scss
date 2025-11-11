@@ -1,0 +1,20 @@
+@import '../../../scss/_variables.scss';
+
+.customer {
+  &-username {
+    color: $blue-color;
+  }
+
+  &-userid,
+  &-order,
+  &-status {
+    color: $orange-color;
+    font-weight: 600;
+  }
+
+  &-username,
+  &-userid,
+  &-name {
+    font-weight: 600;
+  }
+}

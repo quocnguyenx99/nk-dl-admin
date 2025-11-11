@@ -1,0 +1,51 @@
+.button-add {
+  margin-right: 8px;
+}
+
+.filter-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.filter-table th,
+.filter-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.filter-table thead th {
+  background-color: #f9f9f9;
+  font-size: 1.1em;
+}
+
+.filter-table .total-count {
+  color: red;
+  text-align: left;
+  font-weight: 600;
+}
+
+.filter-table .search-input {
+  width: 80%;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+.filter-table .search-input:focus {
+  border-color: lightblue;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.filter-table .submit-btn {
+  padding: 4px 8px;
+  margin-left: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-table .submit-btn:hover {
+  background-color: lightgray;
+  transition: all ease-in 0.3;
+}

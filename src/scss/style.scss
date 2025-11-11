@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+// If you want to override variables do it here
+@import 'variables';
+
+// Import styles
+@import '@coreui/coreui/scss/coreui';
+@import '@coreui/chartjs/scss/coreui-chartjs';
+
+// Vendors
+@import 'vendors/simplebar';
+
+// Custom styles for this theme
+@import 'theme';
+
+// If you want to add custom CSS you can put it here
+@import 'custom';
+
+// lable all bold
+label {
+  font-weight: 500;
+}
+
+// text-color
+
+.blue-txt {
+  color: $blue-color;
+  font-weight: 600;
+}
+
+.orange-txt {
+  color: $orange-color;
+  font-weight: 600;
+}
+
+.button-add {
+  margin-right: 8px;
+}
+
+.component-size {
+  font-size: 14px;
+}
+
+.upload-image {
+  border: 1px solid steelblue;
+}
+
+.toggle-pointer {
+  cursor: pointer;
+}
+
+.button-action {
+  border: none;
+  padding: 5px 7px;
+  margin-right: 4px;
+}
+
+// prevent select text
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+// tabel filter
+.button-add {
+  margin-right: 8px;
+}
+
+.filter-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.filter-table th,
+.filter-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.filter-table thead th {
+  background-color: #f9f9f9;
+  font-size: 1.1em;
+}
+
+.filter-table .total-count {
+  color: red;
+  text-align: left;
+  font-weight: 600;
+}
+
+.filter-table .search-input {
+  width: 80%;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+.filter-table .search-input:focus {
+  border-color: lightblue;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.filter-table .submit-btn {
+  padding: 4px 8px;
+  margin-left: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-table .submit-btn:hover {
+  background-color: lightgray;
+  transition: all ease-in 0.3;
+}
+
+.select-input {
+  font-size: 14px;
+}
+
+// pagination react css
+.page-link {
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+// DATE CSS
+.custom-datepicker-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.custom-datepicker-wrapper .react-datepicker-wrapper {
+  width: auto;
+  margin-right: 10px;
+}
+
+.custom-datepicker {
+  width: 150px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-datepicker:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.datepicker-label {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.text-danger {
+  margin-top: 5px;
+  font-size: 0.875rem;
+}
+
+.order-code,
+.customer-name,
+.total {
+  font-weight: 600;
+}
+
+.order-code,
+.customer-phone,
+.customer-email {
+  color: $blue-color;
+}
+
+.customer-type,
+.total {
+  color: $orange-color;
+}

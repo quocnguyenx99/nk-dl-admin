@@ -1,0 +1,104 @@
+$enable-dark-mode: false; // Đảm bảo rằng dark mode bị vô hiệu hóa
+
+body {
+  background-color: var(--cui-tertiary-bg);
+}
+
+.wrapper {
+  width: 100%;
+  @include ltr-rtl('padding-left', var(--cui-sidebar-occupy-start, 0));
+  @include ltr-rtl('padding-right', var(--cui-sidebar-occupy-end, 0));
+  will-change: auto;
+  @include transition(padding 0.15s);
+}
+
+.header > .container-fluid,
+.sidebar-header {
+  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+}
+
+.sidebar-brand-full {
+  margin-left: 3px;
+}
+
+.sidebar-header {
+  .nav-underline-border {
+    --cui-nav-underline-border-link-padding-x: 1rem;
+    --cui-nav-underline-border-gap: 0;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  }
+}
+
+.sidebar-toggler {
+  @include ltr-rtl('margin-left', auto);
+}
+
+.sidebar-narrow,
+.sidebar-narrow-unfoldable:not(:hover) {
+  .sidebar-toggler {
+    @include ltr-rtl('margin-right', auto);
+  }
+}
+
+.header > .container-fluid + .container-fluid {
+  min-height: 3rem;
+}
+
+.footer {
+  min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+}
+
+.container-responsive {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+
+  @media (min-width: 576px) {
+    max-width: 540px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 720px;
+    padding-right: 25px;
+    padding-left: 25px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 960px;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: calc(100% - 40px); // Margin 20px mỗi bên
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  @media (min-width: 1400px) {
+    max-width: calc(100% - 60px); // Margin 30px mỗi bên cho màn hình rất lớn
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+@if $enable-dark-mode {
+  @include color-mode(dark) {
+    body {
+      background-color: var(--cui-dark-bg-subtle);
+    }
+
+    .footer {
+      --cui-footer-bg: var(--cui-body-bg);
+    }
+  }
+}

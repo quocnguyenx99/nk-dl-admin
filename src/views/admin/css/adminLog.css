@@ -1,0 +1,32 @@
+.custom-datepicker-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.custom-datepicker-wrapper .react-datepicker-wrapper {
+  width: auto;
+  margin-right: 10px;
+}
+
+.custom-datepicker {
+  width: 150px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-datepicker:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.datepicker-label {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.text-danger {
+  margin-top: 5px;
+  font-size: 0.875rem;
+}

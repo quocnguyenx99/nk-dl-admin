@@ -1,0 +1,8 @@
+.border {
+  border: 1px solid #ddd;
+}
+
+.orange-txt {
+  font-weight: 600;
+  color: orange;
+}
