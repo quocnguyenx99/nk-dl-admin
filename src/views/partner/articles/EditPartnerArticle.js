@@ -14,7 +14,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { axiosClient_NK } from '../../../axiosConfig'
+import { axiosClient } from '../../../axiosConfig'
 import { onFilesChange, revokeObjectURLs } from '../../../helper/fileUpload'
 import CKedtiorCustom from '../../../components/customEditor/ckEditorCustom'
 
@@ -71,7 +71,7 @@ function EditPartnerArticle() {
     const controller = new AbortController()
     const fetchPartners = async () => {
       try {
-        const res = await axiosClient_NK.get(`/admin/get-partner`, {
+        const res = await axiosClient.get(`/admin/get-partner`, {
           signal: controller.signal,
         })
         if (res.data.status === 'success') {
@@ -95,7 +95,7 @@ function EditPartnerArticle() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosClient_NK.get(`/admin/partner-article/${id}/edit`)
+        const res = await axiosClient.get(`/admin/partner-article/${id}/edit`)
         if (res.data.status === true && res.data.data) {
           const d = res.data.data
           setInitialValues({
@@ -154,7 +154,7 @@ function EditPartnerArticle() {
 
     try {
       setIsLoading(true)
-      const response = await axiosClient_NK.post('/admin/partner-article', payload)
+      const response = await axiosClient.post('/admin/partner-article', payload)
       if (response.data.status === true) {
         toast.success('Lưu bài đăng thành công')
       }

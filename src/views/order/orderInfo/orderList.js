@@ -75,10 +75,6 @@ function OrderList() {
     navigate(`/order/edit?id=${id}`)
   }
 
-  const handleUpdateClick = (id) => {
-    navigate(`/order/edit?id=${id}`)
-  }
-
   // delete row
   const handleDelete = (id) => {
     setVisible(true)
@@ -171,11 +167,9 @@ function OrderList() {
     }
   }
 
-  console.log('check nè ban', dataOrderList)
-
   useEffect(() => {
     fetchOrderListData()
-  }, [pageNumber, dataSearch, choosenStatus, typeMember, startDate, endDate])
+  }, [pageNumber, choosenStatus, typeMember, startDate, endDate])
 
   // search Data
   const handleSearch = (keyword) => {
@@ -423,7 +417,7 @@ function OrderList() {
                 <tbody>
                   <tr>
                     <td>Tổng cộng</td>
-                    <td className="total-count">{dataOrderList?.total}</td>
+                    <td className="total-count">{dataOrderList?.pagination?.total}</td>
                   </tr>
                   <tr>
                     <td>Lọc</td>
@@ -609,16 +603,24 @@ function OrderList() {
                     <td>Tìm kiếm</td>
                     <td>
                       <div className="mt-2">
-                        <input
-                          type="text"
-                          className="search-input"
-                          value={dataSearch}
-                          placeholder="Tìm kiếm theo Mã đơn hàng, Họ Tên Khách Hàng, Số Điện Thoại, Email"
-                          onChange={(e) => setDataSearch(e.target.value)}
-                        />
-                        <button onClick={handleSearch} className="submit-btn">
-                          Submit
-                        </button>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault()
+                            handleSearch()
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                          <input
+                            type="text"
+                            className="search-input"
+                            value={dataSearch}
+                            placeholder="Tìm kiếm theo Mã đơn hàng, Họ Tên Khách Hàng, Số Điện Thoại, Email"
+                            onChange={(e) => setDataSearch(e.target.value)}
+                          />
+                          <button type="submit" className="submit-btn">
+                            Submit
+                          </button>
+                        </form>
                       </div>
                     </td>
                   </tr>

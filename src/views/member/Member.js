@@ -161,8 +161,8 @@ function Member() {
           ),
           support: (
             <span className="customer-order">
-              {customer?.sale_admins?.length > 0
-                ? customer?.sale_admins?.map((admin) => `${admin.name}`).join(', ')
+              {customer?.sales?.length > 0
+                ? customer?.sales?.map((admin) => `${admin.display_name}`).join(', ')
                 : 'Chưa có sale hỗ trợ'}
             </span>
           ),
@@ -173,8 +173,14 @@ function Member() {
           ),
 
           status: (
-            <span className="customer-status">
-              {customer?.is_blocked === 0 ? '[Đang hoạt động]' : '[Đã bị khóa]'}
+            <span
+              className="customer-status"
+              style={{
+                color: customer?.status === 0 ? '#ff6b35' : '#28a745',
+                fontWeight: 'bold',
+              }}
+            >
+              {customer?.status === 0 ? '[Chưa duyệt]' : '[Đã duyệt]'}
             </span>
           ),
           actions: (

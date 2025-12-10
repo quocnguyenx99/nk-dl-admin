@@ -16,7 +16,7 @@ import ReactPaginate from 'react-paginate'
 import CIcon from '@coreui/icons-react'
 import { cilTrash, cilColorBorder } from '@coreui/icons'
 import { toast } from 'react-toastify'
-import { axiosClient_NK } from '../../axiosConfig'
+import { axiosClient } from '../../axiosConfig'
 import Loading from '../../components/loading/Loading'
 import DeletedModal from '../../components/deletedModal/DeletedModal'
 import { onFilesChange, revokeObjectURLs } from '../../helper/fileUpload'
@@ -88,7 +88,7 @@ function VideoPress() {
   const fetchDataList = async (keyword = '', signal) => {
     try {
       setIsLoading((p) => ({ ...p, page: true }))
-      const res = await axiosClient_NK.get(
+      const res = await axiosClient.get(
         `/admin/link-news?data=${encodeURIComponent(keyword)}&page=${pageNumber}&type=${selectedCate}`,
         { signal },
       )
@@ -115,7 +115,7 @@ function VideoPress() {
   const fetchDataById = async (signal) => {
     if (!id) return
     try {
-      const res = await axiosClient_NK.get(`/admin/link-news/${id}/edit`, { signal })
+      const res = await axiosClient.get(`/admin/link-news/${id}/edit`, { signal })
       const data = res?.data?.data
       if (res?.data?.status === true && data) {
         setFormValues({
@@ -158,7 +158,7 @@ function VideoPress() {
       }
 
       if (isEditing) {
-        const res = await axiosClient_NK.put(`/api/link-news/${id}`, payload)
+        const res = await axiosClient.put(`/api/link-news/${id}`, payload)
         if (res?.data?.status === true) {
           toast.success('Cập nhật thông tin thành công')
           resetForm()
@@ -171,7 +171,7 @@ function VideoPress() {
           toast.error(res?.data?.message || 'Không thể cập nhật')
         }
       } else {
-        const res = await axiosClient_NK.post(`/api/link-news`, payload)
+        const res = await axiosClient.post(`/api/link-news`, payload)
         if (res?.data?.status === true) {
           toast.success('Thêm mới thông tin thành công!')
           resetForm()
@@ -197,7 +197,7 @@ function VideoPress() {
 
   const handleDelete = async () => {
     try {
-      const res = await axiosClient_NK.delete(`/admin/link-news/${deletedId}`)
+      const res = await axiosClient.delete(`/admin/link-news/${deletedId}`)
       if (res?.data?.status === true) {
         toast.success('Xóa thành công')
         setVisible(false)

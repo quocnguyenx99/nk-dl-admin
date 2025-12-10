@@ -386,14 +386,6 @@ function ProductDetail() {
               </p>
             </>
           ),
-
-          // info: (
-          //   <>
-          //     <p>{item.views} lượt xem</p>
-          //     <p>{moment.unix(item.date_post).format('DD-MM-YYYY, hh:mm:ss A')}</p>
-          //   </>
-          // ),
-
           create_at: (
             <>
               <p>{moment(item?.created_at).format('DD-MM-YYYY, HH:mm:ss A')}</p>

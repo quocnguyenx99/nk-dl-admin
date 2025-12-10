@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CButton, CCol, CContainer, CFormSelect, CRow, CTable } from '@coreui/react'
 import ReactPaginate from 'react-paginate'
-import { axiosClient } from '../../axiosConfig'
+import { axiosClient, mainUrl } from '../../axiosConfig'
 import { Link } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 
@@ -16,7 +16,7 @@ function AccessStatistics() {
   //pagination state
   const [pageNumber, setPageNumber] = useState(1)
   const [visitedData, setVisitedData] = useState([])
-  const [selectedMemberType, setSelectedMemberType] = useState()
+  const [selectedMemberType, setSelectedMemberType] = useState('member')
 
   const [isCollapse, setIsCollapse] = useState(false)
 
@@ -75,11 +75,11 @@ function AccessStatistics() {
     try {
       setIsLoading((prev) => ({ ...prev, page: true }))
       const response = await axiosClient.get(
-        `admin/get-statistics?page=${pageNumber}&fromDate=${startDate !== null ? convertStringToTimeStamp(startDate) : ''}&toDate=${endDate !== null ? convertStringToTimeStamp(endDate) : ''}`,
+        `admin/get-statistics?page=${pageNumber}&data=${dataSearch}&member_type=${selectedMemberType}&fromDate=${startDate !== null ? convertStringToTimeStamp(startDate) : ''}&toDate=${endDate !== null ? convertStringToTimeStamp(endDate) : ''}`,
       )
 
       if (response.data.status === true) {
-        setVisitedData(response.data.data)
+        setVisitedData(response.data)
       }
       if (response.data.status === false && response.data.mess == 'no permission') {
         setIsPermissionCheck(false)
@@ -91,9 +91,11 @@ function AccessStatistics() {
     }
   }
 
+  console.log('>>> check visitedData', visitedData)
+
   useEffect(() => {
     fetchStatictical()
-  }, [pageNumber, startDate, endDate])
+  }, [pageNumber, startDate, endDate, selectedMemberType, dataSearch])
 
   // dowload excel file statics
 
@@ -141,12 +143,18 @@ function AccessStatistics() {
   const items =
     visitedData?.data && visitedData?.data.length > 0
       ? visitedData?.data.map((item) => ({
-          // index: index + 1,
-          // visited: item?.count,
-          date: moment(Date.now()).format('DD/MM/YYYY, HH:mm:ss A'),
-          mem_id: item?.mem_id === 0 ? 'Khách vãng lai' : item?.member?.username,
+          date: item?.created_at,
+          mem_id: item?.member ? (
+            <Link to={`/member/edit?id=${item?.member?.id}`}>{item?.member?.full_name}</Link>
+          ) : (
+            'Khách vãng lai'
+          ),
           ip: item?.ip,
-          url: item?.url,
+          url: (
+            <Link target="_blank" to={`${mainUrl}${item?.url}`}>
+              {item?.url}
+            </Link>
+          ),
           module: item?.module,
           action: item?.action,
           _cellProps: { id: { scope: 'row' } },
@@ -154,16 +162,6 @@ function AccessStatistics() {
       : []
 
   const columns = [
-    // {
-    //   key: 'index',
-    //   label: 'Thứ tự',
-    //   _props: { scope: 'col' },
-    // },
-    // {
-    //   key: 'visited',
-    //   label: 'Lượt truy cập',
-    //   _props: { scope: 'col' },
-    // },
     { key: 'date', label: 'Ngày truy cập', _props: { scope: 'col' } },
     {
       key: 'mem_id',
@@ -223,7 +221,7 @@ function AccessStatistics() {
                 <tbody>
                   <tr>
                     <td>Tổng cộng</td>
-                    <td className="total-count">{6}</td>
+                    <td className="total-count">{visitedData?.pagination?.total || 0}</td>
                   </tr>
 
                   <tr>
@@ -273,6 +271,7 @@ function AccessStatistics() {
                             className="search-input"
                             value={dataSearch}
                             onChange={(e) => setDataSearch(e.target.value)}
+                            placeholder="Lọc theo url khách hàng đã truy cập "
                           />
                           <button onClick={handleSearch} className="submit-btn">
                             Submit
@@ -305,7 +304,7 @@ function AccessStatistics() {
               <CTable
                 hover
                 bordered
-                style={{ fontSize: 13 }}
+                style={{ fontSize: 14 }}
                 className="mt-2 mb-4"
                 columns={columns}
                 items={items}
@@ -314,7 +313,9 @@ function AccessStatistics() {
             <CCol>
               <div className="d-flex justify-content-end">
                 <ReactPaginate
-                  pageCount={Math.ceil(visitedData?.total / visitedData?.per_page)}
+                  pageCount={Math.ceil(
+                    visitedData?.pagination?.total / visitedData?.pagination?.perPage,
+                  )}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageClassName="page-item"

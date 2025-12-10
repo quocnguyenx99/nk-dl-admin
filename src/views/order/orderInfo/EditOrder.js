@@ -111,6 +111,8 @@ function EditOrder() {
     )
   }
 
+  console.log(dataOrderDetail)
+
   return (
     <div>
       {!isPermissionCheck ? (
@@ -169,9 +171,11 @@ function EditOrder() {
                       <strong>Thông tin thanh toán</strong>
                       <p>
                         Họ tên:{' '}
-                        <span className="customer-info-name">{dataOrderDetail?.d_name}</span>{' '}
+                        <span className="customer-info-name">
+                          {dataOrderDetail?.member?.full_name}
+                        </span>{' '}
                         <span className="customer-info-type">
-                          {dataOrderDetail?.mem_id === 0 ? '(Khách vãng lai)' : '(Thành viên)'}
+                          {dataOrderDetail?.id ? '(Thành viên)' : '(Khách vãng lai)'}
                         </span>
                       </p>
                       <p>
@@ -181,10 +185,22 @@ function EditOrder() {
                         </span>
                       </p>
                       <p>
-                        Địa chỉ: <span>{dataOrderDetail?.d_address}</span>
+                        Email: <span>{dataOrderDetail?.member?.email}</span>
                       </p>
+
                       <p>
-                        Email: <span>{dataOrderDetail?.d_email}</span>
+                        Mã số thuế:{' '}
+                        <span className="customer-info-phone">
+                          {dataOrderDetail?.member?.tax_code}
+                        </span>
+                      </p>
+
+                      <p>
+                        Địa chỉ: <span>{dataOrderDetail?.c_address}</span>
+                      </p>
+
+                      <p>
+                        Công ty: <span>{dataOrderDetail?.c_name}</span>
                       </p>
 
                       <strong>Phương thức thanh toán:</strong>

@@ -20,16 +20,14 @@ import Logo from '../../../assets/images/logo/logo NK.png'
 import { axiosClient } from '../../../axiosConfig'
 import { toast } from 'react-toastify'
 
-// import ReCAPTCHA from 'react-google-recaptcha'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 const Login = () => {
   const [username, setUserName] = useState('')
   const [password, setPassWord] = useState('')
-  const [key, setKey] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [showSecureKey, setShowSecureKey] = useState(false)
   const [loading, setLoading] = useState(false)
-  // const [recaptchaToken, setRecaptchaToken] = useState(null)
+  const [recaptchaToken, setRecaptchaToken] = useState(null)
 
   const navigate = useNavigate()
 
@@ -38,26 +36,28 @@ const Login = () => {
   }
 
   const handleLogin = async () => {
-    if (!username || !password || !key) {
+    if (!username || !password) {
       toast.warn('Vui lòng nhập đầy đủ thông tin!')
       return
     }
+    // if (!recaptchaToken) {
+    //   toast.warn('Vui lòng xác thực reCAPTCHA!')
+    //   return
+    // }
     try {
       setLoading(true)
       const res = await axiosClient.post('/admin-login', {
         username,
         password,
-        passwordSecurity: key,
-        // captchaToken: recaptchaToken,
+        captchaToken: recaptchaToken,
       })
       if (res.data.status === true) {
-        localStorage.setItem('adminCN', res.data.token)
+        localStorage.setItem('adminNKDL', res.data.token)
         localStorage.setItem('username', res.data.username)
         navigate('/')
       } else {
         if (res.data.mess === 'username') toast.error('Sai tên đăng nhập!')
         else if (res.data.mess === 'pass') toast.error('Sai mật khẩu!')
-        else if (res.data.mess === 'wrong passwordSecurity') toast.error('Sai khóa bảo mật!')
         else toast.error('Đăng nhập thất bại!')
       }
     } catch (e) {
@@ -69,103 +69,71 @@ const Login = () => {
 
   return (
     <div
-      className="min-vh-100 d-flex align-items-center"
+      className="min-vh-100 d-flex align-items-center justify-content-center"
       style={{
-        background:
-          'linear-gradient(135deg, rgba(25,135,84,0.15) 0%, rgba(13,110,253,0.08) 60%, rgba(255,255,255,0.4) 100%)',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       }}
     >
-      <div>
+      <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={5} lg={4}>
-            <CCard className="shadow-lg border-0" style={{ borderRadius: 16 }}>
+          <CCol md={5} lg={4} xl={4}>
+            <CCard className="shadow-lg border-0">
               <CCardBody className="p-4">
                 <div className="text-center mb-4">
-                  <CImage src={Logo} width={150} alt="Logo" className="mb-2" />
+                  <CImage src={Logo} width={120} alt="Logo" className="mb-2" />
+                  <h5 className="fw-bold text-dark mb-1">Đăng nhập</h5>
+                  <small className="text-muted">Nguyen Kim Đại Lý</small>
                 </div>
 
                 <CForm onKeyDown={handleKeyDown} autoComplete="off">
-                  <label className="small fw-semibold mb-1">Tài khoản</label>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText className="bg-light">
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput
-                      style={{
-                        fontSize: 18,
-                      }}
-                      placeholder="Nhập tài khoản"
-                      value={username}
-                      onChange={(e) => setUserName(e.target.value)}
-                      autoFocus
-                    />
-                  </CInputGroup>
+                  <div className="mb-3">
+                    <CInputGroup>
+                      <CInputGroupText className="bg-light">
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput
+                        placeholder="Tài khoản"
+                        value={username}
+                        onChange={(e) => setUserName(e.target.value)}
+                        autoFocus
+                      />
+                    </CInputGroup>
+                  </div>
 
-                  <label className="small fw-semibold mb-1">Mật khẩu</label>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText className="bg-light">
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      style={{
-                        fontSize: 18,
-                      }}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Nhập mật khẩu"
-                      value={password}
-                      onChange={(e) => setPassWord(e.target.value)}
-                    />
-                    <CButton
-                      type="button"
-                      color="secondary"
-                      variant="outline"
-                      onClick={() => setShowPassword((s) => !s)}
-                      tabIndex={-1}
-                      style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                    >
-                      <CIcon icon={showPassword ? cilFaceDead : cilFace} />
-                    </CButton>
-                  </CInputGroup>
+                  <div className="mb-3">
+                    <CInputGroup>
+                      <CInputGroupText className="bg-light">
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Mật khẩu"
+                        value={password}
+                        onChange={(e) => setPassWord(e.target.value)}
+                      />
+                      <CButton
+                        type="button"
+                        color="light"
+                        onClick={() => setShowPassword((s) => !s)}
+                        tabIndex={-1}
+                      >
+                        <CIcon icon={showPassword ? cilFaceDead : cilFace} />
+                      </CButton>
+                    </CInputGroup>
+                  </div>
 
-                  <label className="small fw-semibold mb-1">Khóa bảo mật</label>
-                  <CInputGroup className="mb-4">
-                    <CInputGroupText className="bg-light">
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      style={{
-                        fontSize: 18,
-                      }}
-                      type={showSecureKey ? 'text' : 'password'}
-                      placeholder="Nhập khóa bảo mật"
-                      value={key}
-                      onChange={(e) => setKey(e.target.value)}
-                    />
-                    <CButton
-                      type="button"
-                      color="secondary"
-                      variant="outline"
-                      onClick={() => setShowSecureKey((s) => !s)}
-                      tabIndex={-1}
-                      style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                    >
-                      <CIcon icon={showSecureKey ? cilFaceDead : cilFace} />
-                    </CButton>
-                  </CInputGroup>
-
-                  {/* <div className="mb-3 text-center">
+                  <div className="mb-3 d-flex justify-content-center">
                     <ReCAPTCHA
                       sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                       onChange={setRecaptchaToken}
                     />
-                  </div> */}
+                  </div>
 
                   <CButton
                     color="primary"
-                    className="w-100 py-2 fw-semibold"
+                    className="w-100"
                     disabled={loading}
                     onClick={handleLogin}
-                    style={{ fontSize: 16 }}
                   >
                     {loading ? (
                       <>
@@ -177,16 +145,14 @@ const Login = () => {
                   </CButton>
                 </CForm>
 
-                <div className="text-center mt-4">
-                  <small className="text-muted">
-                    © {new Date().getFullYear()} Nguyen Kim Admin Portal
-                  </small>
+                <div className="text-center mt-3 pt-3 border-top">
+                  <small className="text-muted">© {new Date().getFullYear()} Nguyen Kim</small>
                 </div>
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
-      </div>
+      </CContainer>
     </div>
   )
 }

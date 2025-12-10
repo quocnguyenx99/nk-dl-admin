@@ -139,7 +139,7 @@ function CandidateCV() {
 
   const handleDeleteSelectedCheckbox = async () => {
     try {
-      const response = await axiosClient.post('admin/delete-all-hire-post', {
+      const response = await axiosClient.post('admin/show-candidates', {
         data: selectedCheckbox,
       })
 

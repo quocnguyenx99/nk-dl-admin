@@ -1,8 +1,8 @@
 {
-  "name": "admin-chinhnhan",
+  "name": "admin-nk-dl",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ad.chinhnhan.com",
+  "homepage": "https://admin-nk.vitinhnguyenkim.vn/",
   "dependencies": {
     "@coreui/chartjs": "^4.0.0",
     "@coreui/coreui": "^5.0.0",

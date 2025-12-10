@@ -22,7 +22,7 @@ import axios from 'axios'
 import DeletedModal from '../../../components/deletedModal/DeletedModal'
 import Search from '../../../components/search/Search'
 import { onFilesChange, revokeObjectURLs } from '../../../helper/fileUpload'
-import { axiosClient_NK, imageBaseUrl } from '../../../axiosConfig'
+import { axiosClient, imageBaseUrl } from '../../../axiosConfig'
 
 function PartnerCategories() {
   const location = useLocation()
@@ -113,7 +113,7 @@ function PartnerCategories() {
   // API: List (GET)
   const fetchDataPartner = async (keyword = '') => {
     try {
-      const response = await axiosClient_NK.get(
+      const response = await axiosClient.get(
         `admin/partner?page=${pageNumber}&data=${encodeURIComponent(keyword)}`,
       )
       if (response?.data) {
