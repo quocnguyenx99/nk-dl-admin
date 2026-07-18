@@ -8,15 +8,15 @@ const axiosClient = axios.create({
 
   headers: {
     'Content-Type': 'application/json',
-    Authorization: localStorage.getItem('adminNKDL')
-      ? `Bearer ${localStorage.getItem('adminNKDL')}`
+    Authorization: localStorage.getItem('adminNKCP')
+      ? `Bearer ${localStorage.getItem('adminNKCP')}`
       : '',
   },
 })
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminNKDL')
+    const token = localStorage.getItem('adminNKCP')
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
@@ -28,7 +28,7 @@ axiosClient.interceptors.request.use(
 )
 
 // Configuration for images
-const imageBaseUrl = 'https://media.vitinhnguyenkim.com.vn/uploads/'
+const imageBaseUrl = 'https://media.vitinhnguyenkim.vn/uploads/'
 const mainUrl = 'https://vitinhnguyenkim.vn/'
 
 export { axiosClient, imageBaseUrl, mainUrl }

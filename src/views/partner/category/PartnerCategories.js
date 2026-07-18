@@ -176,7 +176,7 @@ function PartnerCategories() {
     if (isEditing) {
       try {
         setIsLoading(true)
-        const url = `https://media.vitinhnguyenkim.com.vn/api/partner/${id}`
+        const url = `https://media.vitinhnguyenkim.vn/api/partner/${id}`
         const response = await axios.put(url, payload)
         if (response?.data) {
           toast.success('Cập nhật đối tác thành công')
@@ -201,7 +201,7 @@ function PartnerCategories() {
     } else {
       try {
         setIsLoading(true)
-        const url = 'https://media.vitinhnguyenkim.com.vn/api/partner'
+        const url = 'https://media.vitinhnguyenkim.vn/api/partner'
         const response = await axios.post(url, payload)
         if (response?.data) {
           toast.success('Thêm mới đối tác thành công!')

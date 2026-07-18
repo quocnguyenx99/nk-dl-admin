@@ -52,7 +52,7 @@ const Login = () => {
         captchaToken: recaptchaToken,
       })
       if (res.data.status === true) {
-        localStorage.setItem('adminNKDL', res.data.token)
+        localStorage.setItem('adminNKCP', res.data.token)
         localStorage.setItem('username', res.data.username)
         navigate('/')
       } else {

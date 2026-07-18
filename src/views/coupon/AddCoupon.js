@@ -476,7 +476,7 @@ function AddCoupon() {
                             .map((child) => (
                               <div key={child.cat_id} className="ms-3 d-flex">
                                 <img
-                                  src="https://media.vitinhnguyenkim.com.vn/uploads/row-sub.gif"
+                                  src="https://media.vitinhnguyenkim.vn/uploads/row-sub.gif"
                                   alt="Subcategory"
                                   className="mr-2"
                                 />
