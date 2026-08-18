@@ -164,6 +164,12 @@ const DEFAULT_BANNERS = {
   subPromo5: [
     'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=800&q=80',
   ],
+  floatingLeft: [
+    'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?auto=format&fit=crop&w=300&q=80',
+  ],
+  floatingRight: [
+    'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=300&q=80',
+  ],
 }
 
 const DEFAULT_SECTIONS = [
@@ -1734,136 +1740,169 @@ const ThemeConfig = () => {
                 <div
                   style={{
                     width: '100%',
-                    maxWidth: '1440px',
+                    maxWidth: '1720px',
                     margin: '0 auto',
-                    padding: '12px 20px 16px',
+                    padding: '12px 16px 16px',
                     boxSizing: 'border-box',
                   }}
                 >
-                  <div className="d-flex gap-3 flex-wrap flex-md-nowrap">
-                    {/* Left Column: Category Sidebar */}
+                  <div className="d-flex gap-2.5 align-items-stretch">
+                    {/* Left Floating Skyscraper Banner (Banner trôi trái) */}
                     <div
-                      className="d-none d-md-block flex-shrink-0"
-                      style={{ width: '240px', minWidth: '220px' }}
+                      className="d-none d-xxl-block flex-shrink-0"
+                      style={{ width: '135px', minWidth: '120px' }}
                     >
-                      <div
-                        className="bg-white rounded-1 border h-100 shadow-xs"
-                        style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
-                      >
+                      <RenderBannerSlot
+                        slotKey="floatingLeft"
+                        title="Banner trôi trái"
+                        sizeText="160 x 600 px"
+                        minHeight="380px"
+                        style={{ height: '100%' }}
+                      />
+                    </div>
+
+                    {/* Center Main Content Container */}
+                    <div className="flex-fill min-w-0">
+                      <div className="d-flex gap-3 flex-wrap flex-md-nowrap">
+                        {/* Left Column: Category Sidebar */}
                         <div
-                          className="fw-bold text-dark px-3 py-2 border-bottom d-flex align-items-center gap-2"
-                          style={{ fontSize: '14.5px', borderColor: '#e5e7eb' }}
+                          className="d-none d-md-block flex-shrink-0"
+                          style={{ width: '240px', minWidth: '220px' }}
                         >
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                          <div
+                            className="bg-white rounded-1 border h-100 shadow-xs"
+                            style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
                           >
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                          </svg>
-                          <span>Danh mục sản phẩm</span>
-                        </div>
-                        <div className="py-1">
-                          {CATEGORIES_LIST.map((cat, idx) => (
                             <div
-                              key={idx}
-                              className="px-3 py-1.5 d-flex justify-content-between align-items-center hover-bg-light cursor-pointer"
-                              style={{ color: '#434657', transition: 'all 0.15s' }}
+                              className="fw-bold text-dark px-3 py-2 border-bottom d-flex align-items-center gap-2"
+                              style={{ fontSize: '14.5px', borderColor: '#e5e7eb' }}
                             >
-                              <span
-                                className="text-truncate"
-                                style={{ fontSize: '13.5px', fontWeight: '400' }}
-                              >
-                                {cat}
-                              </span>
                               <svg
-                                width="14"
-                                height="14"
+                                width="18"
+                                height="18"
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                stroke="#9ca3af"
-                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                style={{ flexShrink: 0 }}
                               >
-                                <polyline points="9 18 15 12 9 6"></polyline>
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
                               </svg>
+                              <span>Danh mục sản phẩm</span>
                             </div>
-                          ))}
+                            <div className="py-1">
+                              {CATEGORIES_LIST.map((cat, idx) => (
+                                <div
+                                  key={idx}
+                                  className="px-3 py-1.5 d-flex justify-content-between align-items-center hover-bg-light cursor-pointer"
+                                  style={{ color: '#434657', transition: 'all 0.15s' }}
+                                >
+                                  <span
+                                    className="text-truncate"
+                                    style={{ fontSize: '13.5px', fontWeight: '400' }}
+                                  >
+                                    {cat}
+                                  </span>
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#9ca3af"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    style={{ flexShrink: 0 }}
+                                  >
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                  </svg>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Column: Hotline Bar ON TOP + Main Banner + 2 Side Banners */}
+                        <div className="flex-fill min-w-0">
+                          <div className="d-flex flex-column h-100">
+                            <div
+                              className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom"
+                              style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
+                            >
+                              <div style={{ color: '#374151' }}>
+                                Hotline: <strong className="text-dark fw-bold">1900 6739</strong> 8h
+                                - 17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
+                              </div>
+                              <div>
+                                <span className="text-dark fw-normal cursor-pointer d-flex align-items-center gap-1">
+                                  🌐 Tiếng Việt <span style={{ fontSize: '11px' }}>▼</span>
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Banners Grid: Main Hero Banner (79%) + 2 Side Banners (21%) Matching Member layout */}
+                            <div
+                              style={{
+                                display: 'grid',
+                                gridTemplateColumns: '79% calc(21% - 8px)',
+                                gap: '8px',
+                                height: '100%',
+                                minHeight: '380px',
+                              }}
+                            >
+                              {/* Center Main Banner (Position 1) */}
+                              <div style={{ height: '100%' }}>
+                                <RenderBannerSlot
+                                  slotKey="mainBanner"
+                                  title="Vị trí 1: Banner chính"
+                                  sizeText="Kích thước: 840 x 420 px"
+                                  minHeight="380px"
+                                  style={{ height: '100%' }}
+                                />
+                              </div>
+
+                              {/* Right Side Banners (Position 2 & 3) Stacked Vertically */}
+                              <div className="d-flex flex-column gap-2" style={{ height: '100%' }}>
+                                <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
+                                  <RenderBannerSlot
+                                    slotKey="sideBanner1"
+                                    title="Vị trí 2: Banner phụ 1"
+                                    sizeText="Kích thước: 380 x 205 px"
+                                    minHeight="185px"
+                                    style={{ height: '100%' }}
+                                  />
+                                </div>
+                                <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
+                                  <RenderBannerSlot
+                                    slotKey="sideBanner2"
+                                    title="Vị trí 3: Banner phụ 2"
+                                    sizeText="Kích thước: 380 x 205 px"
+                                    minHeight="185px"
+                                    style={{ height: '100%' }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Right Column: Hotline Bar ON TOP + Main Banner + 2 Side Banners */}
-                    <div className="flex-fill min-w-0">
-                      <div className="d-flex flex-column h-100">
-                        <div
-                          className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom"
-                          style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
-                        >
-                          <div style={{ color: '#374151' }}>
-                            Hotline: <strong className="text-dark fw-bold">1900 6739</strong> 8h -
-                            17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
-                          </div>
-                          <div>
-                            <span className="text-dark fw-normal cursor-pointer d-flex align-items-center gap-1">
-                              🌐 Tiếng Việt <span style={{ fontSize: '11px' }}>▼</span>
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Banners Grid: Main Hero Banner (79%) + 2 Side Banners (21%) Matching Member layout */}
-                        <div
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: '79% calc(21% - 8px)',
-                            gap: '8px',
-                            height: '100%',
-                            minHeight: '380px',
-                          }}
-                        >
-                          {/* Center Main Banner (Position 1) */}
-                          <div style={{ height: '100%' }}>
-                            <RenderBannerSlot
-                              slotKey="mainBanner"
-                              title="Vị trí 1: Banner chính"
-                              sizeText="Kích thước: 840 x 420 px"
-                              minHeight="380px"
-                              style={{ height: '100%' }}
-                            />
-                          </div>
-
-                          {/* Right Side Banners (Position 2 & 3) Stacked Vertically */}
-                          <div className="d-flex flex-column gap-2" style={{ height: '100%' }}>
-                            <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
-                              <RenderBannerSlot
-                                slotKey="sideBanner1"
-                                title="Vị trí 2: Banner phụ 1"
-                                sizeText="Kích thước: 380 x 205 px"
-                                minHeight="185px"
-                                style={{ height: '100%' }}
-                              />
-                            </div>
-                            <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
-                              <RenderBannerSlot
-                                slotKey="sideBanner2"
-                                title="Vị trí 3: Banner phụ 2"
-                                sizeText="Kích thước: 380 x 205 px"
-                                minHeight="185px"
-                                style={{ height: '100%' }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    {/* Right Floating Skyscraper Banner (Banner trôi phải) */}
+                    <div
+                      className="d-none d-xxl-block flex-shrink-0"
+                      style={{ width: '135px', minWidth: '120px' }}
+                    >
+                      <RenderBannerSlot
+                        slotKey="floatingRight"
+                        title="Banner trôi phải"
+                        sizeText="160 x 600 px"
+                        minHeight="380px"
+                        style={{ height: '100%' }}
+                      />
                     </div>
                   </div>
                 </div>
