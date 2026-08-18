@@ -427,14 +427,17 @@ const ThemeConfig = () => {
   // Persist config to backend (silent auto-save by default, explicit toast on demand)
   const persistCampaignConfig = async (overrideData = {}, options = {}) => {
     const { showToast = false } = options
-    const activeItem = themes.find((t) => t.id === activeThemeId)
+    const activeItem =
+      themes.find((t) => t.id === activeThemeId) ||
+      themes.find((t) => t.code === 'default') ||
+      themes[0]
     const payloadColors = overrideData.colors || colors
     const payloadBanners = overrideData.banners || banners
     const payloadSections = overrideData.sections || sections
 
     try {
       const res = await axiosClient.post('theme/save', {
-        id: activeThemeId,
+        id: activeItem?.id || activeThemeId,
         name: activeItem?.name || 'Giao diện chính',
         code: activeItem?.code || 'default',
         start_date: activeItem?.startDate || null,
@@ -450,15 +453,16 @@ const ThemeConfig = () => {
         },
       })
       if (res?.data?.data?.theme_config?.banners) {
-        setBanners(normalizeBannersMap(res.data.data.theme_config.banners))
+        const savedBanners = normalizeBannersMap(res.data.data.theme_config.banners)
+        setBanners(savedBanners)
       }
       if (showToast) {
         toast.success('Đã lưu cấu hình!')
       }
     } catch (err) {
-      console.log('Lưu cấu hình:', err)
+      console.log('Lỗi lưu cấu hình:', err)
       if (showToast) {
-        toast.success('Đã lưu cấu hình!')
+        toast.error('Lỗi lưu cấu hình: ' + (err?.response?.data?.message || err.message))
       }
     }
   }
