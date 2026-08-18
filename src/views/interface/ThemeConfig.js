@@ -968,15 +968,18 @@ const ThemeConfig = () => {
             {/* Content Overlays */}
             <div className="position-relative w-100 h-100 d-flex flex-column justify-content-between p-2">
               {/* Top: Badges & Info */}
-              <div className="d-flex justify-content-between align-items-start gap-1">
+              <div className="d-flex justify-content-between align-items-start gap-1 flex-wrap w-100">
                 <span
-                  className="badge rounded-pill text-white fw-bold shadow-sm text-truncate"
+                  className="badge rounded-pill text-white fw-bold shadow-sm"
                   style={{
                     backgroundColor: colors.primary || '#2356c4',
                     fontSize: isCompact ? '9.5px' : '11px',
                     padding: isCompact ? '2px 6px' : '4px 8px',
                     backdropFilter: 'blur(4px)',
-                    maxWidth: isCompact ? '70px' : '150px',
+                    whiteSpace: 'normal',
+                    textAlign: 'left',
+                    lineHeight: 1.25,
+                    maxWidth: isCompact ? '100%' : '180px',
                   }}
                 >
                   {title}
@@ -1010,10 +1013,15 @@ const ThemeConfig = () => {
                       {currentIdx + 1}/{images.length}
                     </span>
                   )}
-                  {!isCompact && (
+                  {sizeText && (
                     <span
                       className="badge bg-dark bg-opacity-75 rounded-pill text-white fw-normal"
-                      style={{ fontSize: '10.5px' }}
+                      style={{
+                        fontSize: isCompact ? '9px' : '10.5px',
+                        padding: isCompact ? '2px 5px' : '3px 6px',
+                        whiteSpace: 'normal',
+                        lineHeight: 1.2,
+                      }}
                     >
                       {sizeText}
                     </span>
@@ -1789,7 +1797,7 @@ const ThemeConfig = () => {
                   }}
                 >
                   <div className="d-flex justify-content-center align-items-stretch gap-4 gap-xxl-5 position-relative">
-                    {/* Left Floating Skyscraper Banner (Banner trôi trái) */}
+                    {/* Left Floating Skyscraper Banner (Banner trái) */}
                     <div
                       className="d-none d-xl-flex flex-column flex-shrink-0"
                       style={{ width: '135px', minWidth: '120px' }}
@@ -1804,12 +1812,12 @@ const ThemeConfig = () => {
                             borderColor: '#cbd5e1',
                           }}
                         >
-                          📌 Banner trôi trái
+                          📌 Banner trái
                         </span>
                       </div>
                       <RenderBannerSlot
                         slotKey="floatingLeft"
-                        title="Trôi trái"
+                        title="Banner trái"
                         sizeText="160 x 600 px"
                         minHeight="390px"
                         compact={true}
@@ -1947,7 +1955,7 @@ const ThemeConfig = () => {
                       </div>
                     </div>
 
-                    {/* Right Floating Skyscraper Banner (Banner trôi phải) */}
+                    {/* Right Floating Skyscraper Banner (Banner phải) */}
                     <div
                       className="d-none d-xl-flex flex-column flex-shrink-0"
                       style={{ width: '135px', minWidth: '120px' }}
@@ -1962,12 +1970,12 @@ const ThemeConfig = () => {
                             borderColor: '#cbd5e1',
                           }}
                         >
-                          📌 Banner trôi phải
+                          📌 Banner phải
                         </span>
                       </div>
                       <RenderBannerSlot
                         slotKey="floatingRight"
-                        title="Trôi phải"
+                        title="Banner phải"
                         sizeText="160 x 600 px"
                         minHeight="390px"
                         compact={true}
