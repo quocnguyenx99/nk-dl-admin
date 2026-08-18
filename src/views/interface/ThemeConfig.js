@@ -367,7 +367,8 @@ const FEATURED_PRODUCTS = [
 ]
 
 const ThemeConfig = () => {
-  const [activeThemeId, setActiveThemeId] = useState(null)
+  const [appliedThemeId, setAppliedThemeId] = useState(null)
+  const [selectedThemeId, setSelectedThemeId] = useState(null)
   const [selectedFeaturedTab, setSelectedFeaturedTab] = useState(0)
   const [showModal, setShowModal] = useState(false)
   const [editModalVisible, setEditModalVisible] = useState(false)
@@ -499,8 +500,8 @@ const ThemeConfig = () => {
     const { showToast = false } = options
     setIsSaving(true)
     const activeItem =
-      themes.find((t) => t.id === activeThemeId) ||
-      themes.find((t) => t.code === 'default') ||
+      themes.find((t) => t.id === selectedThemeId) ||
+      themes.find((t) => t.id === appliedThemeId) ||
       themes[0]
     const payloadColors = overrideData.colors || colors
     const payloadBanners = overrideData.banners || banners
@@ -508,12 +509,12 @@ const ThemeConfig = () => {
 
     try {
       const res = await axiosClient.post('theme/save', {
-        id: activeItem?.id || activeThemeId,
+        id: activeItem?.id || selectedThemeId,
         name: activeItem?.name || 'Giao diện chính',
         code: activeItem?.code || 'default',
         start_date: activeItem?.startDate || null,
         end_date: activeItem?.endDate || null,
-        is_active: true,
+        is_active: (activeItem?.id || selectedThemeId) === appliedThemeId,
         theme_config: {
           tag: activeItem?.tag,
           description: activeItem?.description,
@@ -531,7 +532,7 @@ const ThemeConfig = () => {
       }
       setThemes((prev) =>
         prev.map((t) =>
-          t.id === (activeItem?.id || activeThemeId)
+          t.id === (activeItem?.id || selectedThemeId)
             ? {
                 ...t,
                 colors: payloadColors,
@@ -586,7 +587,8 @@ const ThemeConfig = () => {
 
         const activeItem = res.data.data.find((item) => item.is_active)
         if (activeItem) {
-          setActiveThemeId(activeItem.id)
+          setAppliedThemeId(activeItem.id)
+          setSelectedThemeId(activeItem.id)
           if (activeItem.theme_config?.colors) {
             setColors(activeItem.theme_config.colors)
           }
@@ -595,7 +597,8 @@ const ThemeConfig = () => {
             setSections(activeItem.theme_config.sections)
           }
         } else if (dbThemes.length > 0) {
-          setActiveThemeId(dbThemes[0].id)
+          setAppliedThemeId(dbThemes[0].id)
+          setSelectedThemeId(dbThemes[0].id)
           if (dbThemes[0].colors) setColors(dbThemes[0].colors)
           setBanners(normalizeBannersMap(dbThemes[0].banners))
           if (dbThemes[0].sections) setSections(dbThemes[0].sections)
@@ -613,7 +616,7 @@ const ThemeConfig = () => {
   }, [])
 
   const handleSelectTheme = (item) => {
-    setActiveThemeId(item.id)
+    setSelectedThemeId(item.id)
     if (item.colors) {
       setColors(item.colors)
     }
@@ -635,11 +638,13 @@ const ThemeConfig = () => {
     }
   }
 
-  const handleApply = async (id) => {
+  const handleApply = async (id, e) => {
+    if (e) e.stopPropagation()
     const targetTheme = themes.find((t) => t.id === id)
     if (!targetTheme) return
 
-    setActiveThemeId(id)
+    setAppliedThemeId(id)
+    setSelectedThemeId(id)
     const newColors = targetTheme.colors || colors
     const newBanners = targetTheme.banners
       ? normalizeBannersMap(targetTheme.banners)
@@ -667,7 +672,7 @@ const ThemeConfig = () => {
           sections: newSections,
         },
       })
-      toast.success(`Đã áp dụng chiến dịch "${targetTheme.name}"!`)
+      toast.success(`Đã áp dụng chiến dịch "${targetTheme.name}" cho website!`)
       fetchCampaigns(true)
     } catch (e) {
       toast.success('Đã áp dụng chiến dịch giao diện!')
@@ -679,9 +684,9 @@ const ThemeConfig = () => {
   }
 
   const handleDelete = async (id, e) => {
-    e.stopPropagation()
-    if (id === activeThemeId) {
-      toast.warn('Không thể xóa giao diện đang áp dụng!')
+    if (e) e.stopPropagation()
+    if (id === appliedThemeId) {
+      toast.warn('Không thể xóa giao diện đang áp dụng trên website!')
       return
     }
     setThemes((prev) => prev.filter((t) => t.id !== id))
@@ -992,7 +997,7 @@ const ThemeConfig = () => {
     }
 
     setThemes((prev) => prev.map((t) => (t.id === editingTheme.id ? { ...editingTheme } : t)))
-    if (editingTheme.id === activeThemeId && editingTheme.colors) {
+    if (editingTheme.id === selectedThemeId && editingTheme.colors) {
       setColors(editingTheme.colors)
     }
 
@@ -1003,7 +1008,7 @@ const ThemeConfig = () => {
         code: editingTheme.code,
         start_date: editingTheme.startDate || null,
         end_date: editingTheme.endDate || null,
-        is_active: editingTheme.id === activeThemeId,
+        is_active: editingTheme.id === appliedThemeId,
         theme_config: {
           tag: editingTheme.tag,
           description: editingTheme.description,
@@ -1083,10 +1088,10 @@ const ThemeConfig = () => {
     persistCampaignConfig({}, { showToast: true })
   }
 
-  // Always put the active campaign card at the VERY FIRST position (Index 0)
+  // Always put the currently applied campaign card at the VERY FIRST position (Index 0)
   const sortedThemes = [...themes].sort((a, b) => {
-    if (a.id === activeThemeId) return -1
-    if (b.id === activeThemeId) return 1
+    if (a.id === appliedThemeId) return -1
+    if (b.id === appliedThemeId) return 1
     return 0
   })
 
@@ -1490,7 +1495,8 @@ const ThemeConfig = () => {
             style={{ scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
           >
             {sortedThemes.map((item) => {
-              const isSelected = item.id === activeThemeId
+              const isApplied = item.id === appliedThemeId
+              const isEditing = item.id === selectedThemeId
               return (
                 <div
                   key={item.id}
@@ -1505,12 +1511,15 @@ const ThemeConfig = () => {
                     className="h-100 border-0 shadow-sm overflow-hidden bg-white position-relative cursor-pointer"
                     style={{
                       borderRadius: '12px',
-                      border: isSelected
-                        ? `2px solid ${item.colors?.primary || '#2356c4'}`
-                        : '1px solid #e2e8f0',
-                      boxShadow: isSelected
-                        ? `0 10px 25px -5px ${item.colors?.primary || '#2356c4'}40`
+                      border: isEditing
+                        ? '2.5px solid #2563eb'
+                        : isApplied
+                          ? '2px solid #16a34a'
+                          : '1px solid #e2e8f0',
+                      boxShadow: isEditing
+                        ? '0 10px 25px -5px rgba(37,99,235,0.35)'
                         : '0 4px 6px -1px rgba(0,0,0,0.05)',
+                      transition: 'all 0.2s ease',
                     }}
                     onClick={() => handleSelectTheme(item)}
                   >
@@ -1556,24 +1565,31 @@ const ThemeConfig = () => {
                         {item.tag}
                       </span>
 
-                      {isSelected && (
+                      {isApplied && (
                         <div
-                          className="position-absolute bg-white rounded-circle d-flex align-items-center justify-content-center shadow"
+                          className="position-absolute bg-success text-white rounded-pill px-2.5 py-1 d-flex align-items-center gap-1 shadow fw-bold"
                           style={{
                             top: '10px',
                             right: '10px',
-                            width: '28px',
-                            height: '28px',
-                            border: `2px solid ${item.colors?.primary || '#2356c4'}`,
-                            color: item.colors?.primary || '#2356c4',
+                            fontSize: '11px',
                             zIndex: 2,
                           }}
                         >
-                          <CIcon
-                            icon={cilCheckCircle}
-                            size="sm"
-                            style={{ color: item.colors?.primary || '#2356c4' }}
-                          />
+                          <CIcon icon={cilCheckCircle} size="sm" />
+                          <span>Đang áp dụng</span>
+                        </div>
+                      )}
+                      {!isApplied && isEditing && (
+                        <div
+                          className="position-absolute bg-primary text-white rounded-pill px-2.5 py-1 d-flex align-items-center gap-1 shadow fw-semibold"
+                          style={{
+                            top: '10px',
+                            right: '10px',
+                            fontSize: '11px',
+                            zIndex: 2,
+                          }}
+                        >
+                          <span>✏️ Đang chỉnh sửa</span>
                         </div>
                       )}
                     </div>
@@ -1590,7 +1606,7 @@ const ThemeConfig = () => {
                       </div>
 
                       <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light">
-                        {isSelected ? (
+                        {isApplied ? (
                           <span
                             className="text-success fw-bold d-flex align-items-center gap-2"
                             style={{ fontSize: '13.5px' }}
@@ -1610,7 +1626,10 @@ const ThemeConfig = () => {
                               fontSize: '13.5px',
                               borderRadius: '7px',
                             }}
-                            onClick={() => handleApply(item.id)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleApply(item.id, e)
+                            }}
                           >
                             Áp dụng
                           </CButton>
@@ -1627,12 +1646,12 @@ const ThemeConfig = () => {
                               width: '35px',
                               height: '35px',
                             }}
-                            title="Sửa chiến dịch"
+                            title="Sửa thông tin chiến dịch"
                             onClick={(e) => handleOpenEditModal(item, e)}
                           >
                             <CIcon icon={cilPencil} size="lg" className="text-white" />
                           </CButton>
-                          {!isSelected && (
+                          {!isApplied && (
                             <CButton
                               color="danger"
                               className="text-white shadow-sm rounded-2 d-flex align-items-center justify-content-center p-0"
@@ -3025,7 +3044,7 @@ const ThemeConfig = () => {
                               [item.key]: e.target.value,
                             }
                             setEditingTheme({ ...editingTheme, colors: newCols })
-                            if (editingTheme.id === activeThemeId) {
+                            if (editingTheme.id === selectedThemeId) {
                               setColors(newCols)
                             }
                           }}
@@ -3041,7 +3060,7 @@ const ThemeConfig = () => {
                               [item.key]: e.target.value,
                             }
                             setEditingTheme({ ...editingTheme, colors: newCols })
-                            if (editingTheme.id === activeThemeId) {
+                            if (editingTheme.id === selectedThemeId) {
                               setColors(newCols)
                             }
                           }}
