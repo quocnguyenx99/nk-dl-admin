@@ -2701,7 +2701,8 @@ const ThemeConfig = () => {
                 🏮 Tết Trung Thu (Lồng đèn mini ở Logo, Trăng sao mờ nền, Bánh & Đèn ở Footer)
               </option>
               <option value="noel">
-                ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở Footer)
+                ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở
+                Footer)
               </option>
               <option value="tet">
                 🌼 Tết Nguyên Đán (Cành mai ở Logo, Lì xì & Thỏi vàng ở Giỏ hàng, Chậu mai ở Footer)
@@ -2939,10 +2940,12 @@ const ThemeConfig = () => {
                   🏮 Tết Trung Thu (Lồng đèn mini ở Logo, Trăng sao mờ nền, Bánh & Đèn ở Footer)
                 </option>
                 <option value="noel">
-                  ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở Footer)
+                  ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở
+                  Footer)
                 </option>
                 <option value="tet">
-                  🌼 Tết Nguyên Đán (Cành mai ở Logo, Lì xì & Thỏi vàng ở Giỏ hàng, Chậu mai ở Footer)
+                  🌼 Tết Nguyên Đán (Cành mai ở Logo, Lì xì & Thỏi vàng ở Giỏ hàng, Chậu mai ở
+                  Footer)
                 </option>
                 <option value="women_day">
                   🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng ở Logo, Ruy băng ở Box, Bó hoa ở Footer)
