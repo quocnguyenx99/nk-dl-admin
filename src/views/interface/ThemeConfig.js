@@ -523,10 +523,24 @@ const ThemeConfig = () => {
           sections: payloadSections,
         },
       })
+      const savedBanners = res?.data?.data?.theme_config?.banners
+        ? normalizeBannersMap(res.data.data.theme_config.banners)
+        : payloadBanners
       if (res?.data?.data?.theme_config?.banners) {
-        const savedBanners = normalizeBannersMap(res.data.data.theme_config.banners)
         setBanners(savedBanners)
       }
+      setThemes((prev) =>
+        prev.map((t) =>
+          t.id === (activeItem?.id || activeThemeId)
+            ? {
+                ...t,
+                colors: payloadColors,
+                banners: savedBanners,
+                sections: payloadSections,
+              }
+            : t,
+        ),
+      )
       if (showToast) {
         toast.success('Đã lưu cấu hình!')
       }
@@ -598,15 +612,16 @@ const ThemeConfig = () => {
     fetchCampaigns()
   }, [])
 
-  // Sync colors whenever active theme selection changes (do NOT overwrite customized banners)
-  useEffect(() => {
-    if (activeThemeId && themes.length > 0) {
-      const selected = themes.find((t) => t.id === activeThemeId)
-      if (selected && selected.colors) {
-        setColors(selected.colors)
-      }
+  const handleSelectTheme = (item) => {
+    setActiveThemeId(item.id)
+    if (item.colors) {
+      setColors(item.colors)
     }
-  }, [activeThemeId, themes])
+    setBanners(normalizeBannersMap(item.banners))
+    if (item.sections) {
+      setSections(item.sections)
+    }
+  }
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -621,30 +636,38 @@ const ThemeConfig = () => {
   }
 
   const handleApply = async (id) => {
-    setActiveThemeId(id)
     const targetTheme = themes.find((t) => t.id === id)
-    if (targetTheme && targetTheme.colors) {
-      setColors(targetTheme.colors)
-    }
+    if (!targetTheme) return
+
+    setActiveThemeId(id)
+    const newColors = targetTheme.colors || colors
+    const newBanners = targetTheme.banners
+      ? normalizeBannersMap(targetTheme.banners)
+      : DEFAULT_BANNERS
+    const newSections = targetTheme.sections || DEFAULT_SECTIONS
+
+    setColors(newColors)
+    setBanners(newBanners)
+    setSections(newSections)
 
     try {
       await axiosClient.post('theme/save', {
         id: id,
-        name: targetTheme?.name,
-        code: targetTheme?.code,
-        start_date: targetTheme?.startDate || null,
-        end_date: targetTheme?.endDate || null,
+        name: targetTheme.name,
+        code: targetTheme.code,
+        start_date: targetTheme.startDate || null,
+        end_date: targetTheme.endDate || null,
         is_active: true,
         theme_config: {
-          tag: targetTheme?.tag,
-          description: targetTheme?.description,
-          image: targetTheme?.image,
-          colors: targetTheme?.colors || colors,
-          banners: banners,
-          sections: sections,
+          tag: targetTheme.tag,
+          description: targetTheme.description,
+          image: targetTheme.image,
+          colors: newColors,
+          banners: newBanners,
+          sections: newSections,
         },
       })
-      toast.success('Đã áp dụng chiến dịch giao diện!')
+      toast.success(`Đã áp dụng chiến dịch "${targetTheme.name}"!`)
       fetchCampaigns(true)
     } catch (e) {
       toast.success('Đã áp dụng chiến dịch giao diện!')
@@ -1489,11 +1512,7 @@ const ThemeConfig = () => {
                         ? `0 10px 25px -5px ${item.colors?.primary || '#2356c4'}40`
                         : '0 4px 6px -1px rgba(0,0,0,0.05)',
                     }}
-                    onClick={() => {
-                      setActiveThemeId(item.id)
-                      if (item.colors) setColors(item.colors)
-                      if (item.banners) setBanners(normalizeBannersMap(item.banners))
-                    }}
+                    onClick={() => handleSelectTheme(item)}
                   >
                     <div
                       className="position-relative overflow-hidden bg-light"
