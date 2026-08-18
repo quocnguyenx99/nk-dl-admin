@@ -742,7 +742,15 @@ const ThemeConfig = () => {
     if (e.target) e.target.value = ''
   }
 
-  const handleUpdateSlideField = (key, slideIndex, field, value) => {
+  const slideUpdateDebounceTimerRef = useRef(null)
+
+  const handleUpdateSlideField = (
+    key,
+    slideIndex,
+    field,
+    value,
+    shouldPersistImmediately = false,
+  ) => {
     const currentList = normalizeBannerImages(banners[key])
     if (!currentList[slideIndex]) return
     const updatedList = currentList.map((item, idx) =>
@@ -753,7 +761,20 @@ const ThemeConfig = () => {
       [key]: updatedList,
     }
     setBanners(updatedBanners)
-    persistCampaignConfig({ banners: updatedBanners })
+
+    if (shouldPersistImmediately) {
+      if (slideUpdateDebounceTimerRef.current) {
+        clearTimeout(slideUpdateDebounceTimerRef.current)
+      }
+      persistCampaignConfig({ banners: updatedBanners })
+    } else {
+      if (slideUpdateDebounceTimerRef.current) {
+        clearTimeout(slideUpdateDebounceTimerRef.current)
+      }
+      slideUpdateDebounceTimerRef.current = setTimeout(() => {
+        persistCampaignConfig({ banners: updatedBanners })
+      }, 600)
+    }
   }
 
   const handleRemoveSlide = (key, indexToRemove) => {
@@ -3219,6 +3240,7 @@ const ThemeConfig = () => {
                               idx,
                               'hasLink',
                               e.target.checked,
+                              true,
                             )
                           }
                         />
@@ -3246,8 +3268,16 @@ const ThemeConfig = () => {
                                 idx,
                                 'link',
                                 e.target.value,
+                                false,
                               )
                             }
+                            onBlur={() => {
+                              if (slideUpdateDebounceTimerRef.current) {
+                                clearTimeout(slideUpdateDebounceTimerRef.current)
+                                slideUpdateDebounceTimerRef.current = null
+                              }
+                              persistCampaignConfig({ banners: { ...banners } })
+                            }}
                           />
                           <div className="form-check">
                             <input
@@ -3261,6 +3291,7 @@ const ThemeConfig = () => {
                                   idx,
                                   'target',
                                   e.target.checked ? '_blank' : '_self',
+                                  true,
                                 )
                               }
                             />
@@ -3330,7 +3361,14 @@ const ThemeConfig = () => {
                 backgroundColor: colors.primary || '#2356c4',
                 borderColor: colors.primary || '#2356c4',
               }}
-              onClick={() => setManagingSlot(null)}
+              onClick={() => {
+                if (slideUpdateDebounceTimerRef.current) {
+                  clearTimeout(slideUpdateDebounceTimerRef.current)
+                  slideUpdateDebounceTimerRef.current = null
+                }
+                persistCampaignConfig({ banners: { ...banners } })
+                setManagingSlot(null)
+              }}
             >
               Hoàn tất
             </CButton>
