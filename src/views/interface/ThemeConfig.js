@@ -265,6 +265,18 @@ const ThemeConfig = () => {
     },
   })
 
+  // Helper to normalize the entire banners dictionary
+  const normalizeBannersMap = (rawBanners) => {
+    if (!rawBanners || typeof rawBanners !== 'object') return DEFAULT_BANNERS
+    const result = { ...DEFAULT_BANNERS }
+    Object.keys(DEFAULT_BANNERS).forEach((key) => {
+      if (rawBanners[key] !== undefined && rawBanners[key] !== null) {
+        result[key] = normalizeBannerImages(rawBanners[key])
+      }
+    })
+    return result
+  }
+
   // Fetch 100% pure Database records from Backend
   const fetchCampaigns = async (silent = false) => {
     try {
@@ -289,7 +301,7 @@ const ThemeConfig = () => {
             background: '#f7f7f7',
             text: '#222222',
           },
-          banners: item.theme_config?.banners || DEFAULT_BANNERS,
+          banners: normalizeBannersMap(item.theme_config?.banners),
         }))
 
         setThemes(dbThemes)
@@ -300,13 +312,11 @@ const ThemeConfig = () => {
           if (activeItem.theme_config?.colors) {
             setColors(activeItem.theme_config.colors)
           }
-          if (activeItem.theme_config?.banners) {
-            setBanners({ ...DEFAULT_BANNERS, ...activeItem.theme_config.banners })
-          }
+          setBanners(normalizeBannersMap(activeItem.theme_config?.banners))
         } else if (dbThemes.length > 0) {
           setActiveThemeId(dbThemes[0].id)
           if (dbThemes[0].colors) setColors(dbThemes[0].colors)
-          if (dbThemes[0].banners) setBanners({ ...DEFAULT_BANNERS, ...dbThemes[0].banners })
+          setBanners(normalizeBannersMap(dbThemes[0].banners))
         }
       }
     } catch (err) {
@@ -326,7 +336,7 @@ const ThemeConfig = () => {
       const selected = themes.find((t) => t.id === activeThemeId)
       if (selected) {
         if (selected.colors) setColors(selected.colors)
-        if (selected.banners) setBanners({ ...DEFAULT_BANNERS, ...selected.banners })
+        if (selected.banners) setBanners(normalizeBannersMap(selected.banners))
       }
     }
   }, [activeThemeId, themes])
@@ -348,7 +358,7 @@ const ThemeConfig = () => {
     const targetTheme = themes.find((t) => t.id === id)
     if (targetTheme) {
       if (targetTheme.colors) setColors(targetTheme.colors)
-      if (targetTheme.banners) setBanners({ ...DEFAULT_BANNERS, ...targetTheme.banners })
+      if (targetTheme.banners) setBanners(normalizeBannersMap(targetTheme.banners))
     }
 
     try {
@@ -627,10 +637,13 @@ const ThemeConfig = () => {
           border: `2.5px dashed ${colors.primary || '#2356c4'}`,
           minHeight: minHeight || '150px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+          cursor: 'pointer',
           ...style,
         }}
+        onClick={() => setManagingSlot({ slotKey, title, sizeText })}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        title="Nhấn vào đây để xem & quản lý slide banner"
       >
         <input
           ref={fileInputRef}
@@ -917,7 +930,7 @@ const ThemeConfig = () => {
                     onClick={() => {
                       setActiveThemeId(item.id)
                       if (item.colors) setColors(item.colors)
-                      if (item.banners) setBanners({ ...DEFAULT_BANNERS, ...item.banners })
+                      if (item.banners) setBanners(normalizeBannersMap(item.banners))
                     }}
                   >
                     <div
