@@ -26,6 +26,7 @@ import {
   cilCart,
   cilBell,
   cilUser,
+  cilLayers,
 } from '@coreui/icons'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
@@ -763,31 +764,52 @@ const ThemeConfig = () => {
                   </div>
                 )}
 
-                {/* Buttons: Add Slide & Manage Slides */}
-                <div className="d-flex align-items-center gap-1.5">
+                {/* Modern Pill Action Buttons */}
+                <div className="d-flex align-items-center gap-2">
                   <button
                     type="button"
-                    className="btn btn-sm btn-light fw-bold text-dark px-2.5 py-1 shadow"
-                    style={{ fontSize: '11px', borderRadius: '20px' }}
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    className="btn btn-sm fw-bold d-flex align-items-center shadow border-0"
+                    style={{
+                      fontSize: '11.5px',
+                      borderRadius: '24px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      color: '#1e293b',
+                      padding: '5px 13px',
+                      backdropFilter: 'blur(6px)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      fileInputRef.current && fileInputRef.current.click()
+                    }}
                   >
-                    <CIcon icon={cilCloudUpload} className="me-1" /> + Thêm ảnh
+                    <CIcon
+                      icon={cilCloudUpload}
+                      size="sm"
+                      className="me-1.5"
+                      style={{ color: colors.primary || '#2356c4' }}
+                    />
+                    <span>Thêm ảnh</span>
                   </button>
                   <button
                     type="button"
-                    className="btn btn-sm btn-primary fw-bold text-white px-2.5 py-1 shadow"
+                    className="btn btn-sm fw-bold d-flex align-items-center shadow border-0"
                     style={{
-                      fontSize: '11px',
-                      borderRadius: '20px',
+                      fontSize: '11.5px',
+                      borderRadius: '24px',
                       backgroundColor: colors.primary || '#2356c4',
-                      borderColor: colors.primary || '#2356c4',
+                      color: '#ffffff',
+                      padding: '5px 13px',
+                      backdropFilter: 'blur(6px)',
+                      transition: 'all 0.2s ease',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()
                       setManagingSlot({ slotKey, title, sizeText })
                     }}
                   >
-                    Quản lý slide ({images.length})
+                    <CIcon icon={cilLayers} size="sm" className="me-1.5 text-white" />
+                    <span>Quản lý slide ({images.length})</span>
                   </button>
                 </div>
               </div>
@@ -1986,10 +2008,11 @@ const ThemeConfig = () => {
               <CButton
                 color="primary"
                 size="sm"
-                className="text-white fw-bold px-3 shadow-sm"
+                className="text-white fw-bold px-3 shadow-sm d-flex align-items-center"
                 style={{
                   backgroundColor: colors.primary || '#2356c4',
                   borderColor: colors.primary || '#2356c4',
+                  borderRadius: '20px',
                 }}
                 onClick={() => {
                   const input = document.createElement('input')
@@ -2000,7 +2023,7 @@ const ThemeConfig = () => {
                   input.click()
                 }}
               >
-                <CIcon icon={cilCloudUpload} className="me-1" /> + Thêm ảnh mới
+                <CIcon icon={cilCloudUpload} className="me-1.5" /> Thêm ảnh mới
               </CButton>
             </div>
 
