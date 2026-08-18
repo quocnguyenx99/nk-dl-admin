@@ -2679,11 +2679,11 @@ const ThemeConfig = () => {
 
           {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
           <div className="mt-3 pt-3 border-top">
-            <label className="form-label font-semibold text-dark small">
-              Hiệu ứng lễ hội theo mùa (Seasonal Animation & Ornaments)
+            <label className="form-label font-semibold text-dark small d-flex align-items-center gap-1.5">
+              <span>🎨 Bộ nhận diện lễ hội theo mùa (Festive Theme UI Kit)</span>
             </label>
             <select
-              className="form-select form-select-sm"
+              className="form-select form-select-sm mb-2"
               value={newTheme.decorations?.particles || newTheme.code || 'none'}
               onChange={(e) => {
                 const val = e.target.value
@@ -2696,31 +2696,39 @@ const ThemeConfig = () => {
                 })
               }}
             >
-              <option value="none">🚫 Không có hiệu ứng</option>
+              <option value="none">🚫 Không gắn phụ kiện lễ hội (Giao diện tiêu chuẩn)</option>
               <option value="trungthu">
-                🏮 Tết Trung Thu (Lồng đèn bay, Trăng vàng & Đèn lồng treo góc)
-              </option>
-              <option value="women_day">
-                🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng, Hoa anh đào & Ruy băng hoa)
-              </option>
-              <option value="tet">
-                🌼 Tết Nguyên Đán (Hoa mai vàng, Hoa đào, Bao lì xì 🧧 & Câu đối)
+                🏮 Tết Trung Thu (Lồng đèn mini ở Logo, Trăng sao mờ nền, Bánh & Đèn ở Footer)
               </option>
               <option value="noel">
-                ❄️ Giáng Sinh / Noel (Tuyết rơi bay bổng, Chuông vàng 🔔 & Cây thông)
+                ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở Footer)
+              </option>
+              <option value="tet">
+                🌼 Tết Nguyên Đán (Cành mai ở Logo, Lì xì & Thỏi vàng ở Giỏ hàng, Chậu mai ở Footer)
+              </option>
+              <option value="women_day">
+                🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng ở Logo, Ruy băng ở Box, Bó hoa ở Footer)
               </option>
               <option value="backtoschool">
-                ✈️ Mùa Khai Trường / Back to School (Máy bay giấy & Ngôi sao ⭐)
+                ✈️ Mùa Tựu Trường / Back to School (Máy bay giấy & Sao ở Logo, Nón cử nhân ở Box)
               </option>
               <option value="blackfriday">
-                ⚡ Siêu Sale Black Friday (Tia sét Sale & Neon lấp lánh)
+                ⚡ Siêu Sale Black Friday (Tia sét Neon ở Logo, Hộp quà ở Box, Sale ở Footer)
               </option>
-              <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ma mị & Dơi bay 🦇)</option>
+              <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ở Logo & Chân trang)</option>
             </select>
-            <span className="text-muted text-xs d-block mt-1">
-              Tự động tạo các hiệu ứng động (cánh hoa, tuyết, lồng đèn, bao lì xì...) và vật trang
-              trí treo 2 bên góc website ngoài Member.
-            </span>
+            <div className="bg-light p-2.5 rounded border">
+              <span className="text-dark fw-bold text-xs d-block mb-1.5">
+                ✨ Các điểm chạm tự động thay đổi theo mẫu thiết kế:
+              </span>
+              <div className="row g-2 text-xs text-secondary">
+                <div className="col-6">✓ Góc Logo trên Header</div>
+                <div className="col-6">✓ Họa tiết chìm Watermark toàn trang</div>
+                <div className="col-6">✓ Góc Hộp Giỏ hàng & Thanh toán</div>
+                <div className="col-6">✓ Góc Nút Đặt hàng / Mua ngay</div>
+                <div className="col-12">✓ Cụm đồ họa 2 bên góc Chân trang Footer</div>
+              </div>
+            </div>
           </div>
 
           {/* File Upload Input & Image Preview right below it */}
@@ -2904,11 +2912,11 @@ const ThemeConfig = () => {
 
             {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
             <div className="mt-3 pt-3 border-top">
-              <label className="form-label font-semibold text-dark small">
-                Hiệu ứng lễ hội theo mùa (Seasonal Animation & Ornaments)
+              <label className="form-label font-semibold text-dark small d-flex align-items-center gap-1.5">
+                <span>🎨 Bộ nhận diện lễ hội theo mùa (Festive Theme UI Kit)</span>
               </label>
               <select
-                className="form-select form-select-sm"
+                className="form-select form-select-sm mb-2"
                 value={
                   editingTheme.decorations?.particles ||
                   editingTheme.decorations?.ornaments ||
@@ -2926,31 +2934,39 @@ const ThemeConfig = () => {
                   })
                 }}
               >
-                <option value="none">🚫 Không có hiệu ứng</option>
+                <option value="none">🚫 Không gắn phụ kiện lễ hội (Giao diện tiêu chuẩn)</option>
                 <option value="trungthu">
-                  🏮 Tết Trung Thu (Lồng đèn bay, Trăng vàng & Đèn lồng treo góc)
-                </option>
-                <option value="women_day">
-                  🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng, Hoa anh đào & Ruy băng hoa)
-                </option>
-                <option value="tet">
-                  🌼 Tết Nguyên Đán (Hoa mai vàng, Hoa đào, Bao lì xì 🧧 & Câu đối)
+                  🏮 Tết Trung Thu (Lồng đèn mini ở Logo, Trăng sao mờ nền, Bánh & Đèn ở Footer)
                 </option>
                 <option value="noel">
-                  ❄️ Giáng Sinh / Noel (Tuyết rơi bay bổng, Chuông vàng 🔔 & Cây thông)
+                  ❄️ Giáng Sinh / Noel (Lá thông & Berry ở Logo, Chuông vàng ở Box, Quà & Thông ở Footer)
+                </option>
+                <option value="tet">
+                  🌼 Tết Nguyên Đán (Cành mai ở Logo, Lì xì & Thỏi vàng ở Giỏ hàng, Chậu mai ở Footer)
+                </option>
+                <option value="women_day">
+                  🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng ở Logo, Ruy băng ở Box, Bó hoa ở Footer)
                 </option>
                 <option value="backtoschool">
-                  ✈️ Mùa Khai Trường / Back to School (Máy bay giấy & Ngôi sao ⭐)
+                  ✈️ Mùa Tựu Trường / Back to School (Máy bay giấy & Sao ở Logo, Nón cử nhân ở Box)
                 </option>
                 <option value="blackfriday">
-                  ⚡ Siêu Sale Black Friday (Tia sét Sale & Neon lấp lánh)
+                  ⚡ Siêu Sale Black Friday (Tia sét Neon ở Logo, Hộp quà ở Box, Sale ở Footer)
                 </option>
-                <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ma mị & Dơi bay 🦇)</option>
+                <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ở Logo & Chân trang)</option>
               </select>
-              <span className="text-muted text-xs d-block mt-1">
-                Tự động tạo các hiệu ứng động (cánh hoa, tuyết, lồng đèn, bao lì xì...) và vật trang
-                trí treo 2 bên góc website ngoài Member.
-              </span>
+              <div className="bg-light p-2.5 rounded border">
+                <span className="text-dark fw-bold text-xs d-block mb-1.5">
+                  ✨ Các điểm chạm tự động thay đổi theo mẫu thiết kế:
+                </span>
+                <div className="row g-2 text-xs text-secondary">
+                  <div className="col-6">✓ Góc Logo trên Header</div>
+                  <div className="col-6">✓ Họa tiết chìm Watermark toàn trang</div>
+                  <div className="col-6">✓ Góc Hộp Giỏ hàng & Thanh toán</div>
+                  <div className="col-6">✓ Góc Nút Đặt hàng / Mua ngay</div>
+                  <div className="col-12">✓ Cụm đồ họa 2 bên góc Chân trang Footer</div>
+                </div>
+              </div>
             </div>
 
             {/* FILE UPLOAD INPUT PLACED DIRECTLY ABOVE IMAGE PREVIEW */}
