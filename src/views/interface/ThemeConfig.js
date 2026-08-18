@@ -977,6 +977,7 @@ const ThemeConfig = () => {
         className="rounded-2 position-relative d-flex flex-column justify-content-center align-items-center overflow-hidden transition-all shadow-xs"
         style={{
           minHeight: minHeight || '160px',
+          height: minHeight || '160px',
           border: `2px dashed ${colors.primary || '#2356c4'}`,
           backgroundColor: '#f8fafc',
           cursor: 'pointer',
@@ -1809,61 +1810,67 @@ const ThemeConfig = () => {
 
               <div className="d-flex align-items-center gap-1.5 flex-wrap">
                 {/* 1-5 Columns selector & Height selector for Banner Groups */}
-                {section.type === 'banner_group' && (
-                  <>
-                    <div className="d-flex align-items-center gap-1 me-1 bg-white rounded px-2 py-0.5 border shadow-2xs">
-                      <span className="text-muted text-xs">Số banner:</span>
-                      {[1, 2, 3, 4, 5].map((cnt) => (
-                        <button
-                          key={cnt}
-                          type="button"
-                          className={`btn btn-xs py-0 px-1.5 fw-bold ${
-                            (section.columns || 4) === cnt ? 'btn-primary text-white' : 'btn-light'
-                          }`}
-                          style={{ fontSize: '11px', borderRadius: '3px' }}
-                          onClick={() => handleChangeBannerGroupColumns(section.id, cnt)}
-                          title={`Đổi nhóm thành ${cnt} banner`}
-                        >
-                          {cnt}
-                        </button>
-                      ))}
-                    </div>
+                {section.type === 'banner_group' &&
+                  (() => {
+                    const currentHeight = section.height || (section.columns === 1 ? 220 : 160)
+                    return (
+                      <>
+                        <div className="d-flex align-items-center gap-1 me-1 bg-white rounded px-2 py-0.5 border shadow-2xs">
+                          <span className="text-muted text-xs">Số banner:</span>
+                          {[1, 2, 3, 4, 5].map((cnt) => (
+                            <button
+                              key={cnt}
+                              type="button"
+                              className={`btn btn-xs py-0 px-1.5 fw-bold ${
+                                (section.columns || 4) === cnt
+                                  ? 'btn-primary text-white'
+                                  : 'btn-light'
+                              }`}
+                              style={{ fontSize: '11px', borderRadius: '3px' }}
+                              onClick={() => handleChangeBannerGroupColumns(section.id, cnt)}
+                              title={`Đổi nhóm thành ${cnt} banner`}
+                            >
+                              {cnt}
+                            </button>
+                          ))}
+                        </div>
 
-                    <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
-                      <span className="text-muted text-xs">Chiều cao:</span>
-                      {[120, 160, 200, 260].map((h) => (
-                        <button
-                          key={h}
-                          type="button"
-                          className={`btn btn-xs py-0 px-1.5 fw-bold ${
-                            (section.height || 160) === h ? 'btn-primary text-white' : 'btn-light'
-                          }`}
-                          style={{ fontSize: '11px', borderRadius: '3px' }}
-                          onClick={() => handleChangeBannerGroupHeight(section.id, h)}
-                          title={`Đổi chiều cao thành ${h}px`}
-                        >
-                          {h}px
-                        </button>
-                      ))}
-                      <input
-                        type="number"
-                        min={60}
-                        max={600}
-                        step={10}
-                        className="form-control form-control-sm py-0 px-1 text-center fw-bold ms-1"
-                        style={{ width: '50px', height: '20px', fontSize: '11px' }}
-                        value={section.height || 160}
-                        onChange={(e) =>
-                          handleChangeBannerGroupHeight(section.id, Number(e.target.value))
-                        }
-                        title="Nhập chiều cao tùy chỉnh (px)"
-                      />
-                      <span className="text-muted" style={{ fontSize: '10px' }}>
-                        px
-                      </span>
-                    </div>
-                  </>
-                )}
+                        <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
+                          <span className="text-muted text-xs">Chiều cao:</span>
+                          {[120, 160, 200, 260].map((h) => (
+                            <button
+                              key={h}
+                              type="button"
+                              className={`btn btn-xs py-0 px-1.5 fw-bold ${
+                                currentHeight === h ? 'btn-primary text-white' : 'btn-light'
+                              }`}
+                              style={{ fontSize: '11px', borderRadius: '3px' }}
+                              onClick={() => handleChangeBannerGroupHeight(section.id, h)}
+                              title={`Đổi chiều cao thành ${h}px`}
+                            >
+                              {h}px
+                            </button>
+                          ))}
+                          <input
+                            type="number"
+                            min={60}
+                            max={600}
+                            step={10}
+                            className="form-control form-control-sm py-0 px-1 text-center fw-bold ms-1"
+                            style={{ width: '50px', height: '20px', fontSize: '11px' }}
+                            value={currentHeight}
+                            onChange={(e) =>
+                              handleChangeBannerGroupHeight(section.id, Number(e.target.value))
+                            }
+                            title="Nhập chiều cao tùy chỉnh (px)"
+                          />
+                          <span className="text-muted" style={{ fontSize: '10px' }}>
+                            px
+                          </span>
+                        </div>
+                      </>
+                    )
+                  })()}
 
                 {/* Move Up / Down */}
                 <button
