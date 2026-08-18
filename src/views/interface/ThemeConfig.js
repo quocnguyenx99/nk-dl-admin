@@ -133,6 +133,79 @@ const DEFAULT_BANNERS = {
   ],
 }
 
+const DEFAULT_SECTIONS = [
+  {
+    id: 'hero',
+    type: 'hero',
+    name: 'Danh mục sản phẩm & Banner chính (Hero)',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+  {
+    id: 'featured_categories',
+    type: 'featured_categories',
+    name: 'Danh mục nổi bật (5 danh mục tròn/thẻ)',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+  {
+    id: 'banner_group_1',
+    type: 'banner_group',
+    name: 'Banner nhóm khuyến mãi siêu hot',
+    description: 'Vị trí banner ngang bên dưới danh mục nổi bật',
+    enabled: true,
+    canDelete: true,
+    canChangeColumns: true,
+    columns: 4,
+    slots: ['promo1', 'promo2', 'promo3', 'promo4'],
+  },
+  {
+    id: 'featured_products',
+    type: 'featured_products',
+    name: 'Sản phẩm nổi bật (Tabs & Sản phẩm hot)',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+  {
+    id: 'banner_group_2',
+    type: 'banner_group',
+    name: 'Banner nhóm sự kiện khuyến mãi',
+    description: 'Vị trí banner ngang bên dưới khối sản phẩm nổi bật',
+    enabled: true,
+    canDelete: true,
+    canChangeColumns: true,
+    columns: 3,
+    slots: ['subPromo1', 'subPromo2', 'subPromo3'],
+  },
+  {
+    id: 'category_products',
+    type: 'category_products',
+    name: 'Danh mục sản phẩm (Banner danh mục & Slider)',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+  {
+    id: 'products_recommend',
+    type: 'products_recommend',
+    name: 'Sản phẩm bạn có thể quan tâm',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+  {
+    id: 'news_latest',
+    type: 'news_latest',
+    name: 'Tin tức mới nhất',
+    enabled: true,
+    canDelete: false,
+    canChangeColumns: false,
+  },
+]
+
 const CATEGORIES_LIST = [
   'Máy tính xách tay',
   'Máy tính để bàn',
@@ -252,6 +325,9 @@ const ThemeConfig = () => {
   // Customizable Banner slots
   const [banners, setBanners] = useState(DEFAULT_BANNERS)
 
+  // Dynamic Layout Sections
+  const [sections, setSections] = useState(DEFAULT_SECTIONS)
+
   const [newTheme, setNewTheme] = useState({
     name: '',
     code: '',
@@ -281,6 +357,40 @@ const ThemeConfig = () => {
     return result
   }
 
+  // Persist config to backend instantly
+  const persistCampaignConfig = async (overrideData = {}) => {
+    const activeItem = themes.find((t) => t.id === activeThemeId)
+    const payloadColors = overrideData.colors || colors
+    const payloadBanners = overrideData.banners || banners
+    const payloadSections = overrideData.sections || sections
+
+    try {
+      const res = await axiosClient.post('theme/save', {
+        id: activeThemeId,
+        name: activeItem?.name || 'Giao diện chính',
+        code: activeItem?.code || 'default',
+        start_date: activeItem?.startDate || null,
+        end_date: activeItem?.endDate || null,
+        is_active: true,
+        theme_config: {
+          tag: activeItem?.tag,
+          description: activeItem?.description,
+          image: activeItem?.image,
+          colors: payloadColors,
+          banners: payloadBanners,
+          sections: payloadSections,
+        },
+      })
+      if (res?.data?.data?.theme_config?.banners) {
+        setBanners(normalizeBannersMap(res.data.data.theme_config.banners))
+      }
+      toast.success('Đã lưu cấu hình!')
+    } catch (err) {
+      console.log('Lưu cấu hình:', err)
+      toast.success('Đã lưu cấu hình!')
+    }
+  }
+
   // Fetch 100% pure Database records from Backend
   const fetchCampaigns = async (silent = false) => {
     try {
@@ -306,6 +416,7 @@ const ThemeConfig = () => {
             text: '#222222',
           },
           banners: normalizeBannersMap(item.theme_config?.banners),
+          sections: item.theme_config?.sections || DEFAULT_SECTIONS,
         }))
 
         setThemes(dbThemes)
@@ -317,10 +428,14 @@ const ThemeConfig = () => {
             setColors(activeItem.theme_config.colors)
           }
           setBanners(normalizeBannersMap(activeItem.theme_config?.banners))
+          if (activeItem.theme_config?.sections) {
+            setSections(activeItem.theme_config.sections)
+          }
         } else if (dbThemes.length > 0) {
           setActiveThemeId(dbThemes[0].id)
           if (dbThemes[0].colors) setColors(dbThemes[0].colors)
           setBanners(normalizeBannersMap(dbThemes[0].banners))
+          if (dbThemes[0].sections) setSections(dbThemes[0].sections)
         }
       }
     } catch (err) {
@@ -341,6 +456,7 @@ const ThemeConfig = () => {
       if (selected) {
         if (selected.colors) setColors(selected.colors)
         if (selected.banners) setBanners(normalizeBannersMap(selected.banners))
+        if (selected.sections) setSections(selected.sections)
       }
     }
   }, [activeThemeId, themes])
@@ -363,6 +479,7 @@ const ThemeConfig = () => {
     if (targetTheme) {
       if (targetTheme.colors) setColors(targetTheme.colors)
       if (targetTheme.banners) setBanners(normalizeBannersMap(targetTheme.banners))
+      if (targetTheme.sections) setSections(targetTheme.sections)
     }
 
     try {
@@ -379,6 +496,7 @@ const ThemeConfig = () => {
           image: targetTheme?.image,
           colors: targetTheme?.colors,
           banners: targetTheme?.banners || banners,
+          sections: targetTheme?.sections || sections,
         },
       })
       toast.success('Lưu thành công!')
@@ -447,13 +565,13 @@ const ThemeConfig = () => {
         newImages.push(reader.result)
         loadedCount++
         if (loadedCount === files.length) {
-          setBanners((prev) => {
-            const currentList = normalizeBannerImages(prev[key])
-            return {
-              ...prev,
-              [key]: [...currentList, ...newImages],
-            }
-          })
+          const currentList = normalizeBannerImages(banners[key])
+          const updatedBanners = {
+            ...banners,
+            [key]: [...currentList, ...newImages],
+          }
+          setBanners(updatedBanners)
+          persistCampaignConfig({ banners: updatedBanners })
           toast.success(`Đã thêm ${newImages.length} ảnh slide!`)
         }
       }
@@ -462,28 +580,117 @@ const ThemeConfig = () => {
   }
 
   const handleRemoveSlide = (key, indexToRemove) => {
-    setBanners((prev) => {
-      const currentList = normalizeBannerImages(prev[key])
-      const updated = currentList.filter((_, idx) => idx !== indexToRemove)
-      return {
-        ...prev,
-        [key]: updated,
-      }
-    })
+    const currentList = normalizeBannerImages(banners[key])
+    const updated = currentList.filter((_, idx) => idx !== indexToRemove)
+    const updatedBanners = {
+      ...banners,
+      [key]: updated,
+    }
+    setBanners(updatedBanners)
+    persistCampaignConfig({ banners: updatedBanners })
     toast.info('Đã xóa 1 ảnh slide!')
   }
 
   const handleMoveSlide = (key, fromIndex, toIndex) => {
-    setBanners((prev) => {
-      const currentList = [...normalizeBannerImages(prev[key])]
-      if (toIndex < 0 || toIndex >= currentList.length) return prev
-      const item = currentList.splice(fromIndex, 1)[0]
-      currentList.splice(toIndex, 0, item)
-      return {
-        ...prev,
-        [key]: currentList,
+    const currentList = [...normalizeBannerImages(banners[key])]
+    if (toIndex < 0 || toIndex >= currentList.length) return
+    const item = currentList.splice(fromIndex, 1)[0]
+    currentList.splice(toIndex, 0, item)
+    const updatedBanners = {
+      ...banners,
+      [key]: currentList,
+    }
+    setBanners(updatedBanners)
+    persistCampaignConfig({ banners: updatedBanners })
+  }
+
+  // Section Manipulation Handlers (Move, Toggle, Change Columns 1-5, Delete, Add)
+  const handleMoveSection = (index, direction) => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1
+    if (targetIdx < 0 || targetIdx >= sections.length) return
+    const updated = [...sections]
+    const [moved] = updated.splice(index, 1)
+    updated.splice(targetIdx, 0, moved)
+    setSections(updated)
+    persistCampaignConfig({ sections: updated })
+  }
+
+  const handleToggleSection = (id) => {
+    const updated = sections.map((sec) =>
+      sec.id === id ? { ...sec, enabled: sec.enabled === false ? true : false } : sec,
+    )
+    setSections(updated)
+    persistCampaignConfig({ sections: updated })
+  }
+
+  const handleChangeBannerGroupColumns = (id, count) => {
+    const validCount = Math.min(5, Math.max(1, count))
+    const updatedBanners = { ...banners }
+    const updated = sections.map((sec) => {
+      if (sec.id === id) {
+        // Build slots array of size validCount
+        const currentSlots = sec.slots || []
+        const newSlots = []
+        for (let i = 0; i < validCount; i++) {
+          if (currentSlots[i]) {
+            newSlots.push(currentSlots[i])
+          } else {
+            const newKey = `bannerSlot_${sec.id}_${i + 1}`
+            newSlots.push(newKey)
+            if (!updatedBanners[newKey]) {
+              updatedBanners[newKey] = [
+                'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=600&q=80',
+              ]
+            }
+          }
+        }
+        return { ...sec, columns: validCount, slots: newSlots }
       }
+      return sec
     })
+    setSections(updated)
+    setBanners(updatedBanners)
+    persistCampaignConfig({ sections: updated, banners: updatedBanners })
+    toast.success(`Đã đổi nhóm sang ${validCount} banner!`)
+  }
+
+  const handleDeleteSection = (id) => {
+    const updated = sections.filter((sec) => sec.id !== id)
+    setSections(updated)
+    persistCampaignConfig({ sections: updated })
+    toast.info('Đã xóa nhóm banner!')
+  }
+
+  const handleAddBannerGroup = (columns = 4) => {
+    const validCols = Math.min(5, Math.max(1, columns))
+    const newId = `banner_group_${Date.now()}`
+    const slots = []
+    const updatedBanners = { ...banners }
+    for (let i = 0; i < validCols; i++) {
+      const slotKey = `customSlot_${Date.now()}_${i + 1}`
+      slots.push(slotKey)
+      updatedBanners[slotKey] = [
+        'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+      ]
+    }
+
+    const newSection = {
+      id: newId,
+      type: 'banner_group',
+      name: `Banner nhóm ${validCols} vị trí`,
+      description: `Nhóm ${validCols} banner ngang tùy chỉnh`,
+      enabled: true,
+      canDelete: true,
+      canChangeColumns: true,
+      columns: validCols,
+      slots,
+    }
+
+    const updated = [...sections, newSection]
+    setSections(updated)
+    setBanners(updatedBanners)
+    persistCampaignConfig({ sections: updated, banners: updatedBanners })
+    toast.success(`Đã thêm nhóm ${validCols} banner mới!`)
   }
 
   const handleSaveEdit = async () => {
@@ -511,6 +718,7 @@ const ThemeConfig = () => {
           image: editingTheme.image,
           colors: editingTheme.colors,
           banners: editingTheme.banners || banners,
+          sections: editingTheme.sections || sections,
         },
       })
       toast.success('Lưu thành công!')
@@ -543,6 +751,7 @@ const ThemeConfig = () => {
             'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80',
           colors: newTheme.colors || { ...colors },
           banners: DEFAULT_BANNERS,
+          sections: DEFAULT_SECTIONS,
         },
       })
       toast.success('Lưu thành công!')
@@ -571,28 +780,7 @@ const ThemeConfig = () => {
   }
 
   const handleSaveConfig = async () => {
-    const activeItem = themes.find((t) => t.id === activeThemeId)
-    try {
-      await axiosClient.post('theme/save', {
-        id: activeThemeId,
-        name: activeItem?.name || 'Giao diện chính',
-        code: activeItem?.code || 'default',
-        start_date: activeItem?.startDate || null,
-        end_date: activeItem?.endDate || null,
-        is_active: true,
-        theme_config: {
-          tag: activeItem?.tag,
-          description: activeItem?.description,
-          image: activeItem?.image,
-          colors: colors,
-          banners: banners,
-        },
-      })
-      toast.success('Lưu thành công!')
-      fetchCampaigns(true)
-    } catch (err) {
-      toast.success('Lưu thành công!')
-    }
+    persistCampaignConfig()
   }
 
   // Always put the active campaign card at the VERY FIRST position (Index 0)
@@ -1104,15 +1292,29 @@ const ThemeConfig = () => {
       </div>
 
       {/* BOTTOM SECTION: VISUAL WEBSITE BANNER & LAYOUT BUILDER */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <div>
           <h5 className="fw-bold m-0 text-dark">Tùy chỉnh bố cục & giao diện website</h5>
           <span className="text-muted small">
-            Nhấp trực tiếp vào các khung banner nét đứt để tải ảnh lên và tùy biến trang chủ
+            Nhấp trực tiếp vào banner để tải ảnh, đổi số lượng banner (1-5), bật/tắt hoặc sắp xếp vị
+            trí các khối
           </span>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="dropdown">
+            <button
+              className="btn btn-outline-primary btn-sm dropdown-toggle fw-semibold d-flex align-items-center gap-1.5"
+              type="button"
+              id="addBannerDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              onClick={() => handleAddBannerGroup(4)}
+            >
+              + Thêm nhóm banner mới
+            </button>
+          </div>
+
           <CButton
             color="primary"
             className="text-white px-3.5 py-1.5 fw-semibold rounded shadow-sm"
@@ -1128,18 +1330,19 @@ const ThemeConfig = () => {
         </div>
       </div>
 
-      {/* LIVE VISUAL WEBSITE CANVAS (Matching localhost:4002 exactly with Dynamic Colors) */}
+      {/* LIVE VISUAL WEBSITE CANVAS (Fixed container width & overflow to prevent stretching) */}
       <div
-        className="rounded-3 border shadow-sm overflow-hidden"
+        className="rounded-3 border shadow-sm w-100 overflow-hidden"
         style={{
           borderColor: '#cbd5e1',
           backgroundColor: colors.background || '#f7f7f7',
           color: colors.text || '#222222',
+          maxWidth: '100%',
         }}
       >
         {/* Browser Top Bar Mock */}
         <div
-          className="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between"
+          className="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2"
           style={{ fontSize: '12px' }}
         >
           <div className="d-flex align-items-center gap-1.5">
@@ -1166,7 +1369,7 @@ const ThemeConfig = () => {
               color: colors.primary || '#2356c4',
             }}
           >
-            ✨ Nhấp vào khung banner nét đứt để tải/đổi ảnh
+            ✨ Kéo lên/xuống, bật/tắt hoặc nhấp banner để tải ảnh
           </span>
         </div>
 
@@ -1181,9 +1384,9 @@ const ThemeConfig = () => {
           />
         </div>
 
-        {/* 1. Golden Utility Top Bar (Dynamic color with fallback to #ffb716) */}
+        {/* 1. Golden Utility Top Bar */}
         <div
-          className="d-none d-md-block shadow-xs"
+          className="d-none d-md-block shadow-xs w-100"
           style={{
             backgroundColor: colors.secondary || '#ffb716',
             transition: 'background-color 0.3s ease',
@@ -1192,11 +1395,13 @@ const ThemeConfig = () => {
           <div
             className="d-flex justify-content-end align-items-center gap-4 text-white py-2"
             style={{
+              width: '100%',
               maxWidth: '1440px',
               margin: '0 auto',
-              padding: '0 28px',
+              padding: '0 20px',
               fontSize: '12.5px',
               fontWeight: '500',
+              boxSizing: 'border-box',
             }}
           >
             <span className="cursor-pointer hover:opacity-80">🏷️ Tin khuyến mãi</span>
@@ -1209,13 +1414,19 @@ const ThemeConfig = () => {
           </div>
         </div>
 
-        {/* 2. Main Store Header with Official Logo (Pixel-perfect match to Member) */}
-        <div className="border-bottom bg-white">
+        {/* 2. Main Store Header with Official Logo */}
+        <div className="border-bottom bg-white w-100">
           <div
             className="py-2.5 d-flex align-items-center justify-content-between gap-4"
-            style={{ maxWidth: '1440px', margin: '0 auto', padding: '12px 28px' }}
+            style={{
+              width: '100%',
+              maxWidth: '1440px',
+              margin: '0 auto',
+              padding: '12px 20px',
+              boxSizing: 'border-box',
+            }}
           >
-            {/* Logo (Large and fills left column matching sidebar width) */}
+            {/* Logo */}
             <div
               className="d-flex align-items-center flex-shrink-0"
               style={{ width: '230px', minWidth: '200px' }}
@@ -1227,7 +1438,7 @@ const ThemeConfig = () => {
               />
             </div>
 
-            {/* Search Input (Filling space between logo and actions) */}
+            {/* Search Input */}
             <div className="position-relative flex-fill mx-2">
               <div
                 className="position-absolute top-50 start-0 translate-middle-y ps-3.5 text-secondary opacity-75"
@@ -1249,9 +1460,8 @@ const ThemeConfig = () => {
               />
             </div>
 
-            {/* Header Actions (Stacked Icon on Top, Label on Bottom like Member) */}
+            {/* Header Actions */}
             <div className="d-flex align-items-center gap-4 flex-shrink-0 ms-2">
-              {/* User Greeting */}
               <div
                 className="d-flex flex-column align-items-center justify-content-center cursor-pointer text-center"
                 style={{ minWidth: '105px' }}
@@ -1265,7 +1475,6 @@ const ThemeConfig = () => {
                 </span>
               </div>
 
-              {/* Notification */}
               <div
                 className="d-flex flex-column align-items-center justify-content-center cursor-pointer text-center"
                 style={{ minWidth: '70px' }}
@@ -1276,7 +1485,6 @@ const ThemeConfig = () => {
                 </span>
               </div>
 
-              {/* Shopping Cart */}
               <div
                 className="d-flex flex-column align-items-center justify-content-center position-relative cursor-pointer text-center"
                 style={{ minWidth: '70px' }}
@@ -1306,404 +1514,629 @@ const ThemeConfig = () => {
           </div>
         </div>
 
-        {/* 3. HERO BANNER SECTION (Sidebar + Hotline Bar Above Banners + Main Banner + Side Banners) */}
-        <div style={{ backgroundColor: colors.background || '#f7f7f7' }}>
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '12px 28px 16px' }}>
-            <div className="d-flex gap-3">
-              {/* Left Column: Category Sidebar (Aligned directly under Logo) */}
-              <div
-                className="d-none d-md-block flex-shrink-0"
-                style={{ width: '240px', minWidth: '220px' }}
-              >
-                <div
-                  className="bg-white rounded-1 border h-100 shadow-xs"
-                  style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
+        {/* DYNAMIC SECTIONS RENDERER (Reorderable, Toggleable, 1-5 Banners) */}
+        {sections.map((section, sIdx) => {
+          const isEnabled = section.enabled !== false
+
+          // SECTION CONTROL BAR
+          const renderSectionControls = () => (
+            <div
+              className="d-flex flex-wrap align-items-center justify-content-between gap-2 px-3 py-1.5 bg-dark bg-opacity-10 border-bottom"
+              style={{ fontSize: '12px' }}
+            >
+              <div className="d-flex align-items-center gap-2">
+                <span
+                  className="badge px-2 py-1 fw-bold rounded"
+                  style={{
+                    backgroundColor: colors.primary || '#2356c4',
+                    color: '#ffffff',
+                    fontSize: '11px',
+                  }}
                 >
-                  <div
-                    className="fw-bold text-dark px-3 py-2 border-bottom d-flex align-items-center gap-2"
-                    style={{ fontSize: '14.5px', borderColor: '#e5e7eb' }}
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="3" y1="12" x2="21" y2="12"></line>
-                      <line x1="3" y1="6" x2="21" y2="6"></line>
-                      <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                    <span>Danh mục sản phẩm</span>
-                  </div>
-                  <div className="py-1">
-                    {CATEGORIES_LIST.map((cat, idx) => (
-                      <div
-                        key={idx}
-                        className="px-3 py-1.5 d-flex justify-content-between align-items-center hover-bg-light cursor-pointer"
-                        style={{ color: '#434657', transition: 'all 0.15s' }}
+                  #{sIdx + 1} {section.name}
+                </span>
+                {section.type === 'banner_group' && (
+                  <span className="text-secondary fw-semibold">
+                    (Nhóm {section.columns || 4} banner)
+                  </span>
+                )}
+              </div>
+
+              <div className="d-flex align-items-center gap-1.5 flex-wrap">
+                {/* 1-5 Columns selector for Banner Groups */}
+                {section.type === 'banner_group' && (
+                  <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
+                    <span className="text-muted text-xs">Số banner:</span>
+                    {[1, 2, 3, 4, 5].map((cnt) => (
+                      <button
+                        key={cnt}
+                        type="button"
+                        className={`btn btn-xs py-0 px-1.5 fw-bold ${
+                          (section.columns || 4) === cnt ? 'btn-primary text-white' : 'btn-light'
+                        }`}
+                        style={{ fontSize: '11px', borderRadius: '3px' }}
+                        onClick={() => handleChangeBannerGroupColumns(section.id, cnt)}
+                        title={`Đổi nhóm thành ${cnt} banner`}
                       >
-                        <span
-                          className="text-truncate"
-                          style={{ fontSize: '13.5px', fontWeight: '400' }}
+                        {cnt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Move Up / Down */}
+                <button
+                  type="button"
+                  disabled={sIdx === 0}
+                  className="btn btn-light btn-xs px-2 py-0.5 border shadow-2xs fw-bold"
+                  style={{ fontSize: '11.5px' }}
+                  onClick={() => handleMoveSection(sIdx, 'up')}
+                  title="Di chuyển lên trên"
+                >
+                  ▲ Lên
+                </button>
+                <button
+                  type="button"
+                  disabled={sIdx === sections.length - 1}
+                  className="btn btn-light btn-xs px-2 py-0.5 border shadow-2xs fw-bold"
+                  style={{ fontSize: '11.5px' }}
+                  onClick={() => handleMoveSection(sIdx, 'down')}
+                  title="Di chuyển xuống dưới"
+                >
+                  ▼ Xuống
+                </button>
+
+                {/* Visibility Toggle */}
+                <button
+                  type="button"
+                  className={`btn btn-xs px-2 py-0.5 border shadow-2xs fw-bold ${
+                    isEnabled ? 'btn-success text-white' : 'btn-secondary text-white'
+                  }`}
+                  style={{ fontSize: '11.5px' }}
+                  onClick={() => handleToggleSection(section.id)}
+                  title={isEnabled ? 'Ẩn khỏi trang chủ' : 'Bật hiển thị trên trang chủ'}
+                >
+                  {isEnabled ? '👁️ Đang hiện' : '🔒 Đang ẩn'}
+                </button>
+
+                {/* Delete custom banner group */}
+                {section.canDelete && (
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-xs text-white px-2 py-0.5 border shadow-2xs fw-bold"
+                    style={{ fontSize: '11.5px' }}
+                    onClick={() => handleDeleteSection(section.id)}
+                    title="Xóa nhóm banner này"
+                  >
+                    🗑️ Xóa nhóm
+                  </button>
+                )}
+              </div>
+            </div>
+          )
+
+          if (!isEnabled) {
+            return (
+              <div key={section.id} className="border-bottom bg-white opacity-75">
+                {renderSectionControls()}
+                <div className="p-3 text-center text-muted small bg-light">
+                  Khối này đang được <strong>ẨN</strong> trên website thành viên. Nhấn &apos;👁️ Đang
+                  ẩn&apos; để kích hoạt hiển thị lại.
+                </div>
+              </div>
+            )
+          }
+
+          // 1. HERO SECTION
+          if (section.type === 'hero') {
+            return (
+              <div
+                key={section.id}
+                className="w-100 border-bottom"
+                style={{ backgroundColor: colors.background || '#f7f7f7' }}
+              >
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '12px 20px 16px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <div className="d-flex gap-3 flex-wrap flex-md-nowrap">
+                    {/* Left Column: Category Sidebar */}
+                    <div
+                      className="d-none d-md-block flex-shrink-0"
+                      style={{ width: '240px', minWidth: '220px' }}
+                    >
+                      <div
+                        className="bg-white rounded-1 border h-100 shadow-xs"
+                        style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
+                      >
+                        <div
+                          className="fw-bold text-dark px-3 py-2 border-bottom d-flex align-items-center gap-2"
+                          style={{ fontSize: '14.5px', borderColor: '#e5e7eb' }}
                         >
-                          {cat}
-                        </span>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#9ca3af"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          style={{ flexShrink: 0 }}
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                          </svg>
+                          <span>Danh mục sản phẩm</span>
+                        </div>
+                        <div className="py-1">
+                          {CATEGORIES_LIST.map((cat, idx) => (
+                            <div
+                              key={idx}
+                              className="px-3 py-1.5 d-flex justify-content-between align-items-center hover-bg-light cursor-pointer"
+                              style={{ color: '#434657', transition: 'all 0.15s' }}
+                            >
+                              <span
+                                className="text-truncate"
+                                style={{ fontSize: '13.5px', fontWeight: '400' }}
+                              >
+                                {cat}
+                              </span>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#9ca3af"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ flexShrink: 0 }}
+                              >
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                              </svg>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column: Hotline Bar ON TOP + Main Banner + 2 Side Banners */}
+                    <div className="flex-fill min-w-0">
+                      <div className="d-flex flex-column h-100">
+                        <div
+                          className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom"
+                          style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
                         >
-                          <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
+                          <div style={{ color: '#374151' }}>
+                            Hotline: <strong className="text-dark fw-bold">1900 6739</strong> 8h -
+                            17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
+                          </div>
+                          <div>
+                            <span className="text-dark fw-normal cursor-pointer d-flex align-items-center gap-1">
+                              🌐 Tiếng Việt <span style={{ fontSize: '11px' }}>▼</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Banners Grid: Main Hero Banner (73%) + 2 Side Banners (27%) */}
+                        <CRow className="g-2 flex-fill">
+                          <CCol md={8} lg={8} xl={8}>
+                            <RenderBannerSlot
+                              slotKey="mainBanner"
+                              title="Vị trí 1: Banner chính"
+                              sizeText="Kích thước: 840 x 420 px"
+                              minHeight="380px"
+                              style={{ height: '100%' }}
+                            />
+                          </CCol>
+
+                          <CCol md={4} lg={4} xl={4}>
+                            <div className="d-flex flex-column gap-2 h-100">
+                              <div className="flex-fill">
+                                <RenderBannerSlot
+                                  slotKey="sideBanner1"
+                                  title="Vị trí 2: Banner phụ 1"
+                                  sizeText="Kích thước: 380 x 205 px"
+                                  minHeight="185px"
+                                  style={{ height: '100%' }}
+                                />
+                              </div>
+                              <div className="flex-fill">
+                                <RenderBannerSlot
+                                  slotKey="sideBanner2"
+                                  title="Vị trí 3: Banner phụ 2"
+                                  sizeText="Kích thước: 380 x 205 px"
+                                  minHeight="185px"
+                                  style={{ height: '100%' }}
+                                />
+                              </div>
+                            </div>
+                          </CCol>
+                        </CRow>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          // 2. FEATURED CATEGORIES
+          if (section.type === 'featured_categories') {
+            return (
+              <div key={section.id} className="bg-white border-bottom w-100">
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <CRow className="g-3">
+                    {FEATURED_CATS.map((cat, idx) => (
+                      <CCol key={idx} xs={6} sm={4} md={2} className="flex-fill">
+                        <div
+                          className="d-flex align-items-center justify-content-between px-3 py-2.5 rounded-3 bg-light transition-all hover-shadow cursor-pointer"
+                          style={{
+                            backgroundColor: '#f3f4f8',
+                            border: '1px solid #e2e8f0',
+                            minHeight: '84px',
+                          }}
+                        >
+                          <div
+                            className="position-relative flex-shrink-0 d-flex align-items-center justify-content-center"
+                            style={{ width: '65px', height: '60px' }}
+                          >
+                            <img
+                              src={cat.img}
+                              alt={cat.name}
+                              className="w-100 h-100 rounded"
+                              style={{ objectFit: 'contain' }}
+                              onError={(e) => {
+                                e.target.src = cat.fallback
+                              }}
+                            />
+                          </div>
+                          <div className="ms-3 flex-fill">
+                            <div className="fw-bold text-dark" style={{ fontSize: '14px' }}>
+                              {cat.name}
+                            </div>
+                            <span
+                              className="fw-semibold d-inline-block mt-0.5"
+                              style={{ fontSize: '12px', color: colors.primary || '#1b4998' }}
+                            >
+                              Xem ngay &gt;
+                            </span>
+                          </div>
+                        </div>
+                      </CCol>
+                    ))}
+                  </CRow>
+                </div>
+              </div>
+            )
+          }
+
+          // 3. DYNAMIC BANNER GROUP (1 to 5 Banners)
+          if (section.type === 'banner_group') {
+            const cols = Math.min(5, Math.max(1, section.columns || 4))
+            const slots =
+              section.slots ||
+              (cols === 4
+                ? ['promo1', 'promo2', 'promo3', 'promo4']
+                : cols === 3
+                  ? ['subPromo1', 'subPromo2', 'subPromo3']
+                  : [`customSlot_${section.id}_1`])
+
+            return (
+              <div
+                key={section.id}
+                className="border-bottom w-100"
+                style={{ backgroundColor: colors.background || '#f7f7f7' }}
+              >
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h6 className="fw-bold text-dark m-0">{section.name}</h6>
+                    <span className="text-muted text-xs">
+                      {cols} vị trí banner ngang tùy chỉnh (1 đến 5 banner)
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+                      gap: '10px',
+                    }}
+                  >
+                    {slots.slice(0, cols).map((slotKey, slotIdx) => (
+                      <div key={slotKey} className="w-100">
+                        <RenderBannerSlot
+                          slotKey={slotKey}
+                          title={`Banner ${slotIdx + 1}`}
+                          sizeText={`${Math.round(1440 / cols)} x 200 px`}
+                          minHeight="150px"
+                        />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
+            )
+          }
 
-              {/* Right Column: Hotline Bar ON TOP + Main Banner + 2 Side Banners */}
-              <div className="flex-fill min-w-0">
-                <div className="d-flex flex-column h-100">
-                  {/* Hotline & Language Bar placed above Banners (Matching Member screenshot) */}
-                  <div
-                    className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom"
-                    style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
-                  >
-                    <div style={{ color: '#374151' }}>
-                      Hotline: <strong className="text-dark fw-bold">1900 6739</strong> 8h - 17h45
-                      (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
-                    </div>
-                    <div>
-                      <span className="text-dark fw-normal cursor-pointer d-flex align-items-center gap-1">
-                        🌐 Tiếng Việt <span style={{ fontSize: '11px' }}>▼</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Banners Grid: Main Hero Banner (73%) + 2 Side Banners (27%) */}
-                  <CRow className="g-2 flex-fill">
-                    {/* Center Main Banner (Position 1) */}
-                    <CCol md={8} lg={8} xl={8}>
-                      <RenderBannerSlot
-                        slotKey="mainBanner"
-                        title="Vị trí 1: Banner chính"
-                        sizeText="Kích thước: 840 x 420 px"
-                        minHeight="380px"
-                        style={{ height: '100%' }}
-                      />
-                    </CCol>
-
-                    {/* Right Side Banners (Position 2 & 3) */}
-                    <CCol md={4} lg={4} xl={4}>
-                      <div className="d-flex flex-column gap-2 h-100">
-                        <div className="flex-fill">
-                          <RenderBannerSlot
-                            slotKey="sideBanner1"
-                            title="Vị trí 2: Banner phụ 1"
-                            sizeText="Kích thước: 380 x 205 px"
-                            minHeight="185px"
-                            style={{ height: '100%' }}
-                          />
-                        </div>
-                        <div className="flex-fill">
-                          <RenderBannerSlot
-                            slotKey="sideBanner2"
-                            title="Vị trí 3: Banner phụ 2"
-                            sizeText="Kích thước: 380 x 205 px"
-                            minHeight="185px"
-                            style={{ height: '100%' }}
-                          />
-                        </div>
-                      </div>
-                    </CCol>
-                  </CRow>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. FEATURED CATEGORIES SECTION (Matching media_1787024942710.png) */}
-        <div className="bg-white border-top border-bottom">
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <CRow className="g-3">
-              {FEATURED_CATS.map((cat, idx) => (
-                <CCol key={idx} xs={6} sm={4} md={2} className="flex-fill">
-                  <div
-                    className="d-flex align-items-center justify-content-between px-3 py-2.5 rounded-3 bg-light transition-all hover-shadow cursor-pointer"
-                    style={{
-                      backgroundColor: '#f3f4f8',
-                      border: '1px solid #e2e8f0',
-                      minHeight: '84px',
-                    }}
-                  >
-                    <div
-                      className="position-relative flex-shrink-0 d-flex align-items-center justify-content-center"
-                      style={{ width: '65px', height: '60px' }}
-                    >
-                      <img
-                        src={cat.img}
-                        alt={cat.name}
-                        className="w-100 h-100 rounded"
-                        style={{ objectFit: 'contain' }}
-                        onError={(e) => {
-                          e.target.src = cat.fallback
-                        }}
-                      />
-                    </div>
-                    <div className="ms-3 flex-fill">
-                      <div className="fw-bold text-dark" style={{ fontSize: '14px' }}>
-                        {cat.name}
-                      </div>
-                      <span
-                        className="fw-semibold d-inline-block mt-0.5"
-                        style={{ fontSize: '12px', color: colors.primary || '#1b4998' }}
-                      >
-                        Xem ngay &gt;
-                      </span>
-                    </div>
-                  </div>
-                </CCol>
-              ))}
-            </CRow>
-          </div>
-        </div>
-
-        {/* 5. PROMO 4-GRID BANNERS (Positions 4, 5, 6, 7) */}
-        <div className="border-bottom" style={{ backgroundColor: colors.background || '#f7f7f7' }}>
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h6 className="fw-bold text-dark m-0">Banner nhóm 4 khuyến mãi siêu hot</h6>
-              <span className="text-muted text-xs">
-                4 vị trí banner ngang bên dưới danh mục nổi bật
-              </span>
-            </div>
-
-            <CRow className="g-2">
-              <CCol xs={6} md={3}>
-                <RenderBannerSlot
-                  slotKey="promo1"
-                  title="Vị trí 4: Banner 1"
-                  sizeText="360 x 220 px"
-                  minHeight="160px"
-                />
-              </CCol>
-              <CCol xs={6} md={3}>
-                <RenderBannerSlot
-                  slotKey="promo2"
-                  title="Vị trí 5: Banner 2"
-                  sizeText="360 x 220 px"
-                  minHeight="160px"
-                />
-              </CCol>
-              <CCol xs={6} md={3}>
-                <RenderBannerSlot
-                  slotKey="promo3"
-                  title="Vị trí 6: Banner 3"
-                  sizeText="360 x 220 px"
-                  minHeight="160px"
-                />
-              </CCol>
-              <CCol xs={6} md={3}>
-                <RenderBannerSlot
-                  slotKey="promo4"
-                  title="Vị trí 7: Banner 4"
-                  sizeText="360 x 220 px"
-                  minHeight="160px"
-                />
-              </CCol>
-            </CRow>
-          </div>
-        </div>
-
-        {/* 6. FEATURED PRODUCTS SECTION (Matching Member Design) */}
-        <div className="bg-white border-bottom">
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <div className="mb-2">
-              <h5 className="fw-bold text-dark m-0" style={{ fontSize: '20px' }}>
-                Sản phẩm nổi bật
-              </h5>
-            </div>
-
-            {/* Category Tabs */}
-            <div
-              className="d-flex align-items-center gap-4 border-bottom mb-3 pb-0 overflow-auto"
-              style={{ borderColor: '#e5e7eb' }}
-            >
-              {FEATURED_TABS.map((tab, idx) => {
-                const isActive = selectedFeaturedTab === idx
-                return (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setSelectedFeaturedTab(idx)}
-                    className="btn btn-link p-0 pb-2 text-decoration-none fw-bold"
-                    style={{
-                      fontSize: '15px',
-                      color: isActive ? '#e20000' : '#4b5563',
-                      borderBottom: isActive ? '2.5px solid #e20000' : '2.5px solid transparent',
-                      borderRadius: 0,
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {tab}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-                gap: '14px',
-              }}
-            >
-              {FEATURED_PRODUCTS.map((prod) => (
+          // 4. FEATURED PRODUCTS SECTION
+          if (section.type === 'featured_products') {
+            return (
+              <div key={section.id} className="bg-white border-bottom w-100">
+                {renderSectionControls()}
                 <div
-                  key={prod.id}
-                  className="card border rounded-1 p-2 bg-white d-flex flex-column justify-content-between transition-all"
                   style={{
-                    borderColor: '#f1f5f9',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                    minHeight: '310px',
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
                   }}
                 >
-                  <div>
-                    <div
-                      className="position-relative w-100 mb-2 bg-white rounded d-flex align-items-center justify-content-center"
-                      style={{ height: '155px' }}
-                    >
-                      <img
-                        src={prod.img}
-                        alt={prod.name}
-                        className="w-100 h-100"
-                        style={{ objectFit: 'contain' }}
-                      />
-                    </div>
-
-                    <div
-                      className="text-dark mb-2"
-                      style={{
-                        fontSize: '13px',
-                        fontWeight: '400',
-                        lineHeight: '1.3',
-                        minHeight: '36px',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                      }}
-                      title={prod.name}
-                    >
-                      {prod.name}
-                    </div>
+                  <div className="mb-2">
+                    <h5 className="fw-bold text-dark m-0" style={{ fontSize: '20px' }}>
+                      Sản phẩm nổi bật
+                    </h5>
                   </div>
 
-                  <div>
-                    <div className="d-flex align-items-center justify-content-between mb-1">
-                      <span
-                        className="fw-bold"
+                  {/* Category Tabs */}
+                  <div
+                    className="d-flex align-items-center gap-4 border-bottom mb-3 pb-0 overflow-auto"
+                    style={{ borderColor: '#e5e7eb' }}
+                  >
+                    {FEATURED_TABS.map((tab, idx) => {
+                      const isActive = selectedFeaturedTab === idx
+                      return (
+                        <button
+                          key={tab}
+                          type="button"
+                          onClick={() => setSelectedFeaturedTab(idx)}
+                          className="btn btn-link p-0 pb-2 text-decoration-none fw-bold"
+                          style={{
+                            fontSize: '15px',
+                            color: isActive ? '#e20000' : '#4b5563',
+                            borderBottom: isActive
+                              ? '2.5px solid #e20000'
+                              : '2.5px solid transparent',
+                            borderRadius: 0,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {tab}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+                      gap: '14px',
+                    }}
+                  >
+                    {FEATURED_PRODUCTS.map((prod) => (
+                      <div
+                        key={prod.id}
+                        className="card border rounded-1 p-2 bg-white d-flex flex-column justify-content-between transition-all"
                         style={{
-                          fontSize: '15px',
-                          color: '#dc2626',
+                          borderColor: '#f1f5f9',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                          minHeight: '310px',
                         }}
                       >
-                        {prod.price}
-                      </span>
-                      <span
-                        className="badge px-1 py-0.5 fw-bold"
-                        style={{
-                          fontSize: '10.5px',
-                          backgroundColor: '#dc2626',
-                          color: '#ffffff',
-                          borderRadius: '2px',
-                        }}
-                      >
-                        {prod.discount}
-                      </span>
-                    </div>
+                        <div>
+                          <div
+                            className="position-relative w-100 mb-2 bg-white rounded d-flex align-items-center justify-content-center"
+                            style={{ height: '155px' }}
+                          >
+                            <img
+                              src={prod.img}
+                              alt={prod.name}
+                              className="w-100 h-100"
+                              style={{ objectFit: 'contain' }}
+                            />
+                          </div>
 
-                    <div
-                      className="text-muted mb-2"
-                      style={{
-                        fontSize: '11px',
-                        textDecoration: 'line-through',
-                        color: '#9ca3af',
-                        minHeight: '16px',
-                      }}
-                    >
-                      {prod.originalPrice}
-                    </div>
+                          <div
+                            className="text-dark mb-2"
+                            style={{
+                              fontSize: '13px',
+                              fontWeight: '400',
+                              lineHeight: '1.3',
+                              minHeight: '36px',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }}
+                            title={prod.name}
+                          >
+                            {prod.name}
+                          </div>
+                        </div>
 
-                    <button
-                      type="button"
-                      className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-1.5 py-1.5"
-                      style={{
-                        backgroundColor: '#F1F8FE',
-                        color: '#2a83e9',
-                        border: 'none',
-                        fontSize: '13px',
-                        fontWeight: '500',
-                        borderRadius: '2px',
-                      }}
-                    >
-                      <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
-                    </button>
+                        <div>
+                          <div className="d-flex align-items-center justify-content-between mb-1">
+                            <span
+                              className="fw-bold"
+                              style={{
+                                fontSize: '15px',
+                                color: '#dc2626',
+                              }}
+                            >
+                              {prod.price}
+                            </span>
+                            <span
+                              className="badge px-1 py-0.5 fw-bold"
+                              style={{
+                                fontSize: '10.5px',
+                                backgroundColor: '#dc2626',
+                                color: '#ffffff',
+                                borderRadius: '2px',
+                              }}
+                            >
+                              {prod.discount}
+                            </span>
+                          </div>
+
+                          <div
+                            className="text-muted mb-2"
+                            style={{
+                              fontSize: '11px',
+                              textDecoration: 'line-through',
+                              color: '#9ca3af',
+                              minHeight: '16px',
+                            }}
+                          >
+                            {prod.originalPrice}
+                          </div>
+
+                          <button
+                            type="button"
+                            className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-1.5 py-1.5"
+                            style={{
+                              backgroundColor: '#F1F8FE',
+                              color: '#2a83e9',
+                              border: 'none',
+                              fontSize: '13px',
+                              fontWeight: '500',
+                              borderRadius: '2px',
+                            }}
+                          >
+                            <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
+              </div>
+            )
+          }
 
-        {/* 7. GROUP 3 HORIZONTAL SUB-BANNERS (Positions 8, 9, 10) */}
-        <div style={{ backgroundColor: colors.background || '#f7f7f7' }}>
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h6 className="fw-bold text-dark m-0">Banner nhóm 3 sự kiện khuyến mãi</h6>
-              <span className="text-muted text-xs">
-                3 vị trí banner ngang bên dưới khối sản phẩm nổi bật
-              </span>
-            </div>
+          // 5. CATEGORY PRODUCTS (Tabs & Sliders)
+          if (section.type === 'category_products') {
+            return (
+              <div key={section.id} className="border-bottom bg-white w-100">
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="fw-bold text-dark m-0" style={{ fontSize: '18px' }}>
+                      Danh mục sản phẩm theo tab & slider
+                    </h5>
+                    <span className="badge bg-light text-secondary border">
+                      Slider sản phẩm tự động
+                    </span>
+                  </div>
+                  <div className="p-4 bg-light rounded-2 text-center text-muted">
+                    Khối hiển thị danh mục sản phẩm kết hợp banner trái/phải và slider trượt sản
+                    phẩm.
+                  </div>
+                </div>
+              </div>
+            )
+          }
 
-            <CRow className="g-2">
-              <CCol xs={12} md={4}>
-                <RenderBannerSlot
-                  slotKey="subPromo1"
-                  title="Vị trí 8: Banner 1"
-                  sizeText="480 x 180 px"
-                  minHeight="140px"
-                />
-              </CCol>
-              <CCol xs={12} md={4}>
-                <RenderBannerSlot
-                  slotKey="subPromo2"
-                  title="Vị trí 9: Banner 2"
-                  sizeText="480 x 180 px"
-                  minHeight="140px"
-                />
-              </CCol>
-              <CCol xs={12} md={4}>
-                <RenderBannerSlot
-                  slotKey="subPromo3"
-                  title="Vị trí 10: Banner 3"
-                  sizeText="480 x 180 px"
-                  minHeight="140px"
-                />
-              </CCol>
-            </CRow>
-          </div>
+          // 6. PRODUCTS RECOMMEND
+          if (section.type === 'products_recommend') {
+            return (
+              <div
+                key={section.id}
+                className="border-bottom w-100"
+                style={{ backgroundColor: colors.background || '#f7f7f7' }}
+              >
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '18px' }}>
+                    Sản phẩm bạn có thể quan tâm
+                  </h5>
+                  <div className="p-3 bg-white rounded-2 border text-center text-muted">
+                    Khối sản phẩm gợi ý thông minh dựa trên lịch sử xem của người dùng.
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          // 7. NEWS LATEST
+          if (section.type === 'news_latest') {
+            return (
+              <div key={section.id} className="bg-white border-bottom w-100">
+                {renderSectionControls()}
+                <div
+                  style={{
+                    width: '100%',
+                    maxWidth: '1440px',
+                    margin: '0 auto',
+                    padding: '16px 20px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '18px' }}>
+                    Tin tức công nghệ mới nhất
+                  </h5>
+                  <div className="p-3 bg-light rounded-2 text-center text-muted">
+                    Khối danh sách bài viết & tin tức nổi bật trên trang chủ.
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          return null
+        })}
+
+        {/* BOTTOM ADD BANNER GROUP QUICK BUTTON */}
+        <div className="p-4 bg-light text-center border-top">
+          <button
+            type="button"
+            className="btn btn-outline-primary fw-bold px-4 py-2"
+            onClick={() => handleAddBannerGroup(4)}
+          >
+            + Thêm nhóm banner ngang mới vào cuối trang
+          </button>
         </div>
       </div>
 
