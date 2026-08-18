@@ -184,52 +184,62 @@ const FEATURED_CATS = [
   },
 ]
 
-// Featured Products Mock (Matching actual website product card)
+const FEATURED_TABS = [
+  'Laptop',
+  'PC',
+  'Máy in',
+  'Phụ kiện',
+  'Phần mềm',
+  'Màn hình máy tính',
+]
+
+// Featured Products Mock (Matching actual Member product card design)
 const FEATURED_PRODUCTS = [
   {
     id: 1,
-    name: 'Máy in HP LaserJet M211dw (9YF83A)',
-    price: '3.350.000 đ',
-    originalPrice: '4.090.000 đ',
-    discount: '-18%',
-    img: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=300&q=80',
+    name: 'Laptop HP ProBook 440 G11 (A74BLPA)',
+    price: '29.900.000 đ',
+    originalPrice: '37.900.000 đ',
+    discount: '-21%',
+    img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 2,
-    name: 'Laptop ASUS Vivobook 15 OLED A1505VA',
-    price: '16.490.000 đ',
-    originalPrice: '19.990.000 đ',
-    discount: '-17%',
-    img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80',
+    name: 'Laptop HP EliteBook 8 G11 14 (D85ZNAT)',
+    price: '37.300.000 đ',
+    originalPrice: '44.000.000 đ',
+    discount: '-15%',
+    img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 3,
-    name: 'Màn hình Dell 27 Monitor SE2726H 144Hz IPS',
-    price: '3.190.000 đ',
-    originalPrice: '3.890.000 đ',
-    discount: '-18%',
-    img: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=300&q=80',
+    name: '[C3SG9AT]* LAPTOP HP 240R G10',
+    price: '19.800.000 đ',
+    originalPrice: '24.900.000 đ',
+    discount: '-20%',
+    img: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 4,
-    name: 'PC NK Gaming Core i5 13400F / RTX 4060',
-    price: '18.990.000 đ',
-    originalPrice: '21.500.000 đ',
-    discount: '-12%',
-    img: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=300&q=80',
+    name: 'Laptop Lenovo ThinkPad E14 G7 (21SX002QVA)',
+    price: '29.900.000 đ',
+    originalPrice: '37.990.000 đ',
+    discount: '-21%',
+    img: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 5,
-    name: 'Máy quét HP ScanJet Pro 2600 f1 (20G05A)',
-    price: '8.490.000 đ',
-    originalPrice: '9.900.000 đ',
-    discount: '-14%',
-    img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80',
+    name: 'Laptop HP EliteBook 640 G11 (A7LA3PT)',
+    price: '33.000.000 đ',
+    originalPrice: '39.990.000 đ',
+    discount: '-17%',
+    img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80',
   },
 ]
 
 const ThemeConfig = () => {
   const [activeThemeId, setActiveThemeId] = useState(null)
+  const [selectedFeaturedTab, setSelectedFeaturedTab] = useState(0)
   const [showModal, setShowModal] = useState(false)
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editingTheme, setEditingTheme] = useState(null)
@@ -1497,86 +1507,123 @@ const ThemeConfig = () => {
         {/* 6. FEATURED PRODUCTS SECTION (Matching Member Design) */}
         <div className="bg-white border-bottom">
           <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="mb-2">
               <h5 className="fw-bold text-dark m-0" style={{ fontSize: '18px' }}>
                 Sản phẩm nổi bật
               </h5>
-              <span
-                className="fw-semibold small cursor-pointer"
-                style={{ color: colors.primary || '#2356c4' }}
-              >
-                Xem tất cả sản phẩm &gt;
-              </span>
+            </div>
+
+            {/* Category Tabs */}
+            <div
+              className="d-flex align-items-center gap-4 border-bottom mb-3 pb-1 overflow-auto"
+              style={{ borderColor: '#e5e7eb' }}
+            >
+              {FEATURED_TABS.map((tab, idx) => {
+                const isActive = selectedFeaturedTab === idx
+                return (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setSelectedFeaturedTab(idx)}
+                    className="btn btn-link p-0 pb-2 text-decoration-none fw-bold"
+                    style={{
+                      fontSize: '14px',
+                      color: isActive ? '#e20000' : '#4b5563',
+                      borderBottom: isActive ? '2px solid #e20000' : '2px solid transparent',
+                      borderRadius: 0,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {tab}
+                  </button>
+                )
+              })}
             </div>
 
             <CRow className="g-3">
               {FEATURED_PRODUCTS.map((prod) => (
-                <CCol key={prod.id} xs={6} sm={4} md={2} className="flex-fill">
+                <CCol key={prod.id} xs={6} sm={6} md={4} lg style={{ flex: '1 0 18%' }}>
                   <div
-                    className="card h-100 border rounded-3 p-2.5 bg-white d-flex flex-column justify-content-between shadow-xs transition-all hover-shadow"
-                    style={{ borderColor: '#e2e8f0', minHeight: '260px' }}
+                    className="card h-100 border rounded-2 p-2.5 bg-white d-flex flex-column justify-content-between shadow-xs transition-all hover-shadow"
+                    style={{ borderColor: '#e2e8f0', minHeight: '290px' }}
                   >
-                    <div
-                      className="position-relative w-100 mb-2 bg-light rounded d-flex align-items-center justify-content-center"
-                      style={{ height: '120px' }}
-                    >
-                      <img
-                        src={prod.img}
-                        alt={prod.name}
-                        className="w-100 h-100 rounded"
-                        style={{ objectFit: 'contain' }}
-                      />
-                    </div>
-
-                    <div className="flex-fill d-flex flex-column justify-content-between">
+                    <div>
                       <div
-                        className="fw-semibold text-dark mb-1 line-clamp-2"
-                        style={{ fontSize: '12.5px', lineHeight: '1.3' }}
+                        className="position-relative w-100 mb-2 bg-white rounded d-flex align-items-center justify-content-center"
+                        style={{ height: '140px' }}
+                      >
+                        <img
+                          src={prod.img}
+                          alt={prod.name}
+                          className="w-100 h-100 rounded"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
+
+                      <div
+                        className="fw-semibold text-dark mb-2"
+                        style={{
+                          fontSize: '13px',
+                          lineHeight: '1.35',
+                          minHeight: '36px',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
                         title={prod.name}
                       >
                         {prod.name}
                       </div>
+                    </div>
 
-                      <div>
-                        <div className="d-flex align-items-center gap-1.5 mb-1">
-                          <span
-                            className="fw-bold"
-                            style={{
-                              fontSize: '14px',
-                              color: colors.accent || colors.primary || '#e53935',
-                            }}
-                          >
-                            {prod.price}
-                          </span>
-                          <span
-                            className="badge rounded-1 px-1 py-0.5"
-                            style={{
-                              fontSize: '10px',
-                              backgroundColor: colors.accent || '#e53935',
-                              color: '#ffffff',
-                            }}
-                          >
-                            {prod.discount}
-                          </span>
-                        </div>
-                        <div className="text-muted text-xs text-decoration-line-through mb-2">
-                          {prod.originalPrice}
-                        </div>
-
-                        <button
-                          type="button"
-                          className="btn btn-sm w-100 fw-semibold d-flex align-items-center justify-content-center gap-1 py-1"
+                    <div>
+                      <div className="d-flex align-items-center justify-content-between mb-1">
+                        <span
+                          className="fw-bold"
                           style={{
-                            backgroundColor: `${colors.primary || '#2356c4'}15`,
-                            color: colors.primary || '#2356c4',
-                            border: `1px solid ${colors.primary || '#2356c4'}40`,
-                            fontSize: '11.5px',
-                            borderRadius: '6px',
+                            fontSize: '15px',
+                            color: '#e20000',
                           }}
                         >
-                          <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
-                        </button>
+                          {prod.price}
+                        </span>
+                        <span
+                          className="badge rounded-1 px-1.5 py-0.5 fw-bold"
+                          style={{
+                            fontSize: '11px',
+                            backgroundColor: '#e20000',
+                            color: '#ffffff',
+                          }}
+                        >
+                          {prod.discount}
+                        </span>
                       </div>
+
+                      <div
+                        className="text-muted mb-2"
+                        style={{
+                          fontSize: '11px',
+                          textDecoration: 'line-through',
+                          minHeight: '16px',
+                        }}
+                      >
+                        {prod.originalPrice}
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn btn-sm w-100 fw-medium d-flex align-items-center justify-content-center gap-1.5 py-1.5"
+                        style={{
+                          backgroundColor: '#F1F8FE',
+                          color: '#2a83e9',
+                          border: 'none',
+                          fontSize: '12.5px',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
+                      </button>
                     </div>
                   </div>
                 </CCol>
