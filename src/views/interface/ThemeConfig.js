@@ -765,7 +765,7 @@ const ThemeConfig = () => {
   }
 
   const handleChangeBannerGroupHeight = (id, height) => {
-    const validHeight = Math.min(600, Math.max(60, Number(height) || 160))
+    const validHeight = Math.min(1000, Math.max(60, Number(height) || 160))
     const updated = sections.map((sec) => (sec.id === id ? { ...sec, height: validHeight } : sec))
     setSections(updated)
     if (heightDebounceTimerRef.current) {
@@ -1856,15 +1856,15 @@ const ThemeConfig = () => {
                           <input
                             type="number"
                             min={60}
-                            max={600}
+                            max={1000}
                             step={10}
                             className="form-control form-control-sm py-0 px-1 text-center fw-bold ms-1"
-                            style={{ width: '50px', height: '20px', fontSize: '11px' }}
+                            style={{ width: '55px', height: '20px', fontSize: '11px' }}
                             value={currentHeight}
                             onChange={(e) =>
                               handleChangeBannerGroupHeight(section.id, Number(e.target.value))
                             }
-                            title="Nhập chiều cao tùy chỉnh (px)"
+                            title="Nhập chiều cao tùy chỉnh (tối đa 1000px)"
                           />
                           <span className="text-muted" style={{ fontSize: '10px' }}>
                             px
