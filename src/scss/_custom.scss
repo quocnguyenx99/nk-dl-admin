@@ -1,2 +1,138 @@
 // Here you can add other styles
 $font-size-base: 14px; // Change this value to set the base font size
+
+.admin-sidebar {
+  --cui-sidebar-bg: #1f2531;
+  --cui-sidebar-border-color: #334155;
+  box-shadow: 10px 0 30px rgba(15, 23, 42, 0.2);
+}
+
+.admin-sidebar .sidebar-header {
+  min-height: 74px;
+  border-bottom-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+.admin-sidebar .sidebar-brand {
+  min-height: 74px;
+}
+
+.admin-sidebar .nav-title {
+  margin-top: 18px;
+  color: #9aa4b2;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.admin-sidebar .nav-link,
+.admin-sidebar .nav-group-toggle {
+  min-height: 40px;
+  margin: 2px 8px;
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-group-toggle:hover,
+.admin-sidebar .nav-group.show > .nav-group-toggle,
+.admin-sidebar .nav-group-items .nav-link:hover {
+  background-color: #2356c4 !important;
+  color: #ffffff !important;
+  transform: translateX(4px);
+
+  .nav-icon,
+  svg {
+    color: #ffffff !important;
+  }
+}
+
+.admin-sidebar .nav-link.active,
+.admin-sidebar .nav-link.router-link-active,
+.admin-sidebar .nav-group-items .nav-link.active {
+  background-color: #2356c4 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+
+  .nav-icon,
+  svg {
+    color: #ffffff !important;
+  }
+}
+
+.admin-sidebar .nav-group.show {
+  background-color: rgba(15, 23, 42, 0.14);
+}
+
+.admin-sidebar .nav-group-items .nav-link {
+  min-height: 36px;
+  padding-left: 44px;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  margin: 2px 8px;
+}
+
+/* Fix dual scrollbar: Hide native browser scrollbar and keep ONLY SimpleBar scrollbar */
+.admin-sidebar {
+  /* SimpleBar content scroll container */
+  .simplebar-content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  /* Hide native browser scrollbars */
+  .simplebar-content-wrapper::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* SimpleBar vertical track */
+  .simplebar-track.simplebar-vertical {
+    width: 6px !important;
+    right: 2px !important;
+    background-color: transparent !important;
+    border-radius: 10px !important;
+    display: block !important;
+    visibility: visible !important;
+    z-index: 10 !important;
+  }
+
+  .simplebar-scrollbar {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Single Sleek Gray Scrollbar Thumb */
+  .simplebar-scrollbar::before {
+    background-color: #64748b !important;
+    opacity: 0.85 !important;
+    border-radius: 10px !important;
+    width: 6px !important;
+    top: 2px !important;
+    bottom: 2px !important;
+    right: 0 !important;
+    left: 0 !important;
+  }
+
+  .simplebar-scrollbar.simplebar-visible::before {
+    opacity: 1 !important;
+    background-color: #94a3b8 !important;
+  }
+}
+
+
+
+
+
+

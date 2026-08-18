@@ -10,7 +10,6 @@ import {
   CSidebarHeader,
   CSidebarToggler,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
@@ -30,7 +29,7 @@ const AppSidebar = () => {
 
   return (
     <CSidebar
-      className="border-end"
+      className="admin-sidebar border-end"
       colorScheme="dark"
       position="fixed"
       unfoldable={unfoldable}

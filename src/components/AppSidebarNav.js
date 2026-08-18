@@ -42,27 +42,27 @@ export const AppSidebarNav = ({ items }) => {
             {badge.text}
           </CBadge>
         )}
-        {name == 'QUẢN LÝ ĐƠN HÀNG' && (
+        {name === 'QUẢN LÝ ĐƠN HÀNG' && (
           <CBadge color={'danger'} className="ms-auto" size="sm">
             {dataNotSeen?.countOrderSum}
           </CBadge>
         )}
-        {name == 'QUẢN LÝ TUYỂN DỤNG' && (
+        {name === 'QUẢN LÝ TUYỂN DỤNG' && (
           <CBadge color={'danger'} className="ms-auto" size="sm">
             {dataNotSeen?.countCandidates}
           </CBadge>
         )}
-        {name == 'QUẢN LÝ COMMENT' && (
+        {name === 'QUẢN LÝ COMMENT' && (
           <CBadge color={'danger'} className="ms-auto" size="sm">
             {dataNotSeen?.countComment}
           </CBadge>
         )}
-        {name == 'QUẢN LÝ LIÊN HỆ' && (
+        {name === 'QUẢN LÝ LIÊN HỆ' && (
           <CBadge color={'danger'} className="ms-auto" size="sm">
             {dataNotSeen?.countContactQoute}
           </CBadge>
         )}
-        {name == 'QUẢN LÝ NEWSLETTER' && (
+        {name === 'QUẢN LÝ NEWSLETTER' && (
           <CBadge color={'danger'} className="ms-auto" size="sm">
             {dataNotSeen?.countMailList}
           </CBadge>
@@ -92,8 +92,8 @@ export const AppSidebarNav = ({ items }) => {
     const Component = component
     return (
       <Component compact as="div" key={index} toggler={navLink(name, icon)} {...rest}>
-        {item.items?.map((item, index) =>
-          item.items ? navGroup(item, index) : navItem(item, index, true),
+        {item.items?.map((item, idx) =>
+          item.items ? navGroup(item, idx) : navItem(item, idx, true),
         )}
       </Component>
     )

@@ -223,11 +223,23 @@ const EditCandidateCV = React.lazy(() => import('./views/hire/EditCandidateCV.js
 // LIBRARY
 const Library = React.lazy(() => import('./views/library/Library.js'))
 
+// GIAO DIỆN
+const ThemeConfigView = React.lazy(() => import('./views/interface/ThemeConfig'))
+const MenuCategoryView = React.lazy(() => import('./views/interface/MenuCategory'))
+const StaticPagesView = React.lazy(() => import('./views/interface/StaticPages'))
+const BannerManagerView = React.lazy(() => import('./views/interface/BannerManager'))
+
 /** ------------------------------------------------------------------------------------------------------------------ */
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/theme-custom/config', name: 'Cấu hình giao diện', element: ThemeConfigView },
+  { path: '/admin/theme', name: 'Cấu hình giao diện', element: ThemeConfigView },
+  { path: '/theme-custom/menu-category', name: 'Menu & Danh mục', element: MenuCategoryView },
+  { path: '/theme-custom/static-pages', name: 'Trang tĩnh', element: StaticPagesView },
+  { path: '/theme-custom/banner', name: 'Banner', element: BannerManagerView },
+
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
