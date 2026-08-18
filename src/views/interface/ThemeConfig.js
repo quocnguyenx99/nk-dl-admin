@@ -786,27 +786,38 @@ const ThemeConfig = () => {
     setSectionToDelete(null)
   }
 
-  // Edit section title inline
+  // Edit section title inline (click to edit, blur to save if changed, cancel if empty)
   const [editingSectionId, setEditingSectionId] = useState(null)
   const [tempSectionName, setTempSectionName] = useState('')
+  const originalSectionNameRef = useRef('')
 
   const handleStartEditSectionName = (sec) => {
+    const currentName = sec.name || getCleanSectionName(sec)
+    originalSectionNameRef.current = currentName
     setEditingSectionId(sec.id)
-    setTempSectionName(sec.name || getCleanSectionName(sec))
+    setTempSectionName(currentName)
   }
 
   const handleSaveSectionName = (id) => {
-    if (!tempSectionName.trim()) {
+    const trimmed = tempSectionName.trim()
+    if (!trimmed) {
       setEditingSectionId(null)
       return
     }
-    const updated = sections.map((sec) =>
-      sec.id === id ? { ...sec, name: tempSectionName.trim() } : sec,
-    )
+    const updated = sections.map((sec) => (sec.id === id ? { ...sec, name: trimmed } : sec))
     setSections(updated)
     persistCampaignConfig({ sections: updated })
-    toast.success(`Đã đổi tên thành "${tempSectionName.trim()}"!`)
     setEditingSectionId(null)
+  }
+
+  const handleBlurSectionName = (id) => {
+    const trimmed = tempSectionName.trim()
+    const original = originalSectionNameRef.current?.trim() || ''
+    if (trimmed && trimmed !== original) {
+      handleSaveSectionName(id)
+    } else {
+      setEditingSectionId(null)
+    }
   }
 
   const handleAddBannerGroup = (columns = 4) => {
@@ -1759,33 +1770,24 @@ const ThemeConfig = () => {
                     <input
                       type="text"
                       className="form-control form-control-sm py-0 px-2 fw-bold text-dark border-primary shadow-xs"
-                      style={{ height: '26px', fontSize: '12px', minWidth: '180px' }}
+                      style={{ height: '26px', fontSize: '12px', minWidth: '220px' }}
                       value={tempSectionName}
                       onChange={(e) => setTempSectionName(e.target.value)}
+                      onBlur={() => handleBlurSectionName(section.id)}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSaveSectionName(section.id)
-                        if (e.key === 'Escape') setEditingSectionId(null)
+                        if (e.key === 'Enter') {
+                          handleBlurSectionName(section.id)
+                        }
+                        if (e.key === 'Escape') {
+                          setEditingSectionId(null)
+                        }
                       }}
+                      placeholder="Nhập tên nhóm banner..."
                       autoFocus
                     />
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-success text-white py-0 px-2 shadow-2xs fw-bold"
-                      style={{ height: '26px', fontSize: '11px' }}
-                      onClick={() => handleSaveSectionName(section.id)}
-                      title="Lưu tên mới (Enter)"
-                    >
-                      ✓ Lưu
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-light py-0 px-2 shadow-2xs border"
-                      style={{ height: '26px', fontSize: '11px' }}
-                      onClick={() => setEditingSectionId(null)}
-                      title="Hủy (Esc)"
-                    >
-                      ✕
-                    </button>
+                    <span className="text-muted" style={{ fontSize: '10.5px' }}>
+                      (Bấm ra ngoài / Enter để lưu)
+                    </span>
                   </div>
                 ) : (
                   <div
