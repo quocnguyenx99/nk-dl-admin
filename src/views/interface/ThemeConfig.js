@@ -1729,9 +1729,18 @@ const ThemeConfig = () => {
                           </div>
                         </div>
 
-                        {/* Banners Grid: Main Hero Banner (73%) + 2 Side Banners (27%) */}
-                        <CRow className="g-2 flex-fill">
-                          <CCol md={8} lg={8} xl={8}>
+                        {/* Banners Grid: Main Hero Banner (79%) + 2 Side Banners (21%) Matching Member layout */}
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: '79% calc(21% - 8px)',
+                            gap: '8px',
+                            height: '100%',
+                            minHeight: '380px',
+                          }}
+                        >
+                          {/* Center Main Banner (Position 1) */}
+                          <div style={{ height: '100%' }}>
                             <RenderBannerSlot
                               slotKey="mainBanner"
                               title="Vị trí 1: Banner chính"
@@ -1739,31 +1748,30 @@ const ThemeConfig = () => {
                               minHeight="380px"
                               style={{ height: '100%' }}
                             />
-                          </CCol>
+                          </div>
 
-                          <CCol md={4} lg={4} xl={4}>
-                            <div className="d-flex flex-column gap-2 h-100">
-                              <div className="flex-fill">
-                                <RenderBannerSlot
-                                  slotKey="sideBanner1"
-                                  title="Vị trí 2: Banner phụ 1"
-                                  sizeText="Kích thước: 380 x 205 px"
-                                  minHeight="185px"
-                                  style={{ height: '100%' }}
-                                />
-                              </div>
-                              <div className="flex-fill">
-                                <RenderBannerSlot
-                                  slotKey="sideBanner2"
-                                  title="Vị trí 3: Banner phụ 2"
-                                  sizeText="Kích thước: 380 x 205 px"
-                                  minHeight="185px"
-                                  style={{ height: '100%' }}
-                                />
-                              </div>
+                          {/* Right Side Banners (Position 2 & 3) Stacked Vertically */}
+                          <div className="d-flex flex-column gap-2" style={{ height: '100%' }}>
+                            <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
+                              <RenderBannerSlot
+                                slotKey="sideBanner1"
+                                title="Vị trí 2: Banner phụ 1"
+                                sizeText="Kích thước: 380 x 205 px"
+                                minHeight="185px"
+                                style={{ height: '100%' }}
+                              />
                             </div>
-                          </CCol>
-                        </CRow>
+                            <div className="flex-fill" style={{ height: 'calc(50% - 4px)' }}>
+                              <RenderBannerSlot
+                                slotKey="sideBanner2"
+                                title="Vị trí 3: Banner phụ 2"
+                                sizeText="Kích thước: 380 x 205 px"
+                                minHeight="185px"
+                                style={{ height: '100%' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
