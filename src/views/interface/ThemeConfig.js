@@ -585,6 +585,21 @@ const ThemeConfig = () => {
 
         setThemes(dbThemes)
 
+        // Find the best populated banners dictionary across all themes
+        let populatedBanners = null
+        for (const item of res.data.data) {
+          if (item.theme_config?.banners) {
+            const parsed = normalizeBannersMap(item.theme_config.banners)
+            const count = Object.values(parsed).reduce(
+              (acc, list) => acc + (Array.isArray(list) ? list.length : 0),
+              0,
+            )
+            if (count > 0 && !populatedBanners) {
+              populatedBanners = parsed
+            }
+          }
+        }
+
         const activeItem = res.data.data.find((item) => item.is_active)
         if (activeItem) {
           setAppliedThemeId(activeItem.id)
@@ -592,7 +607,11 @@ const ThemeConfig = () => {
           if (activeItem.theme_config?.colors) {
             setColors(activeItem.theme_config.colors)
           }
-          setBanners(normalizeBannersMap(activeItem.theme_config?.banners))
+          const loadedBanners =
+            normalizeBannersMap(activeItem.theme_config?.banners) ||
+            populatedBanners ||
+            DEFAULT_BANNERS
+          setBanners(loadedBanners)
           if (activeItem.theme_config?.sections) {
             setSections(activeItem.theme_config.sections)
           }
@@ -600,7 +619,7 @@ const ThemeConfig = () => {
           setAppliedThemeId(dbThemes[0].id)
           setSelectedThemeId(dbThemes[0].id)
           if (dbThemes[0].colors) setColors(dbThemes[0].colors)
-          setBanners(normalizeBannersMap(dbThemes[0].banners))
+          setBanners(populatedBanners || normalizeBannersMap(dbThemes[0].banners))
           if (dbThemes[0].sections) setSections(dbThemes[0].sections)
         }
       }
@@ -620,10 +639,7 @@ const ThemeConfig = () => {
     if (item.colors) {
       setColors(item.colors)
     }
-    setBanners(normalizeBannersMap(item.banners))
-    if (item.sections) {
-      setSections(item.sections)
-    }
+    // Banners are SHARED across all campaigns as requested: keep currently configured banners!
   }
 
   const scrollLeft = () => {
@@ -646,14 +662,7 @@ const ThemeConfig = () => {
     setAppliedThemeId(id)
     setSelectedThemeId(id)
     const newColors = targetTheme.colors || colors
-    const newBanners = targetTheme.banners
-      ? normalizeBannersMap(targetTheme.banners)
-      : DEFAULT_BANNERS
-    const newSections = targetTheme.sections || DEFAULT_SECTIONS
-
     setColors(newColors)
-    setBanners(newBanners)
-    setSections(newSections)
 
     try {
       await axiosClient.post('theme/save', {
@@ -668,8 +677,8 @@ const ThemeConfig = () => {
           description: targetTheme.description,
           image: targetTheme.image,
           colors: newColors,
-          banners: newBanners,
-          sections: newSections,
+          banners: banners, // Dùng chung bộ banner hoàn chỉnh
+          sections: sections,
         },
       })
       toast.success(`Đã áp dụng chiến dịch "${targetTheme.name}" cho website!`)
