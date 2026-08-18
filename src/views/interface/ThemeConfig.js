@@ -86,30 +86,50 @@ const formatDateRangeText = (startDate, endDate) => {
   return `${formattedStart} ~ ${formattedEnd}`
 }
 
-// Default initial banners for visual builder
+// Helper to normalize banner value to array of strings (multi-slide support)
+const normalizeBannerImages = (val) => {
+  if (Array.isArray(val)) return val.filter(Boolean)
+  if (typeof val === 'string' && val.trim()) return [val]
+  return []
+}
+
+// Default initial banners for visual builder (Multi-slide ready)
 const DEFAULT_BANNERS = {
-  topBanner:
+  topBanner: [
     'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1920&q=80',
-  mainBanner:
+  ],
+  mainBanner: [
     'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=1200&q=80',
-  sideBanner1:
+    'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+  ],
+  sideBanner1: [
     'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80',
-  sideBanner2:
+  ],
+  sideBanner2: [
     'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80',
-  promo1:
+  ],
+  promo1: [
     'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=600&q=80',
-  promo2:
+  ],
+  promo2: [
     'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80',
-  promo3:
+  ],
+  promo3: [
     'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80',
-  promo4:
+  ],
+  promo4: [
     'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
-  subPromo1:
+  ],
+  subPromo1: [
     'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
-  subPromo2:
+  ],
+  subPromo2: [
     'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80',
-  subPromo3:
+  ],
+  subPromo3: [
     'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
+  ],
 }
 
 const CATEGORIES_LIST = [
@@ -397,19 +417,59 @@ const ThemeConfig = () => {
     }
   }
 
-  // Handle direct upload into any of the banner slots
+  const [managingSlot, setManagingSlot] = useState(null)
+
+  // Handle direct upload of 1 or more images into any of the banner slots
   const handleBannerUpload = (key, e) => {
-    const file = e.target.files[0]
-    if (file) {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    let loadedCount = 0
+    const newImages = []
+
+    files.forEach((file) => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setBanners((prev) => ({
-          ...prev,
-          [key]: reader.result,
-        }))
+        newImages.push(reader.result)
+        loadedCount++
+        if (loadedCount === files.length) {
+          setBanners((prev) => {
+            const currentList = normalizeBannerImages(prev[key])
+            return {
+              ...prev,
+              [key]: [...currentList, ...newImages],
+            }
+          })
+          toast.success(`Đã thêm ${newImages.length} ảnh slide!`)
+        }
       }
       reader.readAsDataURL(file)
-    }
+    })
+  }
+
+  const handleRemoveSlide = (key, indexToRemove) => {
+    setBanners((prev) => {
+      const currentList = normalizeBannerImages(prev[key])
+      const updated = currentList.filter((_, idx) => idx !== indexToRemove)
+      return {
+        ...prev,
+        [key]: updated,
+      }
+    })
+    toast.info('Đã xóa 1 ảnh slide!')
+  }
+
+  const handleMoveSlide = (key, fromIndex, toIndex) => {
+    setBanners((prev) => {
+      const currentList = [...normalizeBannerImages(prev[key])]
+      if (toIndex < 0 || toIndex >= currentList.length) return prev
+      const item = currentList.splice(fromIndex, 1)[0]
+      currentList.splice(toIndex, 0, item)
+      return {
+        ...prev,
+        [key]: currentList,
+      }
+    })
   }
 
   const handleSaveEdit = async () => {
@@ -528,10 +588,37 @@ const ThemeConfig = () => {
     return 0
   })
 
-  // Reusable Interactive Dashed Banner Slot Component
+  // Reusable Interactive Dashed Multi-Slide Banner Slot Component
   const RenderBannerSlot = ({ slotKey, title, sizeText, minHeight, style = {} }) => {
     const fileInputRef = useRef(null)
-    const currentImg = banners[slotKey]
+    const rawImages = banners[slotKey]
+    const images = normalizeBannerImages(rawImages)
+    const [activeIdx, setActiveIdx] = useState(0)
+    const [isHovered, setIsHovered] = useState(false)
+
+    // Ensure activeIdx is in valid range
+    const currentIdx =
+      images.length > 0 ? ((activeIdx % images.length) + images.length) % images.length : 0
+    const currentImg = images[currentIdx]
+
+    // Auto-play slide every 4 seconds if there are multiple images
+    useEffect(() => {
+      if (images.length <= 1 || isHovered) return
+      const timer = setInterval(() => {
+        setActiveIdx((prev) => (prev + 1) % images.length)
+      }, 4000)
+      return () => clearInterval(timer)
+    }, [images.length, isHovered])
+
+    const handlePrev = (e) => {
+      e.stopPropagation()
+      setActiveIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1))
+    }
+
+    const handleNext = (e) => {
+      e.stopPropagation()
+      setActiveIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0))
+    }
 
     return (
       <div
@@ -539,17 +626,17 @@ const ThemeConfig = () => {
         style={{
           border: `2.5px dashed ${colors.primary || '#2356c4'}`,
           minHeight: minHeight || '150px',
-          cursor: 'pointer',
           boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
           ...style,
         }}
-        onClick={() => fileInputRef.current && fileInputRef.current.click()}
-        title="Nhấn vào đây để tải ảnh / đổi banner"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
+          multiple
           className="d-none"
           onChange={(e) => handleBannerUpload(slotKey, e)}
         />
@@ -558,20 +645,22 @@ const ThemeConfig = () => {
           <>
             <img
               src={currentImg}
-              alt={title}
+              alt={`${title} - slide ${currentIdx + 1}`}
               className="w-100 h-100 position-absolute top-0 start-0"
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: 'cover', transition: 'opacity 0.3s ease' }}
             />
-            {/* Dashed Outline overlay & Badge */}
+
+            {/* Dashed Outline overlay & Badges */}
             <div
               className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-2"
               style={{
                 background:
-                  'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 100%)',
+                  'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.65) 100%)',
                 pointerEvents: 'none',
               }}
             >
-              <div className="d-flex justify-content-between align-items-start">
+              {/* Top Badges */}
+              <div className="d-flex justify-content-between align-items-start gap-1">
                 <span
                   className="badge rounded-pill fw-bold shadow-sm"
                   style={{
@@ -583,26 +672,119 @@ const ThemeConfig = () => {
                 >
                   {title}
                 </span>
-                <span
-                  className="badge bg-dark bg-opacity-75 rounded-pill text-white fw-normal"
-                  style={{ fontSize: '10.5px' }}
-                >
-                  {sizeText}
-                </span>
+
+                <div className="d-flex align-items-center gap-1">
+                  {images.length > 1 && (
+                    <span
+                      className="badge rounded-pill text-white fw-bold shadow-sm"
+                      style={{
+                        backgroundColor: '#10b981',
+                        fontSize: '10.5px',
+                        backdropFilter: 'blur(4px)',
+                      }}
+                    >
+                      {currentIdx + 1}/{images.length} slide
+                    </span>
+                  )}
+                  <span
+                    className="badge bg-dark bg-opacity-75 rounded-pill text-white fw-normal"
+                    style={{ fontSize: '10.5px' }}
+                  >
+                    {sizeText}
+                  </span>
+                </div>
               </div>
 
-              <div className="d-flex justify-content-center">
-                <span
-                  className="btn btn-sm btn-light fw-bold text-dark px-3 py-1 shadow"
-                  style={{ fontSize: '11.5px', borderRadius: '20px' }}
+              {/* Prev / Next Slide Arrows */}
+              {images.length > 1 && (
+                <div
+                  className="position-absolute top-50 start-0 end-0 translate-middle-y d-flex justify-content-between px-2"
+                  style={{ pointerEvents: 'auto' }}
                 >
-                  <CIcon icon={cilCloudUpload} className="me-1" /> Đổi banner
-                </span>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-dark bg-opacity-75 text-white rounded-circle d-flex align-items-center justify-content-center p-0 shadow border-0"
+                    style={{ width: '28px', height: '28px', fontSize: '14px', lineHeight: 1 }}
+                    onClick={handlePrev}
+                    title="Slide trước"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-dark bg-opacity-75 text-white rounded-circle d-flex align-items-center justify-content-center p-0 shadow border-0"
+                    style={{ width: '28px', height: '28px', fontSize: '14px', lineHeight: 1 }}
+                    onClick={handleNext}
+                    title="Slide sau"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
+
+              {/* Bottom: Pagination Dots & Action Buttons */}
+              <div
+                className="d-flex flex-column align-items-center gap-1.5"
+                style={{ pointerEvents: 'auto' }}
+              >
+                {/* Pagination Dots */}
+                {images.length > 1 && (
+                  <div className="d-flex align-items-center gap-1.5 mb-1">
+                    {images.map((_, idx) => (
+                      <span
+                        key={idx}
+                        className="rounded-circle cursor-pointer transition-all"
+                        style={{
+                          width: idx === currentIdx ? '18px' : '7px',
+                          height: '7px',
+                          borderRadius: idx === currentIdx ? '4px' : '50%',
+                          backgroundColor: idx === currentIdx ? '#ffffff' : 'rgba(255,255,255,0.5)',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setActiveIdx(idx)
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Buttons: Add Slide & Manage Slides */}
+                <div className="d-flex align-items-center gap-1.5">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-light fw-bold text-dark px-2.5 py-1 shadow"
+                    style={{ fontSize: '11px', borderRadius: '20px' }}
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  >
+                    <CIcon icon={cilCloudUpload} className="me-1" /> + Thêm ảnh
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary fw-bold text-white px-2.5 py-1 shadow"
+                    style={{
+                      fontSize: '11px',
+                      borderRadius: '20px',
+                      backgroundColor: colors.primary || '#2356c4',
+                      borderColor: colors.primary || '#2356c4',
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setManagingSlot({ slotKey, title, sizeText })
+                    }}
+                  >
+                    Quản lý slide ({images.length})
+                  </button>
+                </div>
               </div>
             </div>
           </>
         ) : (
-          <div className="text-center p-3">
+          <div
+            className="text-center p-3 cursor-pointer"
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+          >
             <CIcon
               icon={cilCloudUpload}
               size="xl"
@@ -1763,6 +1945,126 @@ const ThemeConfig = () => {
               onClick={handleSaveEdit}
             >
               Cập Nhật Chiến Dịch
+            </CButton>
+          </CModalFooter>
+        </CModal>
+      )}
+
+      {/* MODAL QUẢN LÝ SLIDE CỦA VỊ TRÍ BANNER (SLIDE MANAGER MODAL) */}
+      {managingSlot && (
+        <CModal
+          visible={!!managingSlot}
+          onClose={() => setManagingSlot(null)}
+          size="lg"
+          alignment="center"
+        >
+          <CModalHeader className="border-bottom">
+            <CModalTitle className="fw-bold fs-5 text-dark">
+              Quản lý danh sách slide: {managingSlot.title}
+            </CModalTitle>
+          </CModalHeader>
+          <CModalBody className="p-4">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <span className="text-muted small">
+                {managingSlot.sizeText} • Đang có{' '}
+                <strong>{normalizeBannerImages(banners[managingSlot.slotKey]).length}</strong> ảnh
+                slide
+              </span>
+              <CButton
+                color="primary"
+                size="sm"
+                className="text-white fw-bold px-3 shadow-sm"
+                style={{
+                  backgroundColor: colors.primary || '#2356c4',
+                  borderColor: colors.primary || '#2356c4',
+                }}
+                onClick={() => {
+                  const input = document.createElement('input')
+                  input.type = 'file'
+                  input.accept = 'image/*'
+                  input.multiple = true
+                  input.onchange = (e) => handleBannerUpload(managingSlot.slotKey, e)
+                  input.click()
+                }}
+              >
+                <CIcon icon={cilCloudUpload} className="me-1" /> + Thêm ảnh mới
+              </CButton>
+            </div>
+
+            <div className="row g-3">
+              {normalizeBannerImages(banners[managingSlot.slotKey]).map((imgUrl, idx) => (
+                <div key={idx} className="col-md-4 col-sm-6">
+                  <div className="card h-100 border shadow-xs overflow-hidden">
+                    <div className="position-relative" style={{ height: '140px' }}>
+                      <img
+                        src={imgUrl}
+                        alt={`Slide ${idx + 1}`}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'cover' }}
+                      />
+                      <span
+                        className="position-absolute top-2 start-2 badge bg-dark bg-opacity-75 text-white"
+                        style={{ fontSize: '11px' }}
+                      >
+                        Slide #{idx + 1}
+                      </span>
+                    </div>
+                    <div className="p-2 bg-light d-flex justify-content-between align-items-center border-top">
+                      <div className="d-flex align-items-center gap-1">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary px-2 py-0.5"
+                          disabled={idx === 0}
+                          onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx - 1)}
+                          title="Di chuyển sang trái"
+                        >
+                          ←
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary px-2 py-0.5"
+                          disabled={
+                            idx === normalizeBannerImages(banners[managingSlot.slotKey]).length - 1
+                          }
+                          onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx + 1)}
+                          title="Di chuyển sang phải"
+                        >
+                          →
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-danger px-2 py-0.5"
+                        onClick={() => handleRemoveSlide(managingSlot.slotKey, idx)}
+                        title="Xóa slide này"
+                      >
+                        <CIcon icon={cilTrash} size="sm" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {normalizeBannerImages(banners[managingSlot.slotKey]).length === 0 && (
+              <div className="text-center py-5 border rounded bg-light text-muted">
+                <CIcon icon={cilCloudUpload} size="xl" className="mb-2" />
+                <p className="m-0 fw-semibold">Vị trí này chưa có hình ảnh nào</p>
+                <small>Nhấn nút &quot;+ Thêm ảnh mới&quot; phía trên để tải ảnh slide lên</small>
+              </div>
+            )}
+          </CModalBody>
+          <CModalFooter className="border-top">
+            <CButton
+              color="primary"
+              className="text-white px-4 fw-bold shadow-sm"
+              style={{
+                backgroundColor: colors.primary || '#2356c4',
+                borderColor: colors.primary || '#2356c4',
+              }}
+              onClick={() => setManagingSlot(null)}
+            >
+              Hoàn tất
             </CButton>
           </CModalFooter>
         </CModal>
