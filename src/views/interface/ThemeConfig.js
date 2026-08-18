@@ -1839,7 +1839,7 @@ const ThemeConfig = () => {
 
                         <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
                           <span className="text-muted text-xs">Chiều cao:</span>
-                          {[120, 160, 200, 260].map((h) => (
+                          {[120, 160, 200, 260, 400, 600].map((h) => (
                             <button
                               key={h}
                               type="button"
@@ -1853,20 +1853,43 @@ const ThemeConfig = () => {
                               {h}px
                             </button>
                           ))}
-                          <input
-                            type="number"
-                            min={60}
-                            max={1000}
-                            step={10}
-                            className="form-control form-control-sm py-0 px-1 text-center fw-bold ms-1"
-                            style={{ width: '55px', height: '20px', fontSize: '11px' }}
-                            value={currentHeight}
-                            onChange={(e) =>
-                              handleChangeBannerGroupHeight(section.id, Number(e.target.value))
-                            }
-                            title="Nhập chiều cao tùy chỉnh (tối đa 1000px)"
-                          />
-                          <span className="text-muted" style={{ fontSize: '10px' }}>
+
+                          <div className="d-flex align-items-center bg-light border rounded overflow-hidden ms-1 shadow-2xs">
+                            <button
+                              type="button"
+                              className="btn btn-xs btn-light px-1.5 py-0 fw-bold border-end text-secondary"
+                              style={{ height: '22px', fontSize: '13px', lineHeight: 1 }}
+                              onClick={() =>
+                                handleChangeBannerGroupHeight(section.id, currentHeight - 20)
+                              }
+                              title="Giảm 20px"
+                            >
+                              −
+                            </button>
+                            <input
+                              type="text"
+                              className="form-control form-control-sm border-0 py-0 px-1 text-center fw-bold bg-white"
+                              style={{ width: '48px', height: '22px', fontSize: '11px' }}
+                              value={currentHeight}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value.replace(/\D/g, ''), 10)
+                                handleChangeBannerGroupHeight(section.id, isNaN(val) ? 60 : val)
+                              }}
+                              title="Nhập chiều cao tùy ý (60px - 1000px)"
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-xs btn-light px-1.5 py-0 fw-bold border-start text-secondary"
+                              style={{ height: '22px', fontSize: '13px', lineHeight: 1 }}
+                              onClick={() =>
+                                handleChangeBannerGroupHeight(section.id, currentHeight + 20)
+                              }
+                              title="Tăng 20px"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span className="text-muted ms-0.5" style={{ fontSize: '10px' }}>
                             px
                           </span>
                         </div>
