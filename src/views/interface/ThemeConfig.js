@@ -176,7 +176,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'hero',
     type: 'hero',
-    name: 'Danh mục sản phẩm & Banner chính (Hero)',
+    name: 'Banner chính & Menu',
     enabled: true,
     canDelete: false,
     canChangeColumns: false,
@@ -184,7 +184,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'featured_categories',
     type: 'featured_categories',
-    name: 'Danh mục nổi bật (5 danh mục tròn/thẻ)',
+    name: 'Danh mục nổi bật',
     enabled: true,
     canDelete: false,
     canChangeColumns: false,
@@ -192,7 +192,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'banner_group_1',
     type: 'banner_group',
-    name: 'Banner nhóm khuyến mãi siêu hot',
+    name: 'Banner khuyến mãi siêu hot',
     description: 'Vị trí banner ngang bên dưới danh mục nổi bật',
     enabled: true,
     canDelete: true,
@@ -203,7 +203,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'featured_products',
     type: 'featured_products',
-    name: 'Sản phẩm nổi bật (Tabs & Sản phẩm hot)',
+    name: 'Sản phẩm nổi bật',
     enabled: true,
     canDelete: false,
     canChangeColumns: false,
@@ -211,7 +211,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'banner_group_2',
     type: 'banner_group',
-    name: 'Banner nhóm sự kiện khuyến mãi',
+    name: 'Banner sự kiện khuyến mãi',
     description: 'Vị trí banner ngang bên dưới khối sản phẩm nổi bật',
     enabled: true,
     canDelete: true,
@@ -222,7 +222,7 @@ const DEFAULT_SECTIONS = [
   {
     id: 'category_products',
     type: 'category_products',
-    name: 'Danh mục sản phẩm (Banner danh mục & Slider)',
+    name: 'Danh mục sản phẩm',
     enabled: true,
     canDelete: false,
     canChangeColumns: false,
@@ -244,6 +244,30 @@ const DEFAULT_SECTIONS = [
     canChangeColumns: false,
   },
 ]
+
+const getCleanSectionName = (sec) => {
+  if (!sec) return ''
+  const nameMap = {
+    hero: 'Banner chính & Menu',
+    featured_categories: 'Danh mục nổi bật',
+    banner_group_1: 'Banner khuyến mãi siêu hot',
+    featured_products: 'Sản phẩm nổi bật',
+    banner_group_2: 'Banner sự kiện khuyến mãi',
+    category_products: 'Danh mục sản phẩm',
+    products_recommend: 'Sản phẩm bạn có thể quan tâm',
+    news_latest: 'Tin tức mới nhất',
+  }
+  if (nameMap[sec.id]) return nameMap[sec.id]
+  if (sec.type === 'featured_categories') return 'Danh mục nổi bật'
+  if (sec.type === 'featured_products') return 'Sản phẩm nổi bật'
+  if (sec.name) {
+    return sec.name
+      .replace(/\s*\([^)]*\)/g, '')
+      .replace(/^Banner nhóm\s+/i, 'Banner ')
+      .trim()
+  }
+  return sec.type
+}
 
 const CATEGORIES_LIST = [
   'Máy tính xách tay',
@@ -1684,7 +1708,7 @@ const ThemeConfig = () => {
                     fontSize: '11px',
                   }}
                 >
-                  #{sIdx + 1} {section.name}
+                  #{sIdx + 1} {getCleanSectionName(section)}
                 </span>
                 {section.type === 'banner_group' && (
                   <span className="text-secondary fw-semibold">
@@ -2075,7 +2099,7 @@ const ThemeConfig = () => {
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h6 className="fw-bold text-dark m-0">{section.name}</h6>
+                    <h6 className="fw-bold text-dark m-0">{getCleanSectionName(section)}</h6>
                     <span className="text-muted text-xs">
                       {cols} vị trí banner ngang tùy chỉnh (1 đến 5 banner)
                     </span>
