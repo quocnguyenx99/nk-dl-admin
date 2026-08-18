@@ -483,14 +483,12 @@ const ThemeConfig = () => {
     fetchCampaigns()
   }, [])
 
-  // Sync state whenever active theme selection changes
+  // Sync colors whenever active theme selection changes (do NOT overwrite customized banners)
   useEffect(() => {
     if (activeThemeId && themes.length > 0) {
       const selected = themes.find((t) => t.id === activeThemeId)
-      if (selected) {
-        if (selected.colors) setColors(selected.colors)
-        if (selected.banners) setBanners(normalizeBannersMap(selected.banners))
-        if (selected.sections) setSections(selected.sections)
+      if (selected && selected.colors) {
+        setColors(selected.colors)
       }
     }
   }, [activeThemeId, themes])
@@ -510,10 +508,8 @@ const ThemeConfig = () => {
   const handleApply = async (id) => {
     setActiveThemeId(id)
     const targetTheme = themes.find((t) => t.id === id)
-    if (targetTheme) {
-      if (targetTheme.colors) setColors(targetTheme.colors)
-      if (targetTheme.banners) setBanners(normalizeBannersMap(targetTheme.banners))
-      if (targetTheme.sections) setSections(targetTheme.sections)
+    if (targetTheme && targetTheme.colors) {
+      setColors(targetTheme.colors)
     }
 
     try {
@@ -528,15 +524,15 @@ const ThemeConfig = () => {
           tag: targetTheme?.tag,
           description: targetTheme?.description,
           image: targetTheme?.image,
-          colors: targetTheme?.colors,
-          banners: targetTheme?.banners || banners,
-          sections: targetTheme?.sections || sections,
+          colors: targetTheme?.colors || colors,
+          banners: banners,
+          sections: sections,
         },
       })
-      toast.success('Lưu thành công!')
+      toast.success('Đã áp dụng chiến dịch giao diện!')
       fetchCampaigns(true)
     } catch (e) {
-      toast.success('Lưu thành công!')
+      toast.success('Đã áp dụng chiến dịch giao diện!')
     }
 
     if (sliderRef.current) {
