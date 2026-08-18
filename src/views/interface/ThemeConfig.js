@@ -767,6 +767,29 @@ const ThemeConfig = () => {
     setSectionToDelete(null)
   }
 
+  // Edit section title inline
+  const [editingSectionId, setEditingSectionId] = useState(null)
+  const [tempSectionName, setTempSectionName] = useState('')
+
+  const handleStartEditSectionName = (sec) => {
+    setEditingSectionId(sec.id)
+    setTempSectionName(sec.name || getCleanSectionName(sec))
+  }
+
+  const handleSaveSectionName = (id) => {
+    if (!tempSectionName.trim()) {
+      setEditingSectionId(null)
+      return
+    }
+    const updated = sections.map((sec) =>
+      sec.id === id ? { ...sec, name: tempSectionName.trim() } : sec,
+    )
+    setSections(updated)
+    persistCampaignConfig({ sections: updated })
+    toast.success(`Đã đổi tên thành "${tempSectionName.trim()}"!`)
+    setEditingSectionId(null)
+  }
+
   const handleAddBannerGroup = (columns = 4) => {
     const validCols = Math.min(5, Math.max(1, columns))
     const newId = `banner_group_${Date.now()}`
@@ -1702,16 +1725,73 @@ const ThemeConfig = () => {
               style={{ fontSize: '12px' }}
             >
               <div className="d-flex align-items-center gap-2">
-                <span
-                  className="badge px-2 py-1 fw-bold rounded"
-                  style={{
-                    backgroundColor: colors.primary || '#2356c4',
-                    color: '#ffffff',
-                    fontSize: '11px',
-                  }}
-                >
-                  #{sIdx + 1} {getCleanSectionName(section)}
-                </span>
+                {editingSectionId === section.id ? (
+                  <div className="d-flex align-items-center gap-1">
+                    <span
+                      className="badge px-1.5 py-1 fw-bold rounded text-white"
+                      style={{
+                        backgroundColor: colors.primary || '#2356c4',
+                        fontSize: '11px',
+                      }}
+                    >
+                      #{sIdx + 1}
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm py-0 px-2 fw-bold text-dark border-primary shadow-xs"
+                      style={{ height: '26px', fontSize: '12px', minWidth: '180px' }}
+                      value={tempSectionName}
+                      onChange={(e) => setTempSectionName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSaveSectionName(section.id)
+                        if (e.key === 'Escape') setEditingSectionId(null)
+                      }}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-success text-white py-0 px-2 shadow-2xs fw-bold"
+                      style={{ height: '26px', fontSize: '11px' }}
+                      onClick={() => handleSaveSectionName(section.id)}
+                      title="Lưu tên mới (Enter)"
+                    >
+                      ✓ Lưu
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-light py-0 px-2 shadow-2xs border"
+                      style={{ height: '26px', fontSize: '11px' }}
+                      onClick={() => setEditingSectionId(null)}
+                      title="Hủy (Esc)"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="d-flex align-items-center gap-1.5 cursor-pointer"
+                    onClick={() => handleStartEditSectionName(section)}
+                    title="Nhấn vào đây để đổi tên nhóm này"
+                  >
+                    <span
+                      className="badge px-2 py-1 fw-bold rounded"
+                      style={{
+                        backgroundColor: colors.primary || '#2356c4',
+                        color: '#ffffff',
+                        fontSize: '11px',
+                      }}
+                    >
+                      #{sIdx + 1} {section.name || getCleanSectionName(section)}
+                    </span>
+                    <span
+                      className="badge bg-white text-secondary border px-1.5 py-0.5 rounded shadow-2xs"
+                      style={{ fontSize: '10px' }}
+                      title="Đổi tên"
+                    >
+                      ✏️ Đổi tên
+                    </span>
+                  </div>
+                )}
                 {section.type === 'banner_group' && (
                   <span className="text-secondary fw-semibold">
                     (Nhóm {section.columns || 4} banner)
