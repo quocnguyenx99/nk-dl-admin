@@ -373,6 +373,7 @@ const ThemeConfig = () => {
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editingTheme, setEditingTheme] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
 
   const sliderRef = useRef(null)
   const [themes, setThemes] = useState([])
@@ -409,6 +410,16 @@ const ThemeConfig = () => {
     },
   })
 
+  // Helper to directly upload a File / Blob to the server and get permanent URL instantly
+  const uploadFileToServer = async (fileOrBlob) => {
+    const formData = new FormData()
+    formData.append('file', fileOrBlob)
+    const res = await axiosClient.post('theme/upload-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return res.data?.data?.url || ''
+  }
+
   // Helper to normalize the entire banners dictionary
   const normalizeBannersMap = (rawBanners) => {
     if (!rawBanners || typeof rawBanners !== 'object') return { ...DEFAULT_BANNERS }
@@ -427,6 +438,7 @@ const ThemeConfig = () => {
   // Persist config to backend (silent auto-save by default, explicit toast on demand)
   const persistCampaignConfig = async (overrideData = {}, options = {}) => {
     const { showToast = false } = options
+    setIsSaving(true)
     const activeItem =
       themes.find((t) => t.id === activeThemeId) ||
       themes.find((t) => t.code === 'default') ||
@@ -464,6 +476,8 @@ const ThemeConfig = () => {
       if (showToast) {
         toast.error('Lỗi lưu cấu hình: ' + (err?.response?.data?.message || err.message))
       }
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -609,51 +623,63 @@ const ThemeConfig = () => {
     setEditModalVisible(true)
   }
 
-  // Convert uploaded image file to Base64 cleanly
-  const handleFileChange = (e, setter, currentState) => {
+  // Direct image upload for campaign banner
+  const handleFileChange = async (e, setter, currentState) => {
     const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setter({ ...currentState, image: reader.result })
+      try {
+        const uploadedUrl = await uploadFileToServer(file)
+        if (uploadedUrl) {
+          setter({ ...currentState, image: uploadedUrl })
+        }
+      } catch (err) {
+        console.log('Lỗi upload ảnh:', err)
       }
-      reader.readAsDataURL(file)
     }
   }
 
   const [managingSlot, setManagingSlot] = useState(null)
 
-  // Handle direct upload of 1 or more images into any of the banner slots
-  const handleBannerUpload = (key, e) => {
+  // Handle direct high-speed upload of 1 or more images into any of the banner slots
+  const handleBannerUpload = async (key, e) => {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
 
-    let loadedCount = 0
-    const newImages = []
+    const toastId = toast.loading(`Đang tải lên ${files.length} ảnh...`)
 
-    files.forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        newImages.push({
-          url: reader.result,
+    try {
+      const uploadPromises = files.map(async (file) => {
+        const uploadedUrl = await uploadFileToServer(file)
+        return {
+          url: uploadedUrl,
           hasLink: false,
           link: '',
           target: '_self',
-        })
-        loadedCount++
-        if (loadedCount === files.length) {
-          const currentList = normalizeBannerImages(banners[key])
-          const updatedBanners = {
-            ...banners,
-            [key]: [...currentList, ...newImages],
-          }
-          setBanners(updatedBanners)
-          persistCampaignConfig({ banners: updatedBanners })
-          toast.success(`Đã thêm ${newImages.length} ảnh slide!`)
         }
+      })
+
+      const newImages = (await Promise.all(uploadPromises)).filter((item) => !!item.url)
+
+      if (newImages.length > 0) {
+        const currentList = normalizeBannerImages(banners[key])
+        const updatedBanners = {
+          ...banners,
+          [key]: [...currentList, ...newImages],
+        }
+        setBanners(updatedBanners)
+        await persistCampaignConfig({ banners: updatedBanners })
+        toast.dismiss(toastId)
+        toast.success(`Đã thêm ${newImages.length} ảnh slide thành công!`)
+      } else {
+        toast.dismiss(toastId)
+        toast.error('Không thể tải ảnh lên, vui lòng thử lại!')
       }
-      reader.readAsDataURL(file)
-    })
+    } catch (err) {
+      toast.dismiss(toastId)
+      console.log('Lỗi upload ảnh:', err)
+      toast.error('Lỗi tải ảnh: ' + (err?.response?.data?.message || err.message))
+    }
+
     if (e.target) e.target.value = ''
   }
 
@@ -1560,15 +1586,28 @@ const ThemeConfig = () => {
 
           <CButton
             color="primary"
-            className="text-white px-3.5 py-1.5 fw-semibold rounded shadow-sm"
+            className="text-white px-3.5 py-1.5 fw-semibold rounded shadow-sm d-flex align-items-center gap-1.5"
             style={{
               backgroundColor: colors.primary || '#2356c4',
               borderColor: colors.primary || '#2356c4',
               fontSize: '13.5px',
+              opacity: isSaving ? 0.75 : 1,
             }}
+            disabled={isSaving}
             onClick={handleSaveConfig}
           >
-            Lưu thay đổi
+            {isSaving ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm text-white"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                <span>Đang lưu...</span>
+              </>
+            ) : (
+              <span>Lưu thay đổi</span>
+            )}
           </CButton>
         </div>
       </div>
