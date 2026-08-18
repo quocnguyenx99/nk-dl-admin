@@ -871,7 +871,15 @@ const ThemeConfig = () => {
   })
 
   // Reusable Interactive Dashed Multi-Slide Banner Slot Component
-  const RenderBannerSlot = ({ slotKey, title, sizeText, minHeight, style = {} }) => {
+  const RenderBannerSlot = ({
+    slotKey,
+    title,
+    sizeText,
+    minHeight,
+    compact = false,
+    style = {},
+  }) => {
+    const isCompact = compact || slotKey === 'floatingLeft' || slotKey === 'floatingRight'
     const fileInputRef = useRef(null)
     const rawImages = banners[slotKey]
     const images = normalizeBannerImages(rawImages)
