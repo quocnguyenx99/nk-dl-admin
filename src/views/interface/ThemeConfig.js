@@ -757,6 +757,14 @@ const ThemeConfig = () => {
     toast.success(`Đã đổi nhóm sang ${validCount} banner!`)
   }
 
+  const handleChangeBannerGroupHeight = (id, height) => {
+    const validHeight = Math.min(600, Math.max(60, Number(height) || 160))
+    const updated = sections.map((sec) => (sec.id === id ? { ...sec, height: validHeight } : sec))
+    setSections(updated)
+    persistCampaignConfig({ sections: updated })
+    toast.success(`Đã đổi chiều cao nhóm banner thành ${validHeight}px!`)
+  }
+
   const handleConfirmDeleteSection = () => {
     if (!sectionToDelete) return
     const targetName = sectionToDelete.name || 'Nhóm banner'
@@ -1800,25 +1808,61 @@ const ThemeConfig = () => {
               </div>
 
               <div className="d-flex align-items-center gap-1.5 flex-wrap">
-                {/* 1-5 Columns selector for Banner Groups */}
+                {/* 1-5 Columns selector & Height selector for Banner Groups */}
                 {section.type === 'banner_group' && (
-                  <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
-                    <span className="text-muted text-xs">Số banner:</span>
-                    {[1, 2, 3, 4, 5].map((cnt) => (
-                      <button
-                        key={cnt}
-                        type="button"
-                        className={`btn btn-xs py-0 px-1.5 fw-bold ${
-                          (section.columns || 4) === cnt ? 'btn-primary text-white' : 'btn-light'
-                        }`}
-                        style={{ fontSize: '11px', borderRadius: '3px' }}
-                        onClick={() => handleChangeBannerGroupColumns(section.id, cnt)}
-                        title={`Đổi nhóm thành ${cnt} banner`}
-                      >
-                        {cnt}
-                      </button>
-                    ))}
-                  </div>
+                  <>
+                    <div className="d-flex align-items-center gap-1 me-1 bg-white rounded px-2 py-0.5 border shadow-2xs">
+                      <span className="text-muted text-xs">Số banner:</span>
+                      {[1, 2, 3, 4, 5].map((cnt) => (
+                        <button
+                          key={cnt}
+                          type="button"
+                          className={`btn btn-xs py-0 px-1.5 fw-bold ${
+                            (section.columns || 4) === cnt ? 'btn-primary text-white' : 'btn-light'
+                          }`}
+                          style={{ fontSize: '11px', borderRadius: '3px' }}
+                          onClick={() => handleChangeBannerGroupColumns(section.id, cnt)}
+                          title={`Đổi nhóm thành ${cnt} banner`}
+                        >
+                          {cnt}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="d-flex align-items-center gap-1 me-2 bg-white rounded px-2 py-0.5 border shadow-2xs">
+                      <span className="text-muted text-xs">Chiều cao:</span>
+                      {[120, 160, 200, 260].map((h) => (
+                        <button
+                          key={h}
+                          type="button"
+                          className={`btn btn-xs py-0 px-1.5 fw-bold ${
+                            (section.height || 160) === h ? 'btn-primary text-white' : 'btn-light'
+                          }`}
+                          style={{ fontSize: '11px', borderRadius: '3px' }}
+                          onClick={() => handleChangeBannerGroupHeight(section.id, h)}
+                          title={`Đổi chiều cao thành ${h}px`}
+                        >
+                          {h}px
+                        </button>
+                      ))}
+                      <input
+                        type="number"
+                        min={60}
+                        max={600}
+                        step={10}
+                        className="form-control form-control-sm py-0 px-1 text-center fw-bold ms-1"
+                        style={{ width: '50px', height: '20px', fontSize: '11px' }}
+                        value={section.height || 160}
+                        onChange={(e) =>
+                          handleChangeBannerGroupHeight(section.id, Number(e.target.value))
+                        }
+                        title="Nhập chiều cao tùy chỉnh (px)"
+                      />
+                      <span className="text-muted" style={{ fontSize: '10px' }}>
+                        px
+                      </span>
+                    </div>
+                  </>
                 )}
 
                 {/* Move Up / Down */}
@@ -2194,16 +2238,20 @@ const ThemeConfig = () => {
                       gap: '10px',
                     }}
                   >
-                    {slots.slice(0, cols).map((slotKey, slotIdx) => (
-                      <div key={slotKey} className="w-100">
-                        <RenderBannerSlot
-                          slotKey={slotKey}
-                          title={`Banner ${slotIdx + 1}`}
-                          sizeText={`${Math.round(1440 / cols)} x 200 px`}
-                          minHeight="150px"
-                        />
-                      </div>
-                    ))}
+                    {slots.slice(0, cols).map((slotKey, slotIdx) => {
+                      const h = section.height || (cols === 1 ? 220 : 160)
+                      return (
+                        <div key={slotKey} className="w-100">
+                          <RenderBannerSlot
+                            slotKey={slotKey}
+                            title={`Banner ${slotIdx + 1}`}
+                            sizeText={`${Math.round(1440 / cols)} x ${h} px`}
+                            minHeight={`${h}px`}
+                            style={{ height: `${h}px` }}
+                          />
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
