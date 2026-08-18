@@ -422,8 +422,11 @@ const ThemeConfig = () => {
     return result
   }
 
-  // Persist config to backend instantly
-  const persistCampaignConfig = async (overrideData = {}) => {
+  const heightDebounceTimerRef = useRef(null)
+
+  // Persist config to backend (silent auto-save by default, explicit toast on demand)
+  const persistCampaignConfig = async (overrideData = {}, options = {}) => {
+    const { showToast = false } = options
     const activeItem = themes.find((t) => t.id === activeThemeId)
     const payloadColors = overrideData.colors || colors
     const payloadBanners = overrideData.banners || banners
@@ -449,10 +452,14 @@ const ThemeConfig = () => {
       if (res?.data?.data?.theme_config?.banners) {
         setBanners(normalizeBannersMap(res.data.data.theme_config.banners))
       }
-      toast.success('Đã lưu cấu hình!')
+      if (showToast) {
+        toast.success('Đã lưu cấu hình!')
+      }
     } catch (err) {
       console.log('Lưu cấu hình:', err)
-      toast.success('Đã lưu cấu hình!')
+      if (showToast) {
+        toast.success('Đã lưu cấu hình!')
+      }
     }
   }
 
@@ -761,8 +768,12 @@ const ThemeConfig = () => {
     const validHeight = Math.min(600, Math.max(60, Number(height) || 160))
     const updated = sections.map((sec) => (sec.id === id ? { ...sec, height: validHeight } : sec))
     setSections(updated)
-    persistCampaignConfig({ sections: updated })
-    toast.success(`Đã đổi chiều cao nhóm banner thành ${validHeight}px!`)
+    if (heightDebounceTimerRef.current) {
+      clearTimeout(heightDebounceTimerRef.current)
+    }
+    heightDebounceTimerRef.current = setTimeout(() => {
+      persistCampaignConfig({ sections: updated })
+    }, 450)
   }
 
   const handleConfirmDeleteSection = () => {
@@ -917,7 +928,7 @@ const ThemeConfig = () => {
   }
 
   const handleSaveConfig = async () => {
-    persistCampaignConfig()
+    persistCampaignConfig({}, { showToast: true })
   }
 
   // Always put the active campaign card at the VERY FIRST position (Index 0)
