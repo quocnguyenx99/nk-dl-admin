@@ -1308,38 +1308,66 @@ const ThemeConfig = () => {
 
         {/* 3. HERO BANNER SECTION (Sidebar + Hotline Bar Above Banners + Main Banner + Side Banners) */}
         <div style={{ backgroundColor: colors.background || '#f7f7f7' }}>
-          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
-            <div className="d-flex gap-4">
+          <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '12px 28px 16px' }}>
+            <div className="d-flex gap-3">
               {/* Left Column: Category Sidebar (Aligned directly under Logo) */}
               <div
                 className="d-none d-md-block flex-shrink-0"
-                style={{ width: '230px', minWidth: '200px' }}
+                style={{ width: '240px', minWidth: '220px' }}
               >
                 <div
-                  className="bg-white rounded-2 border-end p-2.5 h-100 shadow-xs"
-                  style={{ fontSize: '13px' }}
+                  className="bg-white rounded-1 border h-100 shadow-xs"
+                  style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
                 >
                   <div
-                    className="fw-bold text-dark pb-2.5 mb-1.5 border-bottom d-flex align-items-center gap-2"
-                    style={{ fontSize: '14.5px' }}
+                    className="fw-bold text-dark px-3 py-2 border-bottom d-flex align-items-center gap-2"
+                    style={{ fontSize: '14.5px', borderColor: '#e5e7eb' }}
                   >
-                    <span className="fs-5" style={{ lineHeight: 1 }}>
-                      ≡
-                    </span>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="3" y1="12" x2="21" y2="12"></line>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
                     <span>Danh mục sản phẩm</span>
                   </div>
-                  {CATEGORIES_LIST.map((cat, idx) => (
-                    <div
-                      key={idx}
-                      className="px-2 py-2 d-flex justify-content-between align-items-center rounded hover-bg-light cursor-pointer"
-                      style={{ color: '#434657', transition: 'all 0.15s' }}
-                    >
-                      <span className="text-truncate">{cat}</span>
-                      <span className="text-muted" style={{ fontSize: '15px', lineHeight: 1 }}>
-                        ›
-                      </span>
-                    </div>
-                  ))}
+                  <div className="py-1">
+                    {CATEGORIES_LIST.map((cat, idx) => (
+                      <div
+                        key={idx}
+                        className="px-3 py-1.5 d-flex justify-content-between align-items-center hover-bg-light cursor-pointer"
+                        style={{ color: '#434657', transition: 'all 0.15s' }}
+                      >
+                        <span
+                          className="text-truncate"
+                          style={{ fontSize: '13.5px', fontWeight: '400' }}
+                        >
+                          {cat}
+                        </span>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#9ca3af"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{ flexShrink: 0 }}
+                        >
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1348,16 +1376,17 @@ const ThemeConfig = () => {
                 <div className="d-flex flex-column h-100">
                   {/* Hotline & Language Bar placed above Banners (Matching Member screenshot) */}
                   <div
-                    className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom text-secondary"
-                    style={{ fontSize: '12.5px' }}
+                    className="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom"
+                    style={{ fontSize: '13px', borderColor: '#e5e7eb' }}
                   >
-                    <div>
-                      Hotline:{' '}
-                      <strong style={{ color: colors.accent || '#e11d48' }}>1900 6739</strong> 8h -
-                      17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
+                    <div style={{ color: '#374151' }}>
+                      Hotline: <strong className="text-dark fw-bold">1900 6739</strong> 8h - 17h45
+                      (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
                     </div>
                     <div>
-                      <span className="text-dark fw-semibold cursor-pointer">🌐 Tiếng Việt ▾</span>
+                      <span className="text-dark fw-normal cursor-pointer d-flex align-items-center gap-1">
+                        🌐 Tiếng Việt <span style={{ fontSize: '11px' }}>▼</span>
+                      </span>
                     </div>
                   </div>
 
