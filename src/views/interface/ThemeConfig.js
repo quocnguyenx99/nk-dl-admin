@@ -909,55 +909,66 @@ const ThemeConfig = () => {
 
     return (
       <div
-        className="position-relative rounded-2 overflow-hidden bg-white d-flex flex-column justify-content-center align-items-center transition-all group"
+        className="rounded-2 position-relative d-flex flex-column justify-content-center align-items-center overflow-hidden transition-all shadow-xs"
         style={{
-          border: `2.5px dashed ${colors.primary || '#2356c4'}`,
-          minHeight: minHeight || '150px',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+          minHeight: minHeight || '160px',
+          border: `2px dashed ${colors.primary || '#2356c4'}`,
+          backgroundColor: '#f8fafc',
           cursor: 'pointer',
           ...style,
         }}
-        onClick={() => setManagingSlot({ slotKey, title, sizeText })}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        title="Nhấn vào đây để xem & quản lý slide banner"
+        onClick={() => {
+          if (!currentImg && fileInputRef.current) {
+            fileInputRef.current.click()
+          }
+        }}
       >
         <input
-          ref={fileInputRef}
           type="file"
-          accept="image/*"
-          multiple
+          ref={fileInputRef}
           className="d-none"
+          accept="image/*"
           onChange={(e) => handleBannerUpload(slotKey, e)}
         />
 
         {currentImg ? (
           <>
-            <img
-              src={currentImg}
-              alt={`${title} - slide ${currentIdx + 1}`}
-              className="w-100 h-100 position-absolute top-0 start-0"
-              style={{ objectFit: 'cover', transition: 'opacity 0.3s ease' }}
+            {/* Background Preview Image */}
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100"
+              style={{
+                backgroundImage: `url(${currentImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transition: 'transform 0.4s ease',
+                transform: isHovered ? 'scale(1.03)' : 'scale(1)',
+              }}
             />
 
-            {/* Dashed Outline overlay & Badges */}
+            {/* Dark Gradient Overlay for Better Legibility */}
             <div
-              className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-2"
+              className="position-absolute top-0 start-0 w-100 h-100"
               style={{
                 background:
-                  'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.65) 100%)',
+                  'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.65) 100%)',
                 pointerEvents: 'none',
               }}
-            >
-              {/* Top Badges */}
+            />
+
+            {/* Content Overlays */}
+            <div className="position-relative w-100 h-100 d-flex flex-column justify-content-between p-2">
+              {/* Top: Badges & Info */}
               <div className="d-flex justify-content-between align-items-start gap-1">
                 <span
-                  className="badge rounded-pill fw-bold shadow-sm"
+                  className="badge rounded-pill text-white fw-bold shadow-sm text-truncate"
                   style={{
                     backgroundColor: colors.primary || '#2356c4',
-                    color: '#ffffff',
-                    fontSize: '11px',
+                    fontSize: isCompact ? '9.5px' : '11px',
+                    padding: isCompact ? '2px 6px' : '4px 8px',
                     backdropFilter: 'blur(4px)',
+                    maxWidth: isCompact ? '70px' : '150px',
                   }}
                 >
                   {title}
@@ -969,15 +980,13 @@ const ThemeConfig = () => {
                       className="badge rounded-pill text-white fw-bold shadow-sm"
                       style={{
                         backgroundColor: '#0284c7',
-                        fontSize: '10px',
+                        fontSize: isCompact ? '9px' : '10px',
+                        padding: isCompact ? '2px 5px' : '3px 6px',
                         backdropFilter: 'blur(4px)',
                       }}
                       title={`Dẫn link: ${currentSlide.link}`}
                     >
-                      🔗{' '}
-                      {currentSlide.link.length > 18
-                        ? currentSlide.link.slice(0, 18) + '...'
-                        : currentSlide.link}
+                      🔗
                     </span>
                   )}
                   {images.length > 1 && (
@@ -985,32 +994,40 @@ const ThemeConfig = () => {
                       className="badge rounded-pill text-white fw-bold shadow-sm"
                       style={{
                         backgroundColor: '#10b981',
-                        fontSize: '10.5px',
+                        fontSize: isCompact ? '9px' : '10.5px',
+                        padding: isCompact ? '2px 5px' : '3px 6px',
                         backdropFilter: 'blur(4px)',
                       }}
                     >
-                      {currentIdx + 1}/{images.length} slide
+                      {currentIdx + 1}/{images.length}
                     </span>
                   )}
-                  <span
-                    className="badge bg-dark bg-opacity-75 rounded-pill text-white fw-normal"
-                    style={{ fontSize: '10.5px' }}
-                  >
-                    {sizeText}
-                  </span>
+                  {!isCompact && (
+                    <span
+                      className="badge bg-dark bg-opacity-75 rounded-pill text-white fw-normal"
+                      style={{ fontSize: '10.5px' }}
+                    >
+                      {sizeText}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Prev / Next Slide Arrows */}
               {images.length > 1 && (
                 <div
-                  className="position-absolute top-50 start-0 end-0 translate-middle-y d-flex justify-content-between px-2"
+                  className="position-absolute top-50 start-0 end-0 translate-middle-y d-flex justify-content-between px-1"
                   style={{ pointerEvents: 'auto' }}
                 >
                   <button
                     type="button"
                     className="btn btn-sm btn-dark bg-opacity-75 text-white rounded-circle d-flex align-items-center justify-content-center p-0 shadow border-0"
-                    style={{ width: '28px', height: '28px', fontSize: '14px', lineHeight: 1 }}
+                    style={{
+                      width: isCompact ? '22px' : '28px',
+                      height: isCompact ? '22px' : '28px',
+                      fontSize: isCompact ? '12px' : '14px',
+                      lineHeight: 1,
+                    }}
                     onClick={handlePrev}
                     title="Slide trước"
                   >
@@ -1019,7 +1036,12 @@ const ThemeConfig = () => {
                   <button
                     type="button"
                     className="btn btn-sm btn-dark bg-opacity-75 text-white rounded-circle d-flex align-items-center justify-content-center p-0 shadow border-0"
-                    style={{ width: '28px', height: '28px', fontSize: '14px', lineHeight: 1 }}
+                    style={{
+                      width: isCompact ? '22px' : '28px',
+                      height: isCompact ? '22px' : '28px',
+                      fontSize: isCompact ? '12px' : '14px',
+                      lineHeight: 1,
+                    }}
                     onClick={handleNext}
                     title="Slide sau"
                   >
@@ -1030,20 +1052,20 @@ const ThemeConfig = () => {
 
               {/* Bottom: Pagination Dots & Action Buttons */}
               <div
-                className="d-flex flex-column align-items-center gap-1.5"
+                className="d-flex flex-column align-items-center gap-1.5 w-100"
                 style={{ pointerEvents: 'auto' }}
               >
                 {/* Pagination Dots */}
                 {images.length > 1 && (
-                  <div className="d-flex align-items-center gap-1.5 mb-1">
+                  <div className="d-flex align-items-center gap-1 mb-1">
                     {images.map((_, idx) => (
                       <span
                         key={idx}
                         className="rounded-circle cursor-pointer transition-all"
                         style={{
-                          width: idx === currentIdx ? '18px' : '7px',
-                          height: '7px',
-                          borderRadius: idx === currentIdx ? '4px' : '50%',
+                          width: idx === currentIdx ? '14px' : '6px',
+                          height: '6px',
+                          borderRadius: idx === currentIdx ? '3px' : '50%',
                           backgroundColor: idx === currentIdx ? '#ffffff' : 'rgba(255,255,255,0.5)',
                           boxShadow: '0 1px 3px rgba(0,0,0,0.5)',
                         }}
@@ -1056,19 +1078,24 @@ const ThemeConfig = () => {
                   </div>
                 )}
 
-                {/* Modern Pill Action Buttons */}
-                <div className="d-flex align-items-center gap-2">
+                {/* Action Buttons: Stacked in compact mode, row in normal mode */}
+                <div
+                  className={`d-flex ${
+                    isCompact ? 'flex-column w-100 gap-1' : 'align-items-center gap-2'
+                  }`}
+                >
                   <button
                     type="button"
-                    className="btn btn-sm fw-bold d-flex align-items-center shadow border-0"
+                    className="btn btn-sm fw-bold d-flex align-items-center justify-content-center shadow border-0 text-nowrap"
                     style={{
-                      fontSize: '11.5px',
-                      borderRadius: '24px',
+                      fontSize: isCompact ? '10px' : '11.5px',
+                      borderRadius: '20px',
                       backgroundColor: 'rgba(255, 255, 255, 0.95)',
                       color: '#1e293b',
-                      padding: '5px 13px',
+                      padding: isCompact ? '3px 6px' : '5px 13px',
                       backdropFilter: 'blur(6px)',
                       transition: 'all 0.2s ease',
+                      width: isCompact ? '100%' : 'auto',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()
@@ -1078,30 +1105,33 @@ const ThemeConfig = () => {
                     <CIcon
                       icon={cilCloudUpload}
                       size="sm"
-                      className="me-1.5"
+                      className="me-1"
                       style={{ color: colors.primary || '#2356c4' }}
                     />
                     <span>Thêm ảnh</span>
                   </button>
                   <button
                     type="button"
-                    className="btn btn-sm fw-bold d-flex align-items-center shadow border-0"
+                    className="btn btn-sm fw-bold d-flex align-items-center justify-content-center shadow border-0 text-nowrap"
                     style={{
-                      fontSize: '11.5px',
-                      borderRadius: '24px',
+                      fontSize: isCompact ? '10px' : '11.5px',
+                      borderRadius: '20px',
                       backgroundColor: colors.primary || '#2356c4',
                       color: '#ffffff',
-                      padding: '5px 13px',
+                      padding: isCompact ? '3px 6px' : '5px 13px',
                       backdropFilter: 'blur(6px)',
                       transition: 'all 0.2s ease',
+                      width: isCompact ? '100%' : 'auto',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()
                       setManagingSlot({ slotKey, title, sizeText })
                     }}
                   >
-                    <CIcon icon={cilLayers} size="sm" className="me-1.5 text-white" />
-                    <span>Quản lý slide ({images.length})</span>
+                    <CIcon icon={cilLayers} size="sm" className="me-1 text-white" />
+                    <span>
+                      {isCompact ? `Slide (${images.length})` : `Quản lý slide (${images.length})`}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -1109,19 +1139,23 @@ const ThemeConfig = () => {
           </>
         ) : (
           <div
-            className="text-center p-3 cursor-pointer"
+            className="text-center p-2 cursor-pointer w-100"
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
           >
             <CIcon
               icon={cilCloudUpload}
-              size="xl"
+              size={isCompact ? 'lg' : 'xl'}
               style={{ color: colors.primary || '#2356c4' }}
-              className="mb-2 opacity-75"
+              className="mb-1 opacity-75"
             />
-            <div className="fw-bold text-dark small">{title}</div>
-            <div className="text-muted text-xs mt-0.5">{sizeText}</div>
+            <div className="fw-bold text-dark" style={{ fontSize: isCompact ? '11.5px' : '13px' }}>
+              {title}
+            </div>
+            <div className="text-muted mt-0.5" style={{ fontSize: isCompact ? '9.5px' : '11px' }}>
+              {sizeText}
+            </div>
             <span
-              className="badge mt-2 rounded-pill px-2.5 py-1"
+              className="badge mt-1.5 rounded-pill px-2 py-0.5"
               style={{
                 backgroundColor: `${colors.primary || '#2356c4'}15`,
                 color: colors.primary || '#2356c4',
@@ -1742,32 +1776,46 @@ const ThemeConfig = () => {
                     width: '100%',
                     maxWidth: '1720px',
                     margin: '0 auto',
-                    padding: '12px 16px 16px',
+                    padding: '16px 24px 20px',
                     boxSizing: 'border-box',
                   }}
                 >
-                  <div className="d-flex gap-2.5 align-items-stretch">
+                  <div className="d-flex justify-content-center align-items-stretch gap-4 gap-xxl-5 position-relative">
                     {/* Left Floating Skyscraper Banner (Banner trôi trái) */}
                     <div
-                      className="d-none d-xxl-block flex-shrink-0"
+                      className="d-none d-xl-flex flex-column flex-shrink-0"
                       style={{ width: '135px', minWidth: '120px' }}
                     >
+                      <div className="text-center mb-1.5">
+                        <span
+                          className="badge border px-2 py-0.5 rounded-pill fw-semibold text-truncate"
+                          style={{
+                            fontSize: '11px',
+                            backgroundColor: '#f1f5f9',
+                            color: '#475569',
+                            borderColor: '#cbd5e1',
+                          }}
+                        >
+                          📌 Banner trôi trái
+                        </span>
+                      </div>
                       <RenderBannerSlot
                         slotKey="floatingLeft"
-                        title="Banner trôi trái"
+                        title="Trôi trái"
                         sizeText="160 x 600 px"
-                        minHeight="380px"
+                        minHeight="390px"
+                        compact={true}
                         style={{ height: '100%' }}
                       />
                     </div>
 
                     {/* Center Main Content Container */}
-                    <div className="flex-fill min-w-0">
+                    <div className="flex-fill min-w-0" style={{ maxWidth: '1280px' }}>
                       <div className="d-flex gap-3 flex-wrap flex-md-nowrap">
                         {/* Left Column: Category Sidebar */}
                         <div
                           className="d-none d-md-block flex-shrink-0"
-                          style={{ width: '240px', minWidth: '220px' }}
+                          style={{ width: '235px', minWidth: '215px' }}
                         >
                           <div
                             className="bg-white rounded-1 border h-100 shadow-xs"
@@ -1893,14 +1941,28 @@ const ThemeConfig = () => {
 
                     {/* Right Floating Skyscraper Banner (Banner trôi phải) */}
                     <div
-                      className="d-none d-xxl-block flex-shrink-0"
+                      className="d-none d-xl-flex flex-column flex-shrink-0"
                       style={{ width: '135px', minWidth: '120px' }}
                     >
+                      <div className="text-center mb-1.5">
+                        <span
+                          className="badge border px-2 py-0.5 rounded-pill fw-semibold text-truncate"
+                          style={{
+                            fontSize: '11px',
+                            backgroundColor: '#f1f5f9',
+                            color: '#475569',
+                            borderColor: '#cbd5e1',
+                          }}
+                        >
+                          📌 Banner trôi phải
+                        </span>
+                      </div>
                       <RenderBannerSlot
                         slotKey="floatingRight"
-                        title="Banner trôi phải"
+                        title="Trôi phải"
                         sizeText="160 x 600 px"
-                        minHeight="380px"
+                        minHeight="390px"
+                        compact={true}
                         style={{ height: '100%' }}
                       />
                     </div>
