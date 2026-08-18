@@ -411,9 +411,10 @@ const ThemeConfig = () => {
 
   // Helper to normalize the entire banners dictionary
   const normalizeBannersMap = (rawBanners) => {
-    if (!rawBanners || typeof rawBanners !== 'object') return DEFAULT_BANNERS
+    if (!rawBanners || typeof rawBanners !== 'object') return { ...DEFAULT_BANNERS }
     const result = { ...DEFAULT_BANNERS }
-    Object.keys(DEFAULT_BANNERS).forEach((key) => {
+    // Copy all keys from rawBanners (including custom slots, dynamic groups, and floating banners)
+    Object.keys(rawBanners).forEach((key) => {
       if (rawBanners[key] !== undefined && rawBanners[key] !== null) {
         result[key] = normalizeBannerImages(rawBanners[key])
       }
@@ -642,6 +643,7 @@ const ThemeConfig = () => {
       }
       reader.readAsDataURL(file)
     })
+    if (e.target) e.target.value = ''
   }
 
   const handleUpdateSlideField = (key, slideIndex, field, value) => {
