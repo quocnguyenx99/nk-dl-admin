@@ -1790,29 +1790,18 @@ const ThemeConfig = () => {
                     </span>
                   </div>
                 ) : (
-                  <div
-                    className="d-flex align-items-center gap-1.5 cursor-pointer"
+                  <span
+                    className="badge px-2 py-1 fw-bold rounded cursor-pointer"
+                    style={{
+                      backgroundColor: colors.primary || '#2356c4',
+                      color: '#ffffff',
+                      fontSize: '11px',
+                    }}
                     onClick={() => handleStartEditSectionName(section)}
-                    title="Nhấn vào đây để đổi tên nhóm này"
+                    title="Nhấn vào đây để đổi tên"
                   >
-                    <span
-                      className="badge px-2 py-1 fw-bold rounded"
-                      style={{
-                        backgroundColor: colors.primary || '#2356c4',
-                        color: '#ffffff',
-                        fontSize: '11px',
-                      }}
-                    >
-                      #{sIdx + 1} {section.name || getCleanSectionName(section)}
-                    </span>
-                    <span
-                      className="badge bg-white text-secondary border px-1.5 py-0.5 rounded shadow-2xs"
-                      style={{ fontSize: '10px' }}
-                      title="Đổi tên"
-                    >
-                      ✏️ Đổi tên
-                    </span>
-                  </div>
+                    #{sIdx + 1} {section.name || getCleanSectionName(section)}
+                  </span>
                 )}
                 {section.type === 'banner_group' && (
                   <span className="text-secondary fw-semibold">
