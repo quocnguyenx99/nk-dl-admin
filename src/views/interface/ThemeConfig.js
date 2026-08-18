@@ -87,10 +87,34 @@ const formatDateRangeText = (startDate, endDate) => {
   return `${formattedStart} ~ ${formattedEnd}`
 }
 
-// Helper to normalize banner value to array of strings (multi-slide support)
+// Helper to normalize banner slide item (supporting URL string or object with link config)
+const normalizeBannerItem = (item) => {
+  if (!item) return { url: '', hasLink: false, link: '', target: '_self' }
+  if (typeof item === 'string') {
+    return { url: item, hasLink: false, link: '', target: '_self' }
+  }
+  if (typeof item === 'object') {
+    return {
+      url: item.url || item.picture || item.img || '',
+      hasLink: !!item.hasLink,
+      link: item.link || '',
+      target: item.target || '_self',
+    }
+  }
+  return { url: '', hasLink: false, link: '', target: '_self' }
+}
+
 const normalizeBannerImages = (val) => {
-  if (Array.isArray(val)) return val.filter(Boolean)
-  if (typeof val === 'string' && val.trim()) return [val]
+  if (Array.isArray(val)) {
+    return val.map(normalizeBannerItem).filter((item) => !!item.url)
+  }
+  if (typeof val === 'string' && val.trim()) {
+    return [normalizeBannerItem(val)]
+  }
+  if (typeof val === 'object' && val !== null) {
+    const norm = normalizeBannerItem(val)
+    return norm.url ? [norm] : []
+  }
   return []
 }
 
@@ -563,7 +587,12 @@ const ThemeConfig = () => {
     files.forEach((file) => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        newImages.push(reader.result)
+        newImages.push({
+          url: reader.result,
+          hasLink: false,
+          link: '',
+          target: '_self',
+        })
         loadedCount++
         if (loadedCount === files.length) {
           const currentList = normalizeBannerImages(banners[key])
@@ -578,6 +607,20 @@ const ThemeConfig = () => {
       }
       reader.readAsDataURL(file)
     })
+  }
+
+  const handleUpdateSlideField = (key, slideIndex, field, value) => {
+    const currentList = normalizeBannerImages(banners[key])
+    if (!currentList[slideIndex]) return
+    const updatedList = currentList.map((item, idx) =>
+      idx === slideIndex ? { ...item, [field]: value } : item,
+    )
+    const updatedBanners = {
+      ...banners,
+      [key]: updatedList,
+    }
+    setBanners(updatedBanners)
+    persistCampaignConfig({ banners: updatedBanners })
   }
 
   const handleRemoveSlide = (key, indexToRemove) => {
@@ -805,7 +848,12 @@ const ThemeConfig = () => {
     // Ensure activeIdx is in valid range
     const currentIdx =
       images.length > 0 ? ((activeIdx % images.length) + images.length) % images.length : 0
-    const currentImg = images[currentIdx]
+    const currentSlide = images[currentIdx]
+    const currentImg = currentSlide
+      ? typeof currentSlide === 'object'
+        ? currentSlide.url
+        : currentSlide
+      : ''
 
     // Auto-play slide every 4 seconds if there are multiple images
     useEffect(() => {
@@ -882,7 +930,23 @@ const ThemeConfig = () => {
                   {title}
                 </span>
 
-                <div className="d-flex align-items-center gap-1">
+                <div className="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                  {currentSlide?.hasLink && currentSlide?.link && (
+                    <span
+                      className="badge rounded-pill text-white fw-bold shadow-sm"
+                      style={{
+                        backgroundColor: '#0284c7',
+                        fontSize: '10px',
+                        backdropFilter: 'blur(4px)',
+                      }}
+                      title={`Dẫn link: ${currentSlide.link}`}
+                    >
+                      🔗{' '}
+                      {currentSlide.link.length > 18
+                        ? currentSlide.link.slice(0, 18) + '...'
+                        : currentSlide.link}
+                    </span>
+                  )}
                   {images.length > 1 && (
                     <span
                       className="badge rounded-pill text-white fw-bold shadow-sm"
@@ -2555,15 +2619,18 @@ const ThemeConfig = () => {
             </div>
 
             <div className="row g-3">
-              {normalizeBannerImages(banners[managingSlot.slotKey]).map((imgUrl, idx) => (
-                <div key={idx} className="col-md-4 col-sm-6">
+              {normalizeBannerImages(banners[managingSlot.slotKey]).map((item, idx) => (
+                <div key={idx} className="col-md-6 col-12">
                   <div className="card h-100 border shadow-xs overflow-hidden">
-                    <div className="position-relative" style={{ height: '140px' }}>
+                    <div
+                      className="position-relative bg-dark d-flex align-items-center justify-content-center"
+                      style={{ height: '160px' }}
+                    >
                       <img
-                        src={imgUrl}
+                        src={item.url}
                         alt={`Slide ${idx + 1}`}
                         className="w-100 h-100"
-                        style={{ objectFit: 'cover' }}
+                        style={{ objectFit: 'contain' }}
                       />
                       <span
                         className="position-absolute top-2 start-2 badge bg-dark bg-opacity-75 text-white"
@@ -2571,38 +2638,120 @@ const ThemeConfig = () => {
                       >
                         Slide #{idx + 1}
                       </span>
+                      {item.hasLink && item.link && (
+                        <span
+                          className="position-absolute top-2 end-2 badge bg-success text-white shadow-sm"
+                          style={{ fontSize: '10.5px' }}
+                        >
+                          🔗 Có link
+                        </span>
+                      )}
                     </div>
-                    <div className="p-2 bg-light d-flex justify-content-between align-items-center border-top">
-                      <div className="d-flex align-items-center gap-1">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-secondary px-2 py-0.5"
-                          disabled={idx === 0}
-                          onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx - 1)}
-                          title="Di chuyển sang trái"
-                        >
-                          ←
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-secondary px-2 py-0.5"
-                          disabled={
-                            idx === normalizeBannerImages(banners[managingSlot.slotKey]).length - 1
+
+                    <div className="p-3 bg-white border-top">
+                      {/* Checkbox Dẫn Link */}
+                      <div className="form-check form-switch mb-2">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          id={`hasLink_${managingSlot.slotKey}_${idx}`}
+                          checked={item.hasLink || false}
+                          onChange={(e) =>
+                            handleUpdateSlideField(
+                              managingSlot.slotKey,
+                              idx,
+                              'hasLink',
+                              e.target.checked,
+                            )
                           }
-                          onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx + 1)}
-                          title="Di chuyển sang phải"
+                        />
+                        <label
+                          className="form-check-label fw-bold text-dark small cursor-pointer"
+                          htmlFor={`hasLink_${managingSlot.slotKey}_${idx}`}
                         >
-                          →
+                          Nhấp vào banner để dẫn link
+                        </label>
+                      </div>
+
+                      {item.hasLink && (
+                        <div className="p-2.5 rounded bg-light border mb-2">
+                          <label className="form-label text-muted text-xs mb-1 fw-semibold">
+                            Đường dẫn URL (Link chuyển hướng):
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm mb-2"
+                            placeholder="VD: /san-pham/laptop hoặc https://..."
+                            value={item.link || ''}
+                            onChange={(e) =>
+                              handleUpdateSlideField(
+                                managingSlot.slotKey,
+                                idx,
+                                'link',
+                                e.target.value,
+                              )
+                            }
+                          />
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={`target_${managingSlot.slotKey}_${idx}`}
+                              checked={item.target === '_blank'}
+                              onChange={(e) =>
+                                handleUpdateSlideField(
+                                  managingSlot.slotKey,
+                                  idx,
+                                  'target',
+                                  e.target.checked ? '_blank' : '_self',
+                                )
+                              }
+                            />
+                            <label
+                              className="form-check-label text-secondary small cursor-pointer"
+                              htmlFor={`target_${managingSlot.slotKey}_${idx}`}
+                            >
+                              Mở link trong tab mới (_blank)
+                            </label>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Buttons: Move & Delete */}
+                      <div className="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <div className="d-flex align-items-center gap-1">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary px-2 py-0.5"
+                            disabled={idx === 0}
+                            onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx - 1)}
+                            title="Di chuyển sang trái"
+                          >
+                            ←
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary px-2 py-0.5"
+                            disabled={
+                              idx ===
+                              normalizeBannerImages(banners[managingSlot.slotKey]).length - 1
+                            }
+                            onClick={() => handleMoveSlide(managingSlot.slotKey, idx, idx + 1)}
+                            title="Di chuyển sang phải"
+                          >
+                            →
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger px-2.5 py-0.5 fw-semibold d-flex align-items-center gap-1"
+                          onClick={() => handleRemoveSlide(managingSlot.slotKey, idx)}
+                          title="Xóa slide này"
+                        >
+                          <CIcon icon={cilTrash} size="sm" /> Xóa
                         </button>
                       </div>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-danger px-2 py-0.5"
-                        onClick={() => handleRemoveSlide(managingSlot.slotKey, idx)}
-                        title="Xóa slide này"
-                      >
-                        <CIcon icon={cilTrash} size="sm" />
-                      </button>
                     </div>
                   </div>
                 </div>
