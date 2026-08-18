@@ -118,6 +118,91 @@ const normalizeBannerImages = (val) => {
   return []
 }
 
+// Preset Website Background Patterns & Wallpapers
+const PRESET_BACKGROUNDS = [
+  {
+    key: 'none',
+    name: 'Nền trơn tiêu chuẩn',
+    icon: '🚫',
+    badge: 'Màu trơn',
+    description: 'Chỉ hiển thị màu nền website thuần túy',
+    gradient: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+    tagColor: '#64748b',
+  },
+  {
+    key: 'mooncakes',
+    name: 'Bánh Trung Thu & Lồng Đèn',
+    icon: '🥮',
+    badge: 'Lễ Hội',
+    description: 'Họa tiết bánh nướng sen, bánh dẻo & lồng đèn trung thu',
+    gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+    tagColor: '#d97706',
+  },
+  {
+    key: 'stars_moon',
+    name: 'Trăng Rằm & Tinh Tú',
+    icon: '🌕',
+    badge: 'Ban Đêm / Rằm',
+    description: 'Mặt trăng vàng, mây ngũ sắc & chòm sao lung linh',
+    gradient: 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)',
+    tagColor: '#ca8a04',
+  },
+  {
+    key: 'noel_snow',
+    name: 'Giáng Sinh Tuyết Rơi & Chuông Vàng',
+    icon: '❄️',
+    badge: 'Noel / Xmas',
+    description: 'Bông tuyết trắng tinh khôi, cây thông & chuông vàng Noel',
+    gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+    tagColor: '#16a34a',
+  },
+  {
+    key: 'tet_blossoms',
+    name: 'Tết Hoa Mai, Hoa Đào & Pháo Hoa',
+    icon: '🌸',
+    badge: 'Tết Nguyên Đán',
+    description: 'Cành mai vàng, hoa đào hồng, thỏi vàng & bao lì xì',
+    gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)',
+    tagColor: '#e11d48',
+  },
+  {
+    key: 'cyber_grid',
+    name: 'Công Nghệ Cyber & Mạch Vi Xử Lý',
+    icon: '⚡',
+    badge: 'Công Nghệ',
+    description: 'Lưới ma trận Cyber Matrix & vi mạch máy tính hiện đại',
+    gradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+    tagColor: '#2563eb',
+  },
+  {
+    key: 'backtoschool',
+    name: 'Tuổi Học Trò & Mùa Tựu Trường',
+    icon: '🎓',
+    badge: 'Khai Trường',
+    description: 'Máy bay giấy, nón cử nhân, sách vở & ngôi sao học trò',
+    gradient: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+    tagColor: '#7c3aed',
+  },
+  {
+    key: 'blackfriday',
+    name: 'Black Friday & Siêu Sale',
+    icon: '🛍️',
+    badge: 'Siêu Giảm Giá',
+    description: 'Hộp quà 3D, tag sale % & tia chớp neon ấn tượng',
+    gradient: 'linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%)',
+    tagColor: '#44403c',
+  },
+  {
+    key: 'custom',
+    name: 'Tải ảnh nền riêng từ máy tính',
+    icon: '📤',
+    badge: 'Tùy chỉnh',
+    description: 'Upload hình nền wallpaper hoặc hoa văn riêng từ máy',
+    gradient: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
+    tagColor: '#475569',
+  },
+]
+
 // Default initial banners for visual builder (Multi-slide ready)
 const DEFAULT_BANNERS = {
   topBanner: [
@@ -409,6 +494,16 @@ const ThemeConfig = () => {
       background: '#f7f7f7',
       text: '#222222',
     },
+    decorations: {
+      particles: 'none',
+      ornaments: 'none',
+    },
+    background: {
+      preset: 'none',
+      customUrl: '',
+      opacity: 0.15,
+      mode: 'pattern',
+    },
   })
 
   // Client-side image compressor (converts multi-megabyte raw photos into crisp ~150KB WebP in <30ms)
@@ -520,6 +615,16 @@ const ThemeConfig = () => {
           description: activeItem?.description,
           image: activeItem?.image,
           colors: payloadColors,
+          decorations: activeItem?.decorations || {
+            particles: activeItem?.background?.preset || activeItem?.code || 'none',
+            ornaments: activeItem?.background?.preset || activeItem?.code || 'none',
+          },
+          background: activeItem?.background || {
+            preset: activeItem?.decorations?.particles || 'none',
+            customUrl: '',
+            opacity: 0.15,
+            mode: 'pattern',
+          },
           banners: payloadBanners,
           sections: payloadSections,
         },
@@ -578,6 +683,13 @@ const ThemeConfig = () => {
             accent: '#b00010',
             background: '#f7f7f7',
             text: '#222222',
+          },
+          decorations: item.theme_config?.decorations || {},
+          background: item.theme_config?.background || {
+            preset: item.theme_config?.decorations?.particles || 'none',
+            customUrl: '',
+            opacity: 0.15,
+            mode: 'pattern',
           },
           banners: normalizeBannersMap(item.theme_config?.banners),
           sections: item.theme_config?.sections || DEFAULT_SECTIONS,
@@ -715,6 +827,16 @@ const ThemeConfig = () => {
       startDate: formatDateInput(item.startDate),
       endDate: formatDateInput(item.endDate),
       colors: item.colors || { ...colors },
+      decorations: item.decorations || {
+        particles: item.background?.preset || item.code || 'none',
+        ornaments: item.background?.preset || item.code || 'none',
+      },
+      background: item.background || {
+        preset: item.decorations?.particles || 'none',
+        customUrl: '',
+        opacity: 0.15,
+        mode: 'pattern',
+      },
     })
     setEditModalVisible(true)
   }
@@ -1024,8 +1146,14 @@ const ThemeConfig = () => {
           image: editingTheme.image,
           colors: editingTheme.colors,
           decorations: editingTheme.decorations || {
-            particles: editingTheme.code || 'none',
-            ornaments: editingTheme.code || 'none',
+            particles: editingTheme.background?.preset || editingTheme.code || 'none',
+            ornaments: editingTheme.background?.preset || editingTheme.code || 'none',
+          },
+          background: editingTheme.background || {
+            preset: editingTheme.decorations?.particles || 'none',
+            customUrl: '',
+            opacity: 0.15,
+            mode: 'pattern',
           },
           banners: editingTheme.banners || banners,
           sections: editingTheme.sections || sections,
@@ -1061,11 +1189,17 @@ const ThemeConfig = () => {
             'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80',
           colors: newTheme.colors || { ...colors },
           decorations: newTheme.decorations || {
-            particles: newTheme.code || 'none',
-            ornaments: newTheme.code || 'none',
+            particles: newTheme.background?.preset || newTheme.code || 'none',
+            ornaments: newTheme.background?.preset || newTheme.code || 'none',
           },
-          banners: DEFAULT_BANNERS,
-          sections: DEFAULT_SECTIONS,
+          background: newTheme.background || {
+            preset: 'none',
+            customUrl: '',
+            opacity: 0.15,
+            mode: 'pattern',
+          },
+          banners: banners,
+          sections: sections,
         },
       })
       toast.success('Lưu thành công!')
@@ -1089,6 +1223,16 @@ const ThemeConfig = () => {
         accent: '#b00010',
         background: '#f7f7f7',
         text: '#222222',
+      },
+      decorations: {
+        particles: 'none',
+        ornaments: 'none',
+      },
+      background: {
+        preset: 'none',
+        customUrl: '',
+        opacity: 0.15,
+        mode: 'pattern',
       },
     })
   }
@@ -1414,6 +1558,262 @@ const ThemeConfig = () => {
             >
               Nhấn để tải banner lên
             </span>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const RenderBackgroundSelector = ({ currentTheme, setTargetTheme }) => {
+    const bgConfig = currentTheme.background || {
+      preset: currentTheme.decorations?.particles || 'none',
+      customUrl: '',
+      opacity: 0.15,
+      mode: 'pattern',
+    }
+
+    const currentPreset = bgConfig.preset || 'none'
+
+    const handleSelectPreset = (key) => {
+      setTargetTheme({
+        ...currentTheme,
+        decorations: {
+          ...currentTheme.decorations,
+          particles: key,
+          ornaments: key,
+        },
+        background: {
+          ...bgConfig,
+          preset: key,
+        },
+      })
+    }
+
+    const handleBgOpacityChange = (val) => {
+      setTargetTheme({
+        ...currentTheme,
+        background: {
+          ...bgConfig,
+          opacity: parseFloat(val),
+        },
+      })
+    }
+
+    const handleBgModeChange = (mode) => {
+      setTargetTheme({
+        ...currentTheme,
+        background: {
+          ...bgConfig,
+          mode: mode,
+        },
+      })
+    }
+
+    const handleCustomBgUpload = async (e) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      try {
+        const uploadedUrl = await uploadFileToServer(file)
+        if (uploadedUrl) {
+          setTargetTheme({
+            ...currentTheme,
+            background: {
+              ...bgConfig,
+              preset: 'custom',
+              customUrl: uploadedUrl,
+            },
+          })
+          toast.success('Đã tải ảnh nền tùy chỉnh thành công!')
+        }
+      } catch (err) {
+        toast.error('Lỗi upload ảnh nền: ' + err.message)
+      }
+    }
+
+    return (
+      <div className="mt-3 pt-3 border-top">
+        <div className="d-flex align-items-center justify-content-between mb-1.5">
+          <label className="form-label fw-bold text-dark small m-0 d-flex align-items-center gap-1.5">
+            <span>🖼️ Họa tiết & Hình nền Website (Background Pattern & Wallpaper)</span>
+          </label>
+          <span
+            className="badge bg-light text-secondary border fw-normal"
+            style={{ fontSize: '11px' }}
+          >
+            Mẫu sẵn có & Tùy chỉnh
+          </span>
+        </div>
+        <p className="text-muted text-xs mb-3">
+          Chọn hoa văn chìm lễ hội theo mùa (Bánh trung thu, Trăng sao, Noel, Tết...) hoặc tải ảnh
+          nền riêng cho website
+        </p>
+
+        {/* Preset Cards Grid */}
+        <div className="row g-2 mb-3">
+          {PRESET_BACKGROUNDS.map((item) => {
+            const isSelected = currentPreset === item.key
+            return (
+              <div className="col-12 col-md-4" key={item.key}>
+                <div
+                  className={`p-2.5 rounded-3 border h-100 cursor-pointer position-relative ${
+                    isSelected ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'bg-white'
+                  }`}
+                  style={{
+                    borderWidth: isSelected ? '2px' : '1px',
+                    borderColor: isSelected ? '#2563eb' : '#e2e8f0',
+                    transition: 'all 0.15s ease-in-out',
+                  }}
+                  onClick={() => handleSelectPreset(item.key)}
+                >
+                  <div className="d-flex align-items-start gap-2">
+                    <div
+                      className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        background: item.gradient,
+                        fontSize: '18px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+                    <div className="flex-grow-1 overflow-hidden">
+                      <div className="d-flex align-items-center justify-content-between mb-0.5">
+                        <span
+                          className="fw-bold text-truncate"
+                          style={{
+                            fontSize: '12px',
+                            color: isSelected ? '#1e40af' : '#1e293b',
+                          }}
+                        >
+                          {item.name}
+                        </span>
+                      </div>
+                      <span
+                        className="badge px-1.5 py-0.5"
+                        style={{
+                          fontSize: '9.5px',
+                          backgroundColor: `${item.tagColor}15`,
+                          color: item.tagColor,
+                          border: `1px solid ${item.tagColor}30`,
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    </div>
+                    {isSelected && (
+                      <div
+                        className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style={{ width: '18px', height: '18px', fontSize: '11px' }}
+                      >
+                        ✓
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Custom Upload Box if custom is selected */}
+        {currentPreset === 'custom' && (
+          <div className="p-3 bg-light rounded-3 border mb-3">
+            <label className="form-label fw-bold text-dark text-xs mb-1.5">
+              📤 Tải ảnh nền từ máy tính (PNG, JPG, WebP, SVG):
+            </label>
+            <CFormInput
+              type="file"
+              accept="image/*"
+              size="sm"
+              className="mb-2"
+              onChange={handleCustomBgUpload}
+            />
+            {bgConfig.customUrl && (
+              <div className="mt-2 d-flex align-items-center gap-2">
+                <img
+                  src={bgConfig.customUrl}
+                  alt="Custom Background"
+                  className="rounded border"
+                  style={{ width: '60px', height: '40px', objectFit: 'cover' }}
+                />
+                <span className="text-success text-xs fw-semibold">✓ Đã tải ảnh nền</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Controls: Opacity & Display Mode */}
+        {currentPreset !== 'none' && (
+          <div className="p-3 bg-light rounded-3 border mb-2">
+            <div className="row g-3 align-items-center">
+              <div className="col-md-6">
+                <label className="form-label fw-bold text-dark text-xs mb-1 d-flex justify-content-between">
+                  <span>Độ mờ hoa văn nền (Opacity):</span>
+                  <span className="text-primary font-monospace">
+                    {Math.round((bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15) * 100)}%
+                  </span>
+                </label>
+                <input
+                  type="range"
+                  className="form-range"
+                  min="0.05"
+                  max="0.6"
+                  step="0.01"
+                  value={bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15}
+                  onChange={(e) => handleBgOpacityChange(e.target.value)}
+                />
+                <div
+                  className="d-flex justify-content-between text-muted"
+                  style={{ fontSize: '10px' }}
+                >
+                  <span>5% (Rất nhẹ)</span>
+                  <span>15% (Chuẩn đẹp)</span>
+                  <span>60% (Đậm nét)</span>
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label fw-bold text-dark text-xs mb-1">
+                  Kiểu hiển thị hoa văn:
+                </label>
+                <div className="d-flex gap-3 mt-1">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name={`bgMode_${currentTheme.id || 'new'}`}
+                      id={`bgMode_pattern_${currentTheme.id || 'new'}`}
+                      checked={bgConfig.mode !== 'cover'}
+                      onChange={() => handleBgModeChange('pattern')}
+                    />
+                    <label
+                      className="form-check-label text-dark text-xs cursor-pointer"
+                      htmlFor={`bgMode_pattern_${currentTheme.id || 'new'}`}
+                    >
+                      Lặp hoa văn chìm (Pattern)
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name={`bgMode_${currentTheme.id || 'new'}`}
+                      id={`bgMode_cover_${currentTheme.id || 'new'}`}
+                      checked={bgConfig.mode === 'cover'}
+                      onChange={() => handleBgModeChange('cover')}
+                    />
+                    <label
+                      className="form-check-label text-dark text-xs cursor-pointer"
+                      htmlFor={`bgMode_cover_${currentTheme.id || 'new'}`}
+                    >
+                      Tràn toàn trang (Cover)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -2847,6 +3247,9 @@ const ThemeConfig = () => {
             </CRow>
           </div>
 
+          {/* WEBSITE BACKGROUND PATTERN & WALLPAPER SELECTOR */}
+          <RenderBackgroundSelector currentTheme={newTheme} setTargetTheme={setNewTheme} />
+
           {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
           <div className="mt-3 pt-3 border-top">
             <label className="form-label font-semibold text-dark small d-flex align-items-center gap-1.5">
@@ -3080,6 +3483,12 @@ const ThemeConfig = () => {
                 ))}
               </CRow>
             </div>
+
+            {/* WEBSITE BACKGROUND PATTERN & WALLPAPER SELECTOR */}
+            <RenderBackgroundSelector
+              currentTheme={editingTheme}
+              setTargetTheme={setEditingTheme}
+            />
 
             {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
             <div className="mt-3 pt-3 border-top">
