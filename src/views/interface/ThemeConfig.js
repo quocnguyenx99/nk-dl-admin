@@ -194,15 +194,15 @@ const FEATURED_PRODUCTS = [
     price: '29.900.000 đ',
     originalPrice: '37.900.000 đ',
     discount: '-21%',
-    img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80',
+    img: 'https://media.vitinhnguyenkim.vn/uploads/products/2026-06/20260602_094012_mtf2oieBgl.png',
   },
   {
     id: 2,
-    name: 'Laptop HP EliteBook 8 G11 14 (D85ZNAT)',
+    name: 'Laptop HP EliteBook 8 G1I 14 (D85ZNAT)',
     price: '37.300.000 đ',
     originalPrice: '44.000.000 đ',
     discount: '-15%',
-    img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80',
+    img: 'https://media.vitinhnguyenkim.vn/uploads/products/2026-02/20260223_034322_exDumZVvI6.png',
   },
   {
     id: 3,
@@ -210,7 +210,7 @@ const FEATURED_PRODUCTS = [
     price: '19.800.000 đ',
     originalPrice: '24.900.000 đ',
     discount: '-20%',
-    img: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80',
+    img: 'https://media.vitinhnguyenkim.vn/uploads/products/2026-04/20260410_094240_UbimfZq9Gp.png',
   },
   {
     id: 4,
@@ -218,7 +218,7 @@ const FEATURED_PRODUCTS = [
     price: '29.900.000 đ',
     originalPrice: '37.990.000 đ',
     discount: '-21%',
-    img: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=400&q=80',
+    img: 'https://media.vitinhnguyenkim.vn/uploads/products/2026-08/20260806_054030_fEuFoFdtmY.png',
   },
   {
     id: 5,
@@ -226,7 +226,7 @@ const FEATURED_PRODUCTS = [
     price: '33.000.000 đ',
     originalPrice: '39.990.000 đ',
     discount: '-17%',
-    img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80',
+    img: 'https://media.vitinhnguyenkim.vn/uploads/products/2026-06/20260602_094012_mtf2oieBgl.png',
   },
 ]
 
@@ -1501,14 +1501,14 @@ const ThemeConfig = () => {
         <div className="bg-white border-bottom">
           <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 28px' }}>
             <div className="mb-2">
-              <h5 className="fw-bold text-dark m-0" style={{ fontSize: '18px' }}>
+              <h5 className="fw-bold text-dark m-0" style={{ fontSize: '20px' }}>
                 Sản phẩm nổi bật
               </h5>
             </div>
 
             {/* Category Tabs */}
             <div
-              className="d-flex align-items-center gap-4 border-bottom mb-3 pb-1 overflow-auto"
+              className="d-flex align-items-center gap-4 border-bottom mb-3 pb-0 overflow-auto"
               style={{ borderColor: '#e5e7eb' }}
             >
               {FEATURED_TABS.map((tab, idx) => {
@@ -1520,9 +1520,9 @@ const ThemeConfig = () => {
                     onClick={() => setSelectedFeaturedTab(idx)}
                     className="btn btn-link p-0 pb-2 text-decoration-none fw-bold"
                     style={{
-                      fontSize: '14px',
+                      fontSize: '15px',
                       color: isActive ? '#e20000' : '#4b5563',
-                      borderBottom: isActive ? '2px solid #e20000' : '2px solid transparent',
+                      borderBottom: isActive ? '2.5px solid #e20000' : '2.5px solid transparent',
                       borderRadius: 0,
                       whiteSpace: 'nowrap',
                     }}
@@ -1533,95 +1533,108 @@ const ThemeConfig = () => {
               })}
             </div>
 
-            <CRow className="g-3">
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+                gap: '14px',
+              }}
+            >
               {FEATURED_PRODUCTS.map((prod) => (
-                <CCol key={prod.id} xs={6} sm={6} md={4} lg style={{ flex: '1 0 18%' }}>
-                  <div
-                    className="card h-100 border rounded-2 p-2.5 bg-white d-flex flex-column justify-content-between shadow-xs transition-all hover-shadow"
-                    style={{ borderColor: '#e2e8f0', minHeight: '290px' }}
-                  >
-                    <div>
-                      <div
-                        className="position-relative w-100 mb-2 bg-white rounded d-flex align-items-center justify-content-center"
-                        style={{ height: '140px' }}
-                      >
-                        <img
-                          src={prod.img}
-                          alt={prod.name}
-                          className="w-100 h-100 rounded"
-                          style={{ objectFit: 'contain' }}
-                        />
-                      </div>
-
-                      <div
-                        className="fw-semibold text-dark mb-2"
-                        style={{
-                          fontSize: '13px',
-                          lineHeight: '1.35',
-                          minHeight: '36px',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                        title={prod.name}
-                      >
-                        {prod.name}
-                      </div>
+                <div
+                  key={prod.id}
+                  className="card border rounded-1 p-2 bg-white d-flex flex-column justify-content-between transition-all"
+                  style={{
+                    borderColor: '#f1f5f9',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    minHeight: '310px',
+                  }}
+                >
+                  <div>
+                    <div
+                      className="position-relative w-100 mb-2 bg-white rounded d-flex align-items-center justify-content-center"
+                      style={{ height: '155px' }}
+                    >
+                      <img
+                        src={prod.img}
+                        alt={prod.name}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'contain' }}
+                      />
                     </div>
 
-                    <div>
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <span
-                          className="fw-bold"
-                          style={{
-                            fontSize: '15px',
-                            color: '#e20000',
-                          }}
-                        >
-                          {prod.price}
-                        </span>
-                        <span
-                          className="badge rounded-1 px-1.5 py-0.5 fw-bold"
-                          style={{
-                            fontSize: '11px',
-                            backgroundColor: '#e20000',
-                            color: '#ffffff',
-                          }}
-                        >
-                          {prod.discount}
-                        </span>
-                      </div>
-
-                      <div
-                        className="text-muted mb-2"
-                        style={{
-                          fontSize: '11px',
-                          textDecoration: 'line-through',
-                          minHeight: '16px',
-                        }}
-                      >
-                        {prod.originalPrice}
-                      </div>
-
-                      <button
-                        type="button"
-                        className="btn btn-sm w-100 fw-medium d-flex align-items-center justify-content-center gap-1.5 py-1.5"
-                        style={{
-                          backgroundColor: '#F1F8FE',
-                          color: '#2a83e9',
-                          border: 'none',
-                          fontSize: '12.5px',
-                          borderRadius: '4px',
-                        }}
-                      >
-                        <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
-                      </button>
+                    <div
+                      className="text-dark mb-2"
+                      style={{
+                        fontSize: '13px',
+                        fontWeight: '400',
+                        lineHeight: '1.3',
+                        minHeight: '36px',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                      title={prod.name}
+                    >
+                      {prod.name}
                     </div>
                   </div>
-                </CCol>
+
+                  <div>
+                    <div className="d-flex align-items-center justify-content-between mb-1">
+                      <span
+                        className="fw-bold"
+                        style={{
+                          fontSize: '15px',
+                          color: '#dc2626',
+                        }}
+                      >
+                        {prod.price}
+                      </span>
+                      <span
+                        className="badge px-1 py-0.5 fw-bold"
+                        style={{
+                          fontSize: '10.5px',
+                          backgroundColor: '#dc2626',
+                          color: '#ffffff',
+                          borderRadius: '2px',
+                        }}
+                      >
+                        {prod.discount}
+                      </span>
+                    </div>
+
+                    <div
+                      className="text-muted mb-2"
+                      style={{
+                        fontSize: '11px',
+                        textDecoration: 'line-through',
+                        color: '#9ca3af',
+                        minHeight: '16px',
+                      }}
+                    >
+                      {prod.originalPrice}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-1.5 py-1.5"
+                      style={{
+                        backgroundColor: '#F1F8FE',
+                        color: '#2a83e9',
+                        border: 'none',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        borderRadius: '2px',
+                      }}
+                    >
+                      <CIcon icon={cilCart} size="sm" /> Thêm vào giỏ
+                    </button>
+                  </div>
+                </div>
               ))}
-            </CRow>
+            </div>
           </div>
         </div>
 
