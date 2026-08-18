@@ -184,14 +184,7 @@ const FEATURED_CATS = [
   },
 ]
 
-const FEATURED_TABS = [
-  'Laptop',
-  'PC',
-  'Máy in',
-  'Phụ kiện',
-  'Phần mềm',
-  'Màn hình máy tính',
-]
+const FEATURED_TABS = ['Laptop', 'PC', 'Máy in', 'Phụ kiện', 'Phần mềm', 'Màn hình máy tính']
 
 // Featured Products Mock (Matching actual Member product card design)
 const FEATURED_PRODUCTS = [
