@@ -327,6 +327,7 @@ const ThemeConfig = () => {
 
   // Dynamic Layout Sections
   const [sections, setSections] = useState(DEFAULT_SECTIONS)
+  const [sectionToDelete, setSectionToDelete] = useState(null)
 
   const [newTheme, setNewTheme] = useState({
     name: '',
@@ -654,11 +655,14 @@ const ThemeConfig = () => {
     toast.success(`Đã đổi nhóm sang ${validCount} banner!`)
   }
 
-  const handleDeleteSection = (id) => {
-    const updated = sections.filter((sec) => sec.id !== id)
+  const handleConfirmDeleteSection = () => {
+    if (!sectionToDelete) return
+    const targetName = sectionToDelete.name || 'Nhóm banner'
+    const updated = sections.filter((sec) => sec.id !== sectionToDelete.id)
     setSections(updated)
     persistCampaignConfig({ sections: updated })
-    toast.info('Đã xóa nhóm banner!')
+    toast.info(`Đã xóa "${targetName}" thành công!`)
+    setSectionToDelete(null)
   }
 
   const handleAddBannerGroup = (columns = 4) => {
@@ -1605,7 +1609,7 @@ const ThemeConfig = () => {
                     type="button"
                     className="btn btn-danger btn-xs text-white px-2 py-0.5 border shadow-2xs fw-bold"
                     style={{ fontSize: '11.5px' }}
-                    onClick={() => handleDeleteSection(section.id)}
+                    onClick={() => setSectionToDelete(section)}
                     title="Xóa nhóm banner này"
                   >
                     🗑️ Xóa nhóm
@@ -2620,6 +2624,40 @@ const ThemeConfig = () => {
           </CModalFooter>
         </CModal>
       )}
+
+      {/* MODAL XÁC NHẬN XÓA NHÓM BANNER */}
+      <CModal
+        visible={!!sectionToDelete}
+        onClose={() => setSectionToDelete(null)}
+        alignment="center"
+      >
+        <CModalHeader className="border-bottom">
+          <CModalTitle className="fw-bold fs-5 text-danger d-flex align-items-center gap-2">
+            <CIcon icon={cilTrash} /> Xác nhận xóa nhóm banner
+          </CModalTitle>
+        </CModalHeader>
+        <CModalBody className="p-4">
+          <p className="mb-2 text-dark" style={{ fontSize: '15px' }}>
+            Bạn có chắc chắn muốn xóa <strong>{sectionToDelete?.name}</strong> này không?
+          </p>
+          <p className="text-muted small mb-0">
+            Hành động này sẽ gỡ bỏ nhóm banner khỏi bố cục trang chủ website và tự động lưu cấu hình
+            mới.
+          </p>
+        </CModalBody>
+        <CModalFooter className="border-top">
+          <CButton color="secondary" variant="ghost" onClick={() => setSectionToDelete(null)}>
+            Hủy bỏ
+          </CButton>
+          <CButton
+            color="danger"
+            className="text-white fw-bold px-4"
+            onClick={handleConfirmDeleteSection}
+          >
+            Xác nhận xóa
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
   )
 }
