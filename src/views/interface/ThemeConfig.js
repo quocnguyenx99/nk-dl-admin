@@ -876,6 +876,10 @@ const ThemeConfig = () => {
           description: editingTheme.description,
           image: editingTheme.image,
           colors: editingTheme.colors,
+          decorations: editingTheme.decorations || {
+            particles: editingTheme.code || 'none',
+            ornaments: editingTheme.code || 'none',
+          },
           banners: editingTheme.banners || banners,
           sections: editingTheme.sections || sections,
         },
@@ -909,6 +913,10 @@ const ThemeConfig = () => {
             newTheme.image ||
             'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80',
           colors: newTheme.colors || { ...colors },
+          decorations: newTheme.decorations || {
+            particles: newTheme.code || 'none',
+            ornaments: newTheme.code || 'none',
+          },
           banners: DEFAULT_BANNERS,
           sections: DEFAULT_SECTIONS,
         },
@@ -2669,6 +2677,52 @@ const ThemeConfig = () => {
             </CRow>
           </div>
 
+          {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
+          <div className="mt-3 pt-3 border-top">
+            <label className="form-label font-semibold text-dark small">
+              Hiệu ứng lễ hội theo mùa (Seasonal Animation & Ornaments)
+            </label>
+            <select
+              className="form-select form-select-sm"
+              value={newTheme.decorations?.particles || newTheme.code || 'none'}
+              onChange={(e) => {
+                const val = e.target.value
+                setNewTheme({
+                  ...newTheme,
+                  decorations: {
+                    particles: val,
+                    ornaments: val,
+                  },
+                })
+              }}
+            >
+              <option value="none">🚫 Không có hiệu ứng</option>
+              <option value="trungthu">
+                🏮 Tết Trung Thu (Lồng đèn bay, Trăng vàng & Đèn lồng treo góc)
+              </option>
+              <option value="women_day">
+                🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng, Hoa anh đào & Ruy băng hoa)
+              </option>
+              <option value="tet">
+                🌼 Tết Nguyên Đán (Hoa mai vàng, Hoa đào, Bao lì xì 🧧 & Câu đối)
+              </option>
+              <option value="noel">
+                ❄️ Giáng Sinh / Noel (Tuyết rơi bay bổng, Chuông vàng 🔔 & Cây thông)
+              </option>
+              <option value="backtoschool">
+                ✈️ Mùa Khai Trường / Back to School (Máy bay giấy & Ngôi sao ⭐)
+              </option>
+              <option value="blackfriday">
+                ⚡ Siêu Sale Black Friday (Tia sét Sale & Neon lấp lánh)
+              </option>
+              <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ma mị & Dơi bay 🦇)</option>
+            </select>
+            <span className="text-muted text-xs d-block mt-1">
+              Tự động tạo các hiệu ứng động (cánh hoa, tuyết, lồng đèn, bao lì xì...) và vật trang
+              trí treo 2 bên góc website ngoài Member.
+            </span>
+          </div>
+
           {/* File Upload Input & Image Preview right below it */}
           <div className="pt-3 border-top">
             <label className="form-label font-semibold text-dark small">
@@ -2846,6 +2900,57 @@ const ThemeConfig = () => {
                   </CCol>
                 ))}
               </CRow>
+            </div>
+
+            {/* SEASONAL FESTIVE EFFECTS SELECTOR */}
+            <div className="mt-3 pt-3 border-top">
+              <label className="form-label font-semibold text-dark small">
+                Hiệu ứng lễ hội theo mùa (Seasonal Animation & Ornaments)
+              </label>
+              <select
+                className="form-select form-select-sm"
+                value={
+                  editingTheme.decorations?.particles ||
+                  editingTheme.decorations?.ornaments ||
+                  editingTheme.code ||
+                  'none'
+                }
+                onChange={(e) => {
+                  const val = e.target.value
+                  setEditingTheme({
+                    ...editingTheme,
+                    decorations: {
+                      particles: val,
+                      ornaments: val,
+                    },
+                  })
+                }}
+              >
+                <option value="none">🚫 Không có hiệu ứng</option>
+                <option value="trungthu">
+                  🏮 Tết Trung Thu (Lồng đèn bay, Trăng vàng & Đèn lồng treo góc)
+                </option>
+                <option value="women_day">
+                  🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng, Hoa anh đào & Ruy băng hoa)
+                </option>
+                <option value="tet">
+                  🌼 Tết Nguyên Đán (Hoa mai vàng, Hoa đào, Bao lì xì 🧧 & Câu đối)
+                </option>
+                <option value="noel">
+                  ❄️ Giáng Sinh / Noel (Tuyết rơi bay bổng, Chuông vàng 🔔 & Cây thông)
+                </option>
+                <option value="backtoschool">
+                  ✈️ Mùa Khai Trường / Back to School (Máy bay giấy & Ngôi sao ⭐)
+                </option>
+                <option value="blackfriday">
+                  ⚡ Siêu Sale Black Friday (Tia sét Sale & Neon lấp lánh)
+                </option>
+                <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ma mị & Dơi bay 🦇)</option>
+              </select>
+              <span className="text-muted text-xs d-block mt-1">
+                Tự động tạo các hiệu ứng động (cánh hoa, tuyết, lồng đèn, bao lì xì...) và vật trang
+                trí treo 2 bên góc website ngoài Member.
+              </span>
             </div>
 
             {/* FILE UPLOAD INPUT PLACED DIRECTLY ABOVE IMAGE PREVIEW */}
