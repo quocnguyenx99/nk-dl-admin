@@ -146,6 +146,9 @@ const DEFAULT_BANNERS = {
   promo4: [
     'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
   ],
+  promo5: [
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80',
+  ],
   subPromo1: [
     'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
   ],
@@ -154,6 +157,12 @@ const DEFAULT_BANNERS = {
   ],
   subPromo3: [
     'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
+  ],
+  subPromo4: [
+    'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=800&q=80',
+  ],
+  subPromo5: [
+    'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=800&q=80',
   ],
 }
 
@@ -672,19 +681,41 @@ const ThemeConfig = () => {
     const updatedBanners = { ...banners }
     const updated = sections.map((sec) => {
       if (sec.id === id) {
-        // Build slots array of size validCount
-        const currentSlots = sec.slots || []
-        const newSlots = []
-        for (let i = 0; i < validCount; i++) {
-          if (currentSlots[i]) {
-            newSlots.push(currentSlots[i])
-          } else {
-            const newKey = `bannerSlot_${sec.id}_${i + 1}`
-            newSlots.push(newKey)
-            if (!updatedBanners[newKey]) {
-              updatedBanners[newKey] = [
+        let newSlots = []
+        if (sec.id === 'banner_group_1') {
+          newSlots = ['promo1', 'promo2', 'promo3', 'promo4', 'promo5'].slice(0, validCount)
+          newSlots.forEach((slotKey) => {
+            if (!updatedBanners[slotKey]) {
+              updatedBanners[slotKey] = [
                 'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=600&q=80',
               ]
+            }
+          })
+        } else if (sec.id === 'banner_group_2') {
+          newSlots = ['subPromo1', 'subPromo2', 'subPromo3', 'subPromo4', 'subPromo5'].slice(
+            0,
+            validCount,
+          )
+          newSlots.forEach((slotKey) => {
+            if (!updatedBanners[slotKey]) {
+              updatedBanners[slotKey] = [
+                'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+              ]
+            }
+          })
+        } else {
+          const currentSlots = sec.slots || []
+          for (let i = 0; i < validCount; i++) {
+            if (currentSlots[i]) {
+              newSlots.push(currentSlots[i])
+            } else {
+              const newKey = `customSlot_${sec.id}_${i + 1}`
+              newSlots.push(newKey)
+              if (!updatedBanners[newKey]) {
+                updatedBanners[newKey] = [
+                  'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=600&q=80',
+                ]
+              }
             }
           }
         }
