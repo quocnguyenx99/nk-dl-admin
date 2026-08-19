@@ -391,51 +391,25 @@ function ProductDetail() {
           ),
           marketPrice: `${Number(item.price_old).toLocaleString('vi-VN')}đ`,
           status: (
-            <div className="d-flex flex-column align-items-center justify-content-center gap-1 text-center">
+            <div
+              className="d-flex flex-column align-items-center justify-content-center gap-1 text-center"
+              style={{ fontSize: '13px', lineHeight: 1.3 }}
+            >
               <span
-                className={`badge px-2 py-1 ${
+                className={`fw-bold ${
                   item.stock === 1
-                    ? 'bg-success bg-opacity-10 text-success border border-success border-opacity-25'
+                    ? 'text-success'
                     : item.stock === 2
-                      ? 'bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25'
-                      : 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'
+                      ? 'text-secondary'
+                      : 'text-danger'
                 }`}
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  width: '76px',
-                  display: 'inline-block',
-                  textAlign: 'center',
-                }}
               >
                 {item.stock > 0 ? (item.stock === 1 ? 'Còn hàng' : 'Ngừng KD') : 'Hết hàng'}
               </span>
               {item.Hienthi === 'Y' || item.status === 1 || item.status === '1' ? (
-                <span
-                  className="badge bg-success text-white border border-success px-2 py-1"
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    width: '76px',
-                    display: 'inline-block',
-                    textAlign: 'center',
-                  }}
-                >
-                  Hiển thị
-                </span>
+                <span className="fw-bold text-success">Hiển thị</span>
               ) : (
-                <span
-                  className="badge bg-danger text-white border border-danger px-2 py-1"
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    width: '76px',
-                    display: 'inline-block',
-                    textAlign: 'center',
-                  }}
-                >
-                  Đang ẩn
-                </span>
+                <span className="fw-bold text-danger">Đang ẩn</span>
               )}
             </div>
           ),
