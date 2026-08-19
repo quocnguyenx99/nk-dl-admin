@@ -304,8 +304,9 @@ function EditThemeConfig() {
     const fetchThemeDetail = async () => {
       try {
         setLoading(true)
-        const res = await axiosClient.get('theme/list')
-        const rawThemes = res.data?.data || []
+        const res = await axiosClient.get('theme/campaigns')
+        const rawThemes =
+          res.data && res.data.status && Array.isArray(res.data.data) ? res.data.data : []
         const themeList = rawThemes.map((item) => ({
           id: item.id,
           name: item.name,
