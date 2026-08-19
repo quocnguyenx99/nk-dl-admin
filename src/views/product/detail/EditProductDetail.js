@@ -728,12 +728,12 @@ function EditProductDetail() {
             </div>
             <div className="d-flex flex-wrap gap-2">
               <Link to="/product">
-                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                <CButton color="primary" size="sm" className="fw-semibold shadow-xs">
                   Quản lý sản phẩm
                 </CButton>
               </Link>
               <Link to="/product/category">
-                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                <CButton color="primary" size="sm" className="fw-semibold shadow-xs">
                   Danh mục sản phẩm
                 </CButton>
               </Link>
