@@ -541,22 +541,6 @@ function EditThemeConfig() {
         </div>
         <div className="d-flex align-items-center gap-2">
           <CButton
-            color="primary"
-            className="text-white fw-bold d-flex align-items-center gap-1.5 shadow-sm"
-            disabled={isSaving}
-            onClick={handleSave}
-          >
-            {isSaving ? (
-              <>
-                <CSpinner size="sm" /> <span>Đang lưu...</span>
-              </>
-            ) : (
-              <>
-                <CIcon icon={cilSave} /> <span>Lưu thay đổi</span>
-              </>
-            )}
-          </CButton>
-          <CButton
             color="secondary"
             variant="outline"
             className="fw-semibold d-flex align-items-center gap-1"
@@ -1022,7 +1006,7 @@ function EditThemeConfig() {
               )}
 
               {/* Action Save Button inside Right Column */}
-              <div className="pt-2 border-top d-grid gap-2">
+              <div className="pt-2 border-top d-grid">
                 <CButton
                   color="primary"
                   className="text-white py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-1.5"
@@ -1032,15 +1016,6 @@ function EditThemeConfig() {
                 >
                   <CIcon icon={cilSave} />
                   <span>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</span>
-                </CButton>
-                <CButton
-                  color="secondary"
-                  variant="outline"
-                  className="py-1.5 fw-semibold"
-                  style={{ fontSize: '13px' }}
-                  onClick={() => navigate('/theme-custom/config')}
-                >
-                  Quay lại danh sách
                 </CButton>
               </div>
             </CCardBody>
