@@ -1564,6 +1564,258 @@ const ThemeConfig = () => {
     )
   }
 
+  const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
+    const presetKey = background?.preset || themeCode || 'none'
+    const opacityVal = background?.opacity !== undefined ? background.opacity : 0.15
+
+    if (background?.customUrl) {
+      return (
+        <div
+          aria-hidden="true"
+          className="position-absolute top-0 start-0 w-100 h-100 pointer-events-none select-none"
+          style={{
+            backgroundImage: `url(${background.customUrl})`,
+            backgroundRepeat: background.mode === 'cover' ? 'no-repeat' : 'repeat',
+            backgroundSize: background.mode === 'cover' ? 'cover' : 'auto',
+            backgroundPosition: 'center top',
+            opacity: opacityVal,
+            zIndex: 0,
+          }}
+        />
+      )
+    }
+
+    if (!presetKey || presetKey === 'none' || presetKey === 'default') {
+      return null
+    }
+
+    const uniqueId = `admin-pattern-${presetKey}`
+
+    return (
+      <div
+        aria-hidden="true"
+        className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden pointer-events-none select-none"
+        style={{ opacity: opacityVal, zIndex: 0 }}
+      >
+        {(presetKey === 'mooncakes' || presetKey === 'trungthu') && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="200" height="200" patternUnits="userSpaceOnUse">
+                <text x="25" y="45" fontSize="28" fill="#d97706">
+                  🥮
+                </text>
+                <text x="130" y="55" fontSize="22" fill="#b45309">
+                  🏮
+                </text>
+                <text x="80" y="105" fontSize="16" fill="#f59e0b">
+                  ✦
+                </text>
+                <text x="30" y="160" fontSize="24" fill="#b45309">
+                  🏮
+                </text>
+                <text x="125" y="155" fontSize="26" fill="#d97706">
+                  🥮
+                </text>
+                <text x="175" y="110" fontSize="14" fill="#f59e0b">
+                  ★
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {presetKey === 'stars_moon' && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="220" height="220" patternUnits="userSpaceOnUse">
+                <text x="35" y="55" fontSize="32" fill="#eab308">
+                  🌕
+                </text>
+                <text x="140" y="60" fontSize="18" fill="#f59e0b">
+                  ✨
+                </text>
+                <text x="85" y="110" fontSize="24" fill="#d97706">
+                  ☁
+                </text>
+                <text x="30" y="170" fontSize="20" fill="#eab308">
+                  ⭐
+                </text>
+                <text x="145" y="165" fontSize="28" fill="#eab308">
+                  🌕
+                </text>
+                <text x="185" y="125" fontSize="16" fill="#f59e0b">
+                  ✦
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {(presetKey === 'noel_snow' || presetKey === 'noel' || presetKey === 'snow') && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="180" height="180" patternUnits="userSpaceOnUse">
+                <text x="25" y="45" fontSize="26" fill="#15803d">
+                  ❄
+                </text>
+                <text x="115" y="50" fontSize="22" fill="#eab308">
+                  🔔
+                </text>
+                <text x="65" y="100" fontSize="24" fill="#16a34a">
+                  🎄
+                </text>
+                <text x="135" y="115" fontSize="18" fill="#dc2626">
+                  ❅
+                </text>
+                <text x="30" y="155" fontSize="22" fill="#eab308">
+                  ★
+                </text>
+                <text x="110" y="160" fontSize="26" fill="#15803d">
+                  ❄
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {(presetKey === 'tet_blossoms' || presetKey === 'tet') && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="200" height="200" patternUnits="userSpaceOnUse">
+                <text x="30" y="45" fontSize="26" fill="#eab308">
+                  🌼
+                </text>
+                <text x="130" y="50" fontSize="22" fill="#e11d48">
+                  🌸
+                </text>
+                <text x="75" y="100" fontSize="20" fill="#f59e0b">
+                  🪙
+                </text>
+                <text x="145" y="115" fontSize="22" fill="#dc2626">
+                  🧧
+                </text>
+                <text x="25" y="165" fontSize="24" fill="#e11d48">
+                  🌸
+                </text>
+                <text x="120" y="160" fontSize="26" fill="#eab308">
+                  🌼
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {presetKey === 'cyber_grid' && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="80" height="80" patternUnits="userSpaceOnUse">
+                <path
+                  d="M 80 0 L 0 0 0 80"
+                  fill="none"
+                  stroke="#2563eb"
+                  strokeWidth="0.8"
+                  strokeDasharray="4,4"
+                />
+                <circle cx="80" cy="0" r="3" fill="#3b82f6" />
+                <circle cx="0" cy="80" r="3" fill="#3b82f6" />
+                <path d="M 20 20 L 40 20 L 40 40" fill="none" stroke="#60a5fa" strokeWidth="0.6" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {presetKey === 'backtoschool' && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="190" height="190" patternUnits="userSpaceOnUse">
+                <text x="25" y="45" fontSize="26" fill="#7c3aed">
+                  🎓
+                </text>
+                <text x="120" y="55" fontSize="22" fill="#3b82f6">
+                  ✈️
+                </text>
+                <text x="70" y="105" fontSize="22" fill="#8b5cf6">
+                  📖
+                </text>
+                <text x="135" y="115" fontSize="20" fill="#f59e0b">
+                  ⭐
+                </text>
+                <text x="30" y="155" fontSize="22" fill="#3b82f6">
+                  ✈️
+                </text>
+                <text x="115" y="160" fontSize="26" fill="#7c3aed">
+                  🎓
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {presetKey === 'blackfriday' && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="180" height="180" patternUnits="userSpaceOnUse">
+                <text x="25" y="45" fontSize="26" fill="#eab308">
+                  ⚡
+                </text>
+                <text x="110" y="50" fontSize="24" fill="#ef4444">
+                  🛍️
+                </text>
+                <text x="65" y="105" fontSize="20" fill="#f59e0b">
+                  🏷️
+                </text>
+                <text x="135" y="115" fontSize="22" fill="#eab308">
+                  ⚡
+                </text>
+                <text x="30" y="155" fontSize="24" fill="#ef4444">
+                  🛍️
+                </text>
+                <text x="115" y="155" fontSize="20" fill="#f59e0b">
+                  SALE
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+
+        {(presetKey === 'women_day' || presetKey === 'women') && (
+          <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id={uniqueId} width="190" height="190" patternUnits="userSpaceOnUse">
+                <text x="25" y="45" fontSize="26" fill="#e11d48">
+                  🌹
+                </text>
+                <text x="120" y="50" fontSize="22" fill="#ec4899">
+                  🎀
+                </text>
+                <text x="70" y="105" fontSize="22" fill="#f43f5e">
+                  🌸
+                </text>
+                <text x="135" y="120" fontSize="18" fill="#fb7185">
+                  💖
+                </text>
+                <text x="30" y="155" fontSize="22" fill="#ec4899">
+                  🎀
+                </text>
+                <text x="115" y="160" fontSize="26" fill="#e11d48">
+                  🌹
+                </text>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+          </svg>
+        )}
+      </div>
+    )
+  }
+
   const RenderBackgroundSelector = ({ currentTheme, setTargetTheme }) => {
     const bgConfig = currentTheme.background || {
       preset: currentTheme.decorations?.particles || 'none',
@@ -1746,7 +1998,7 @@ const ThemeConfig = () => {
 
         {/* Controls: Opacity & Display Mode */}
         {currentPreset !== 'none' && (
-          <div className="p-3 bg-light rounded-3 border mb-2">
+          <div className="p-3 bg-light rounded-3 border mb-3">
             <div className="row g-3 align-items-center">
               <div className="col-md-6">
                 <label className="form-label fw-bold text-dark text-xs mb-1 d-flex justify-content-between">
@@ -1816,6 +2068,98 @@ const ThemeConfig = () => {
             </div>
           </div>
         )}
+
+        {/* LIVE REAL-TIME PREVIEW BOX */}
+        <div className="mt-2 pt-2 border-top">
+          <div className="d-flex align-items-center justify-content-between mb-2">
+            <span className="fw-bold text-dark text-xs d-flex align-items-center gap-1.5">
+              <span>👁️ Xem trước trực tiếp hoa văn nền (Live Preview):</span>
+            </span>
+            <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 text-xs">
+              Mẫu: {PRESET_BACKGROUNDS.find((p) => p.key === currentPreset)?.name || 'Tùy chỉnh'} (
+              {Math.round((bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15) * 100)}%)
+            </span>
+          </div>
+
+          <div
+            className="rounded-3 border overflow-hidden position-relative p-3"
+            style={{
+              backgroundColor: currentTheme.colors?.background || '#f7f7f7',
+              minHeight: '140px',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
+            }}
+          >
+            {/* Background Watermark Pattern / Custom Wallpaper Layer */}
+            <ThemeBackgroundWatermarkLayer background={bgConfig} themeCode={currentTheme.code} />
+
+            {/* Mock website UI content on top of background */}
+            <div className="position-relative" style={{ zIndex: 1 }}>
+              <div className="d-flex align-items-center justify-content-between bg-white bg-opacity-90 backdrop-blur rounded-2 p-2 px-3 border shadow-xs mb-2.5">
+                <div className="d-flex align-items-center gap-2">
+                  <span className="fw-bold text-primary" style={{ fontSize: '12px' }}>
+                    NGUYÊN KIM
+                  </span>
+                  <span className="badge bg-light text-secondary" style={{ fontSize: '9px' }}>
+                    Demo Giao Diện Website
+                  </span>
+                </div>
+                <div className="d-flex align-items-center gap-2">
+                  <span
+                    className="badge rounded-pill text-white px-2 py-0.5"
+                    style={{
+                      backgroundColor: currentTheme.colors?.accent || '#b00010',
+                      fontSize: '10px',
+                    }}
+                  >
+                    🔥 Khuyến mãi sốc
+                  </span>
+                </div>
+              </div>
+
+              <div className="row g-2">
+                <div className="col-8">
+                  <div className="bg-white rounded-2 p-2 border shadow-xs h-100 d-flex align-items-center gap-2">
+                    <div
+                      className="rounded bg-light d-flex align-items-center justify-content-center flex-shrink-0"
+                      style={{ width: '40px', height: '40px', fontSize: '18px' }}
+                    >
+                      💻
+                    </div>
+                    <div className="overflow-hidden">
+                      <div
+                        className="fw-bold text-dark text-truncate"
+                        style={{ fontSize: '11.5px' }}
+                      >
+                        Màn hình & Laptop Gaming
+                      </div>
+                      <div
+                        className="text-danger fw-bold font-monospace"
+                        style={{ fontSize: '11px' }}
+                      >
+                        19.990.000₫
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="bg-white rounded-2 p-2 border shadow-xs h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                    <button
+                      type="button"
+                      className="btn btn-sm text-white fw-bold w-100 py-1"
+                      style={{
+                        backgroundColor: currentTheme.colors?.primary || '#2356c4',
+                        fontSize: '10.5px',
+                        borderRadius: '5px',
+                      }}
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -2141,7 +2485,7 @@ const ThemeConfig = () => {
 
       {/* LIVE VISUAL WEBSITE CANVAS (Fixed container width & overflow to prevent stretching) */}
       <div
-        className="rounded-3 border shadow-sm w-100 overflow-hidden"
+        className="rounded-3 border shadow-sm w-100 overflow-hidden position-relative"
         style={{
           borderColor: '#cbd5e1',
           backgroundColor: colors.background || '#f7f7f7',
@@ -2149,10 +2493,24 @@ const ThemeConfig = () => {
           maxWidth: '100%',
         }}
       >
+        {/* Background Watermark Pattern Layer for Selected/Active Theme */}
+        <ThemeBackgroundWatermarkLayer
+          background={
+            themes.find((t) => t.id === selectedThemeId)?.background ||
+            themes.find((t) => t.id === appliedThemeId)?.background ||
+            themes[0]?.background
+          }
+          themeCode={
+            themes.find((t) => t.id === selectedThemeId)?.code ||
+            themes.find((t) => t.id === appliedThemeId)?.code ||
+            'default'
+          }
+        />
+
         {/* Browser Top Bar Mock */}
         <div
-          className="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2"
-          style={{ fontSize: '12px' }}
+          className="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2 position-relative"
+          style={{ fontSize: '12px', zIndex: 1 }}
         >
           <div className="d-flex align-items-center gap-1.5">
             <span
