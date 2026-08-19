@@ -138,7 +138,7 @@ function EditProductDetail() {
     brand: '',
     stock: 0,
     visible: 0,
-    star: 4.5,
+    star: 5,
   }
 
   const validationSchema = Yup.object({
@@ -226,7 +226,7 @@ function EditProductDetail() {
           brand: data?.brand_id,
           stock: data?.stock,
           visible: data?.display,
-          star: data?.votes,
+          star: data?.votes ? data.votes : 5,
         })
 
         setEditorData(data?.product_desc?.description)

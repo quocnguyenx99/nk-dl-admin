@@ -86,7 +86,7 @@ function AddProductDetail() {
     brand: '',
     stock: 0,
     visible: 0,
-    star: 4.5,
+    star: 5,
   }
 
   const validationSchema = Yup.object({
@@ -888,7 +888,7 @@ function AddProductDetail() {
                       min="1"
                       max="5"
                       step="0.1"
-                      placeholder="Ví dụ: 4.5"
+                      placeholder="Ví dụ: 5"
                     />
                     <ErrorMessage name="star" component="div" className="text-danger" />
                   </CCol>
