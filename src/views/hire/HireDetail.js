@@ -361,7 +361,7 @@ function HirePost() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Tổng bài đăng
                 </div>
@@ -388,7 +388,7 @@ function HirePost() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Đang tuyển dụng
                 </div>
@@ -415,7 +415,7 @@ function HirePost() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Đã hết hạn
                 </div>
@@ -439,7 +439,7 @@ function HirePost() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Hồ sơ ứng viên
                 </div>

@@ -263,7 +263,7 @@ function CandidateCV() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Tổng hồ sơ ứng tuyển
                 </div>
@@ -287,7 +287,7 @@ function CandidateCV() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Hồ sơ chưa xem
                 </div>
@@ -311,7 +311,7 @@ function CandidateCV() {
               >
                 <div
                   className="fw-bold text-truncate"
-                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                  style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Hồ sơ đã xem
                 </div>
