@@ -580,6 +580,252 @@ function EditThemeConfig() {
         </CCol>
       </CRow>
 
+      {/* Banners & Assets Card */}
+      <CRow className="mb-4">
+        <CCol md={12}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+              Banner & Hình ảnh Giao diện (Banners & Assets)
+            </CCardHeader>
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải banner mới từ máy tính
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-2"
+                    onChange={handleFileChange}
+                  />
+                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
+                </div>
+
+                {editingTheme?.image && (
+                  <div>
+                    <span className="form-label font-semibold text-dark small d-block mb-1">
+                      Ảnh đại diện chiến dịch
+                    </span>
+                    <div
+                      className="rounded border overflow-hidden bg-light mb-3"
+                      style={{ height: '140px' }}
+                    >
+                      <CImage
+                        src={editingTheme.image}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'cover' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* BOTTOM ROW: 3 CARDS (Colors, Effects & Background, Schedule) */}
+      <CRow className="g-4 mb-4">
+        {/* Card 5: Colors (Design Tokens) */}
+        <CCol md={4}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+              Màu tổng thể chiến dịch (Colors)
+            </CCardHeader>
+            <CCardBody className="p-3">
+              <div className="d-flex flex-column gap-2">
+                {[
+                  { label: 'Màu chính (Nút & Viền)', key: 'primary' },
+                  { label: 'Màu thanh Menu Topbar', key: 'secondary' },
+                  { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
+                  { label: 'Màu nền website', key: 'background' },
+                  { label: 'Màu chữ văn bản', key: 'text' },
+                ].map((item) => (
+                  <div
+                    key={item.key}
+                    className="d-flex align-items-center justify-content-between p-2 border rounded bg-light"
+                  >
+                    <span className="small text-secondary fw-semibold">{item.label}</span>
+                    <div className="d-flex align-items-center gap-2">
+                      <input
+                        type="color"
+                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                        className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
+                        style={{ width: '28px', height: '28px' }}
+                        onChange={(e) => {
+                          const newCols = {
+                            ...(editingTheme?.colors || {}),
+                            [item.key]: e.target.value,
+                          }
+                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                        }}
+                      />
+                      <CFormInput
+                        size="sm"
+                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                        className="font-monospace text-uppercase"
+                        style={{ width: '80px', fontSize: '11px' }}
+                        onChange={(e) => {
+                          const newCols = {
+                            ...(editingTheme?.colors || {}),
+                            [item.key]: e.target.value,
+                          }
+                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Card 6: Effects & Background Patterns */}
+        <CCol md={4}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+              Họa tiết & Hiệu ứng lễ hội (Effects)
+            </CCardHeader>
+            <CCardBody className="p-3">
+              <div className="mb-3">
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Chọn mẫu hoa văn nền
+                </label>
+                <CFormSelect
+                  size="sm"
+                  value={currentPreset}
+                  onChange={(e) =>
+                    setEditingTheme((prev) => ({
+                      ...prev,
+                      background: {
+                        ...bgConfig,
+                        preset: e.target.value,
+                      },
+                    }))
+                  }
+                >
+                  {PRESET_BACKGROUNDS.map((p) => (
+                    <option key={p.key} value={p.key}>
+                      {p.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </div>
+
+              {currentPreset === 'custom' && (
+                <div className="mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải ảnh nền riêng
+                  </label>
+                  <CFormInput type="file" size="sm" onChange={handleCustomBgUpload} />
+                </div>
+              )}
+
+              {/* LIVE WATERMARK PREVIEW */}
+              <div>
+                <span className="fw-semibold text-dark text-xs d-block mb-1">
+                  Xem trước trực tiếp hoa văn nền (Live Preview)
+                </span>
+                <div
+                  className="rounded border overflow-hidden position-relative"
+                  style={{
+                    backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
+                    height: '180px',
+                  }}
+                >
+                  <ThemeBackgroundWatermarkLayer
+                    background={{ ...bgConfig, opacity: localOpacity }}
+                    themeCode={editingTheme?.code}
+                  />
+                </div>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Card 7: Schedule & Form Information */}
+        <CCol md={4}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+              Thông tin chung & Lập lịch (Schedule)
+            </CCardHeader>
+            <CCardBody className="p-3">
+              <div className="mb-2">
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Tên chiến dịch *
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.name || ''}
+                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Mã Code (Slug)
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.code || ''}
+                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
+                />
+              </div>
+
+              <CRow className="g-2 mb-2">
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Ngày bắt đầu
+                  </label>
+                  <CFormInput
+                    type="date"
+                    size="sm"
+                    value={formatDateInput(editingTheme?.startDate)}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
+                    }
+                  />
+                </CCol>
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Ngày kết thúc
+                  </label>
+                  <CFormInput
+                    type="date"
+                    size="sm"
+                    value={formatDateInput(editingTheme?.endDate)}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
+                    }
+                  />
+                </CCol>
+              </CRow>
+
+              <div>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Mô tả chi tiết
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.description || ''}
+                  onChange={(e) =>
+                    setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                />
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
       {/* MULTI-PAGE INTERACTIVE LIVE PREVIEW CANVAS */}
       <CCard className="mb-4 shadow-sm border">
         <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -1038,252 +1284,6 @@ function EditThemeConfig() {
           )}
         </CCardBody>
       </CCard>
-
-      {/* Banners & Assets Card */}
-      <CRow className="mb-4">
-        <CCol md={12}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Banner & Hình ảnh Giao diện (Banners & Assets)
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-2">
-                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
-                </p>
-
-                {/* Upload Box */}
-                <div className="p-3 bg-light rounded border text-center mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tải banner mới từ máy tính
-                  </label>
-                  <CFormInput
-                    type="file"
-                    accept="image/*"
-                    size="sm"
-                    className="mb-2"
-                    onChange={handleFileChange}
-                  />
-                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
-                </div>
-
-                {editingTheme?.image && (
-                  <div>
-                    <span className="form-label font-semibold text-dark small d-block mb-1">
-                      Ảnh đại diện chiến dịch
-                    </span>
-                    <div
-                      className="rounded border overflow-hidden bg-light mb-3"
-                      style={{ height: '140px' }}
-                    >
-                      <CImage
-                        src={editingTheme.image}
-                        className="w-100 h-100"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-
-      {/* BOTTOM ROW: 3 CARDS (Colors, Effects & Background, Schedule) */}
-      <CRow className="g-4 mb-4">
-        {/* Card 5: Colors (Design Tokens) */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Màu tổng thể chiến dịch (Colors)
-            </CCardHeader>
-            <CCardBody className="p-3">
-              <div className="d-flex flex-column gap-2">
-                {[
-                  { label: 'Màu chính (Nút & Viền)', key: 'primary' },
-                  { label: 'Màu thanh Menu Topbar', key: 'secondary' },
-                  { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
-                  { label: 'Màu nền website', key: 'background' },
-                  { label: 'Màu chữ văn bản', key: 'text' },
-                ].map((item) => (
-                  <div
-                    key={item.key}
-                    className="d-flex align-items-center justify-content-between p-2 border rounded bg-light"
-                  >
-                    <span className="small text-secondary fw-semibold">{item.label}</span>
-                    <div className="d-flex align-items-center gap-2">
-                      <input
-                        type="color"
-                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                        className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
-                        style={{ width: '28px', height: '28px' }}
-                        onChange={(e) => {
-                          const newCols = {
-                            ...(editingTheme?.colors || {}),
-                            [item.key]: e.target.value,
-                          }
-                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
-                        }}
-                      />
-                      <CFormInput
-                        size="sm"
-                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                        className="font-monospace text-uppercase"
-                        style={{ width: '80px', fontSize: '11px' }}
-                        onChange={(e) => {
-                          const newCols = {
-                            ...(editingTheme?.colors || {}),
-                            [item.key]: e.target.value,
-                          }
-                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 6: Effects & Background Patterns */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Họa tiết & Hiệu ứng lễ hội (Effects)
-            </CCardHeader>
-            <CCardBody className="p-3">
-              <div className="mb-3">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Chọn mẫu hoa văn nền
-                </label>
-                <CFormSelect
-                  size="sm"
-                  value={currentPreset}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({
-                      ...prev,
-                      background: {
-                        ...bgConfig,
-                        preset: e.target.value,
-                      },
-                    }))
-                  }
-                >
-                  {PRESET_BACKGROUNDS.map((p) => (
-                    <option key={p.key} value={p.key}>
-                      {p.name}
-                    </option>
-                  ))}
-                </CFormSelect>
-              </div>
-
-              {currentPreset === 'custom' && (
-                <div className="mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tải ảnh nền riêng
-                  </label>
-                  <CFormInput type="file" size="sm" onChange={handleCustomBgUpload} />
-                </div>
-              )}
-
-              {/* LIVE WATERMARK PREVIEW */}
-              <div>
-                <span className="fw-semibold text-dark text-xs d-block mb-1">
-                  Xem trước trực tiếp hoa văn nền (Live Preview)
-                </span>
-                <div
-                  className="rounded border overflow-hidden position-relative"
-                  style={{
-                    backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                    height: '180px',
-                  }}
-                >
-                  <ThemeBackgroundWatermarkLayer
-                    background={{ ...bgConfig, opacity: localOpacity }}
-                    themeCode={editingTheme?.code}
-                  />
-                </div>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 7: Schedule & Form Information */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Thông tin chung & Lập lịch (Schedule)
-            </CCardHeader>
-            <CCardBody className="p-3">
-              <div className="mb-2">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Tên chiến dịch *
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.name || ''}
-                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="mb-2">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Mã Code (Slug)
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.code || ''}
-                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
-                />
-              </div>
-
-              <CRow className="g-2 mb-2">
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày bắt đầu
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.startDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
-                    }
-                  />
-                </CCol>
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày kết thúc
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.endDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
-                    }
-                  />
-                </CCol>
-              </CRow>
-
-              <div>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Mô tả chi tiết
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.description || ''}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
-                  }
-                />
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
 
       {/* Footer Action Bar */}
       <div className="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
