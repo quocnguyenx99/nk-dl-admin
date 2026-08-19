@@ -1080,67 +1080,9 @@ function EditThemeConfig() {
         </CCardBody>
       </CCard>
 
-      {/* MIDDLE ROW: 2 CARDS (Pages & Layouts, Banners & Assets) */}
-      <CRow className="g-4 mb-4">
-        {/* Card 3: Pages & Layouts */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Trang & Cấu trúc Bố cục (Pages & Layouts)
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-3">
-                  Bật/Tắt trang và chọn kiểu giao diện bố cục phù hợp cho từng trang
-                </p>
-                <div className="table-responsive">
-                  <table className="table table-sm align-middle small m-0">
-                    <thead>
-                      <tr className="table-light">
-                        <th>Trang</th>
-                        <th>Trạng thái</th>
-                        <th>Bố cục</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pagesLayouts.map((item, idx) => (
-                        <tr key={item.id}>
-                          <td className="fw-semibold">{item.name}</td>
-                          <td>
-                            <CFormSwitch
-                              checked={item.enabled}
-                              onChange={(e) => {
-                                const next = [...pagesLayouts]
-                                next[idx].enabled = e.target.checked
-                                setPagesLayouts(next)
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <span className="badge bg-light text-dark border">{item.layout}</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="pt-3 border-top mt-3">
-                <CButton
-                  color="light"
-                  className="border w-100 text-secondary fw-semibold py-1.5"
-                  onClick={() => toast.info('Đã bật tất cả cấu hình trang!')}
-                >
-                  Quản lý Trang & Bố cục
-                </CButton>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 4: Banners & Assets */}
-        <CCol md={6}>
+      {/* Banners & Assets Card */}
+      <CRow className="mb-4">
+        <CCol md={12}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Banner & Hình ảnh Giao diện (Banners & Assets)
