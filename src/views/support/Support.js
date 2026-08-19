@@ -66,9 +66,7 @@ function Support() {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Tên nhân viên là bắt buộc.'),
-    phone: Yup.string()
-      .required('Số điện thoại là bắt buộc.')
-      .matches(/^\d{10,11}$/, 'Số điện thoại gồm 10 - 11 chữ số.'),
+    phone: Yup.string().required('Số điện thoại là bắt buộc.'),
     email: Yup.string().required('Email là bắt buộc.').email('Email không hợp lệ.'),
     skyName: Yup.string(),
     groupType: Yup.string().when('type', {
