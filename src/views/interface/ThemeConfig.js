@@ -1955,14 +1955,17 @@ const ThemeConfig = () => {
                 >
                   <div className="d-flex align-items-start gap-2">
                     <div
-                      className="rounded-2 flex-shrink-0"
+                      className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
                       style={{
-                        width: '24px',
-                        height: '24px',
+                        width: '36px',
+                        height: '36px',
                         background: item.gradient,
+                        fontSize: '18px',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                       }}
-                    />
+                    >
+                      {item.icon}
+                    </div>
                     <div className="flex-grow-1 overflow-hidden">
                       <div className="d-flex align-items-center justify-content-between mb-0.5">
                         <span
