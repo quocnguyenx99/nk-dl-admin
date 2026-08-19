@@ -758,38 +758,36 @@ function HirePost() {
                           <CTableDataCell className="text-center">
                             <button
                               type="button"
-                              className={`btn btn-sm py-0.5 px-2 rounded-pill fw-semibold border ${
-                                item.display === 1
-                                  ? 'btn-success bg-opacity-10 text-success border-success'
-                                  : 'btn-light text-muted border-secondary'
+                              className={`btn btn-sm text-white fw-bold px-2.5 py-1 shadow-2xs border-0 ${
+                                item.display === 1 ? 'bg-success' : 'bg-secondary'
                               }`}
-                              style={{ fontSize: '11px' }}
+                              style={{ fontSize: '11px', minWidth: '65px', borderRadius: '5px' }}
                               onClick={() => handleToggleDisplay(item.id)}
                               title="Nhấn để bật/tắt hiển thị trên website"
                             >
-                              {item.display === 1 ? 'Hiện' : 'Ẩn'}
+                              {item.display === 1 ? 'Hiển thị' : 'Đang ẩn'}
                             </button>
                           </CTableDataCell>
 
                           {/* Tác vụ */}
                           <CTableDataCell className="text-center">
-                            <div className="d-flex justify-content-center gap-1.5">
+                            <div className="d-flex justify-content-center">
                               <button
                                 onClick={() => handleEditClick(item.id)}
-                                className="btn btn-sm btn-outline-primary p-1 px-2 rounded-2"
+                                className="button-action mr-2 bg-info"
                                 title="Chỉnh sửa bài đăng"
                               >
-                                <CIcon icon={cilColorBorder} size="sm" />
+                                <CIcon icon={cilColorBorder} className="text-white" />
                               </button>
                               <button
                                 onClick={() => {
                                   setVisible(true)
                                   setDeletedId(item.id)
                                 }}
-                                className="btn btn-sm btn-outline-danger p-1 px-2 rounded-2"
+                                className="button-action bg-danger"
                                 title="Xóa bài đăng"
                               >
-                                <CIcon icon={cilTrash} size="sm" />
+                                <CIcon icon={cilTrash} className="text-white" />
                               </button>
                             </div>
                           </CTableDataCell>
