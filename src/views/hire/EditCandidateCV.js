@@ -2,8 +2,6 @@ import { CButton, CCol, CContainer, CRow } from '@coreui/react'
 import React, { useEffect, useState, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { axiosClient, imageBaseUrl } from '../../axiosConfig'
-import CIcon from '@coreui/icons-react'
-import { cilArrowLeft, cilCloudDownload, cilExternalLink, cilTrash } from '@coreui/icons'
 import moment from 'moment'
 import { toast } from 'react-toastify'
 import Loading from '../../components/loading/Loading'
@@ -95,7 +93,6 @@ function EditCandidateCV() {
       toast.success('Tải tệp thành công!')
     } catch (error) {
       console.error('Download error:', error)
-      // Fallback: direct browser open
       const directUrl = getFileUrl(filePath)
       if (directUrl) {
         window.open(directUrl, '_blank')
@@ -286,7 +283,9 @@ function EditCandidateCV() {
                           Ngày nộp hồ sơ
                         </label>
                         <div className="form-control bg-light border-0 text-secondary py-2">
-                          {formatCandidateDate(candidateData.date_post || candidateData.created_at)}
+                          {formatCandidateDate(
+                            candidateData.date_post || candidateData.created_at,
+                          )}
                         </div>
                       </div>
 
@@ -361,7 +360,11 @@ function EditCandidateCV() {
                               type="button"
                               className="btn btn-sm btn-outline-primary fw-semibold px-3"
                               onClick={() =>
-                                handleDownloadFile(candidateData.cv, candidateData.name, 'CV')
+                                handleDownloadFile(
+                                  candidateData.cv,
+                                  candidateData.name,
+                                  'CV',
+                                )
                               }
                             >
                               Tải về máy
