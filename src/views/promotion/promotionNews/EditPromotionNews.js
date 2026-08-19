@@ -205,7 +205,7 @@ function EditPromotionNews() {
                     <CCol lg={8} md={12}>
                       <CCard className="shadow-xs border mb-3">
                         <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
-                          📄 Thông tin bài viết
+                          Thông tin bài viết
                         </CCardHeader>
                         <CCardBody className="p-3">
                           <div className="mb-3">
@@ -249,7 +249,7 @@ function EditPromotionNews() {
 
                       <CCard className="shadow-xs border mb-3">
                         <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
-                          🔍 Cấu hình SEO (Search Engine Optimization)
+                          Cấu hình SEO (Search Engine Optimization)
                         </CCardHeader>
                         <CCardBody className="p-3">
                           <div className="mb-3">
@@ -348,7 +348,7 @@ function EditPromotionNews() {
                     <CCol lg={4} md={12}>
                       <CCard className="shadow-xs border mb-3">
                         <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
-                          🖼️ Ảnh đại diện & Thời gian
+                          Ảnh đại diện & Thời gian
                         </CCardHeader>
                         <CCardBody className="p-3">
                           <div className="mb-3">
