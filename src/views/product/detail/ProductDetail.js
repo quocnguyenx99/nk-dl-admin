@@ -550,11 +550,6 @@ function ProductDetail() {
                 >
                   Thêm mới
                 </CButton>
-                <Link to={`/product`}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
-                </Link>
               </div>
             </CCol>
           </CRow>
