@@ -400,21 +400,39 @@ function ProductDetail() {
                       ? 'bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25'
                       : 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'
                 }`}
-                style={{ fontSize: '11px', fontWeight: 600 }}
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  width: '76px',
+                  display: 'inline-block',
+                  textAlign: 'center',
+                }}
               >
                 {item.stock > 0 ? (item.stock === 1 ? 'Còn hàng' : 'Ngừng KD') : 'Hết hàng'}
               </span>
               {item.Hienthi === 'Y' || item.status === 1 || item.status === '1' ? (
                 <span
-                  className="badge bg-success text-white px-2 py-1"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
+                  className="badge bg-success text-white border border-success px-2 py-1"
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    width: '76px',
+                    display: 'inline-block',
+                    textAlign: 'center',
+                  }}
                 >
                   Hiển thị
                 </span>
               ) : (
                 <span
-                  className="badge bg-danger text-white px-2 py-1"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
+                  className="badge bg-danger text-white border border-danger px-2 py-1"
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    width: '76px',
+                    display: 'inline-block',
+                    textAlign: 'center',
+                  }}
                 >
                   Đang ẩn
                 </span>
