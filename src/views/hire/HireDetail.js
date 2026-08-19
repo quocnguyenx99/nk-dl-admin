@@ -222,7 +222,7 @@ function HirePost() {
     if (diffDays < 0) {
       return (
         <span
-          className="badge px-2 py-1 d-inline-flex align-items-center gap-1"
+          className="badge px-2 py-1"
           style={{
             backgroundColor: '#fee2e2',
             color: '#dc2626',
@@ -230,14 +230,13 @@ function HirePost() {
             fontSize: '11px',
           }}
         >
-          <span>🔴</span>
-          <span>Đã hết hạn ({Math.abs(diffDays)} ngày trước)</span>
+          Đã hết hạn ({Math.abs(diffDays)} ngày trước)
         </span>
       )
     } else if (diffDays === 0) {
       return (
         <span
-          className="badge px-2 py-1 d-inline-flex align-items-center gap-1"
+          className="badge px-2 py-1"
           style={{
             backgroundColor: '#fef3c7',
             color: '#d97706',
@@ -245,14 +244,13 @@ function HirePost() {
             fontSize: '11px',
           }}
         >
-          <span>⚠️</span>
-          <span>Hết hạn hôm nay</span>
+          Hết hạn hôm nay
         </span>
       )
     } else if (diffDays <= 3) {
       return (
         <span
-          className="badge px-2 py-1 d-inline-flex align-items-center gap-1"
+          className="badge px-2 py-1"
           style={{
             backgroundColor: '#fef9c3',
             color: '#ca8a04',
@@ -260,14 +258,13 @@ function HirePost() {
             fontSize: '11px',
           }}
         >
-          <span>⏳</span>
-          <span>Còn {diffDays} ngày</span>
+          Còn {diffDays} ngày
         </span>
       )
     } else {
       return (
         <span
-          className="badge px-2 py-1 d-inline-flex align-items-center gap-1"
+          className="badge px-2 py-1"
           style={{
             backgroundColor: '#dcfce7',
             color: '#16a34a',
@@ -275,8 +272,7 @@ function HirePost() {
             fontSize: '11px',
           }}
         >
-          <span>🟢</span>
-          <span>Đang tuyển (Còn {diffDays} ngày)</span>
+          Đang tuyển (Còn {diffDays} ngày)
         </span>
       )
     }
@@ -316,9 +312,7 @@ function HirePost() {
           {/* PAGE HEADER */}
           <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
             <div>
-              <h3 className="fw-bold text-uppercase text-dark m-0 d-flex align-items-center gap-2">
-                <span>📋 QUẢN LÝ BÀI ĐĂNG TUYỂN DỤNG</span>
-              </h3>
+              <h3 className="fw-bold text-uppercase text-dark m-0">QUẢN LÝ BÀI ĐĂNG TUYỂN DỤNG</h3>
               <p className="text-muted text-xs m-0 mt-1">
                 Theo dõi các vị trí tuyển dụng, hạn nộp hồ sơ và ứng viên ứng tuyển
               </p>
@@ -326,7 +320,7 @@ function HirePost() {
             <div className="d-flex flex-wrap gap-2">
               <Link to="/hire/category">
                 <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
-                  📁 Danh mục tuyển dụng
+                  Danh mục tuyển dụng
                 </CButton>
               </Link>
               <Link to="/hire/candidate">
@@ -335,7 +329,7 @@ function HirePost() {
                   size="sm"
                   className="border fw-semibold shadow-xs position-relative"
                 >
-                  👥 Hồ sơ ứng tuyển (CV)
+                  Hồ sơ ứng tuyển (CV)
                   {summary.candidates > 0 && (
                     <span className="badge bg-primary rounded-pill ms-1.5">
                       {summary.candidates}
@@ -360,22 +354,12 @@ function HirePost() {
               <div
                 className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
                 onClick={handleResetFilters}
-                style={{ borderLeft: '4px solid #2563eb !important' }}
+                style={{ borderLeft: '4px solid #2563eb' }}
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
-                      Tổng bài đăng
-                    </div>
-                    <div className="h4 fw-bold text-dark m-0">{summary.total || totalPosts}</div>
-                  </div>
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
-                    style={{ width: '42px', height: '42px', fontSize: '20px' }}
-                  >
-                    💼
-                  </div>
+                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                  Tổng bài đăng
                 </div>
+                <div className="h4 fw-bold text-dark m-0">{summary.total || totalPosts}</div>
               </div>
             </div>
 
@@ -386,22 +370,12 @@ function HirePost() {
                   setStatusFilter('active')
                   setPageNumber(1)
                 }}
-                style={{ borderLeft: '4px solid #16a34a !important' }}
+                style={{ borderLeft: '4px solid #16a34a' }}
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
-                      Đang tuyển dụng
-                    </div>
-                    <div className="h4 fw-bold text-success m-0">{summary.active || 0}</div>
-                  </div>
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success"
-                    style={{ width: '42px', height: '42px', fontSize: '20px' }}
-                  >
-                    🟢
-                  </div>
+                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                  Đang tuyển dụng
                 </div>
+                <div className="h4 fw-bold text-success m-0">{summary.active || 0}</div>
               </div>
             </div>
 
@@ -412,22 +386,10 @@ function HirePost() {
                   setStatusFilter('expired')
                   setPageNumber(1)
                 }}
-                style={{ borderLeft: '4px solid #dc2626 !important' }}
+                style={{ borderLeft: '4px solid #dc2626' }}
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
-                      Đã hết hạn
-                    </div>
-                    <div className="h4 fw-bold text-danger m-0">{summary.expired || 0}</div>
-                  </div>
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger"
-                    style={{ width: '42px', height: '42px', fontSize: '20px' }}
-                  >
-                    ⏰
-                  </div>
-                </div>
+                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">Đã hết hạn</div>
+                <div className="h4 fw-bold text-danger m-0">{summary.expired || 0}</div>
               </div>
             </div>
 
@@ -435,29 +397,13 @@ function HirePost() {
               <div
                 className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
                 onClick={() => navigate('/hire/candidate')}
-                style={{ borderLeft: '4px solid #7c3aed !important' }}
+                style={{ borderLeft: '4px solid #7c3aed' }}
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
-                      Hồ sơ ứng viên
-                    </div>
-                    <div className="h4 fw-bold text-primary m-0" style={{ color: '#7c3aed' }}>
-                      {summary.candidates || 0}
-                    </div>
-                  </div>
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center bg-opacity-10"
-                    style={{
-                      width: '42px',
-                      height: '42px',
-                      fontSize: '20px',
-                      backgroundColor: '#ede9fe',
-                      color: '#7c3aed',
-                    }}
-                  >
-                    👥
-                  </div>
+                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                  Hồ sơ ứng viên
+                </div>
+                <div className="h4 fw-bold m-0" style={{ color: '#7c3aed' }}>
+                  {summary.candidates || 0}
                 </div>
               </div>
             </div>
@@ -468,16 +414,13 @@ function HirePost() {
             <form onSubmit={handleSearchSubmit}>
               <div className="row g-2 align-items-center">
                 <div className="col-12 col-md-4">
-                  <div className="input-group">
-                    <span className="input-group-text bg-light border-end-0 text-muted">🔍</span>
-                    <input
-                      type="text"
-                      className="form-control border-start-0 ps-0"
-                      placeholder="Tìm kiếm vị trí tuyển dụng..."
-                      value={searchInput}
-                      onChange={(e) => setSearchInput(e.target.value)}
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Tìm kiếm vị trí tuyển dụng..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                  />
                 </div>
 
                 <div className="col-12 col-md-3">
@@ -488,7 +431,7 @@ function HirePost() {
                       setPageNumber(1)
                     }}
                   >
-                    <option value="">📁 Tất cả danh mục tuyển</option>
+                    <option value="">Tất cả danh mục</option>
                     {dataHireCategory?.map((cate) => (
                       <option key={cate.id} value={cate.id}>
                         {cate.title}
@@ -505,29 +448,25 @@ function HirePost() {
                       setPageNumber(1)
                     }}
                   >
-                    <option value="">⚡ Tất cả trạng thái hạn nộp</option>
-                    <option value="active">🟢 Đang tuyển (Còn hạn)</option>
-                    <option value="expired">🔴 Đã hết hạn nộp</option>
+                    <option value="">Tất cả trạng thái hạn nộp</option>
+                    <option value="active">Đang tuyển (Còn hạn)</option>
+                    <option value="expired">Đã hết hạn nộp</option>
                   </CFormSelect>
                 </div>
 
                 <div className="col-12 col-md-2 d-flex gap-2">
-                  <CButton
-                    type="submit"
-                    color="primary"
-                    className="w-100 fw-semibold d-flex align-items-center justify-content-center gap-1 shadow-xs"
-                  >
+                  <CButton type="submit" color="primary" className="w-100 fw-semibold shadow-xs">
                     Tìm kiếm
                   </CButton>
                   {(dataSearch || selectedCate || statusFilter || searchInput) && (
                     <CButton
                       type="button"
                       color="light"
-                      className="border shadow-xs px-2.5"
+                      className="border shadow-xs px-2.5 text-nowrap"
                       title="Đặt lại bộ lọc"
                       onClick={handleResetFilters}
                     >
-                      🔄
+                      Đặt lại
                     </CButton>
                   )}
                 </div>
@@ -540,7 +479,7 @@ function HirePost() {
             <div className="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 d-flex justify-content-between align-items-center p-2.5 px-3 rounded-3 mb-3">
               <div className="d-flex align-items-center gap-2">
                 <span className="fw-bold text-primary">
-                  ✓ Đã chọn {selectedCheckbox.length} bài đăng tuyển dụng
+                  Đã chọn {selectedCheckbox.length} bài đăng tuyển dụng
                 </span>
               </div>
               <CButton
@@ -549,7 +488,7 @@ function HirePost() {
                 className="fw-semibold text-white shadow-xs"
                 onClick={handleDeleteSelectedCheckbox}
               >
-                🗑️ Xóa {selectedCheckbox.length} mục đã chọn
+                Xóa {selectedCheckbox.length} mục đã chọn
               </CButton>
             </div>
           )}
@@ -562,9 +501,6 @@ function HirePost() {
               </div>
             ) : postsList.length === 0 ? (
               <div className="p-5 text-center text-muted">
-                <div style={{ fontSize: '48px' }} className="mb-2">
-                  📭
-                </div>
                 <h6 className="fw-bold text-dark">Không tìm thấy bài đăng tuyển dụng nào</h6>
                 <p className="small text-muted mb-3">
                   Thử thay đổi từ khóa tìm kiếm hoặc bấm thêm bài đăng mới
@@ -658,14 +594,14 @@ function HirePost() {
                                   src={jobImg}
                                   alt={item.name}
                                   className="rounded-2 border object-fit-cover flex-shrink-0 shadow-2xs"
-                                  style={{ width: '42px', height: '42px' }}
+                                  style={{ width: '40px', height: '40px' }}
                                 />
                               ) : (
                                 <div
-                                  className="rounded-2 bg-light border d-flex align-items-center justify-content-center flex-shrink-0 text-muted"
-                                  style={{ width: '42px', height: '42px', fontSize: '20px' }}
+                                  className="rounded-2 bg-light border d-flex align-items-center justify-content-center flex-shrink-0 text-secondary fw-bold"
+                                  style={{ width: '40px', height: '40px', fontSize: '13px' }}
                                 >
-                                  💼
+                                  {item.name ? item.name.charAt(0).toUpperCase() : 'NK'}
                                 </div>
                               )}
                               <div className="overflow-hidden">
@@ -724,10 +660,10 @@ function HirePost() {
                           {/* Mức lương & Số lượng */}
                           <CTableDataCell>
                             <div className="fw-bold text-success" style={{ fontSize: '12.5px' }}>
-                              💵 {item.salary || 'Thỏa thuận'}
+                              {item.salary || 'Thỏa thuận'}
                             </div>
                             <div className="text-muted mt-0.5" style={{ fontSize: '11px' }}>
-                              👥 Tuyển:{' '}
+                              Tuyển:{' '}
                               <strong>
                                 {item.number ? `${item.number} người` : 'Không giới hạn'}
                               </strong>
@@ -738,7 +674,7 @@ function HirePost() {
                                 style={{ fontSize: '10.5px', maxWidth: '160px' }}
                                 title={item.address}
                               >
-                                📍 {item.address}
+                                {item.address}
                               </div>
                             )}
                           </CTableDataCell>
@@ -749,7 +685,6 @@ function HirePost() {
                               className="fw-semibold text-dark mb-1"
                               style={{ fontSize: '12px' }}
                             >
-                              📅{' '}
                               {item.deadline
                                 ? moment(item.deadline).format('DD/MM/YYYY')
                                 : 'Vô thời hạn'}
@@ -766,9 +701,9 @@ function HirePost() {
                               title="Xem danh sách ứng viên nộp bài này"
                             >
                               <span className="fw-bold text-primary">
-                                👥 {item.candidates_count !== undefined ? item.candidates_count : 0}
+                                {item.candidates_count !== undefined ? item.candidates_count : 0}
                               </span>{' '}
-                              CV
+                              hồ sơ
                             </Link>
                           </CTableDataCell>
 
@@ -785,7 +720,7 @@ function HirePost() {
                               onClick={() => handleToggleDisplay(item.id)}
                               title="Nhấn để bật/tắt hiển thị trên website"
                             >
-                              {item.display === 1 ? '🟢 Hiện' : '⚪ Ẩn'}
+                              {item.display === 1 ? 'Hiện' : 'Ẩn'}
                             </button>
                           </CTableDataCell>
 
