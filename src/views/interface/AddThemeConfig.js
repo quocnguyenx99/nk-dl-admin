@@ -371,6 +371,26 @@ function AddThemeConfig() {
     }
   }
 
+  const handleMainLogoUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setNewTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            logoUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh Logo chiến dịch thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh Logo chiến dịch: ' + err.message)
+    }
+  }
+
   const handleLogoOrnamentUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -433,6 +453,7 @@ function AddThemeConfig() {
           decorations: {
             particles: newTheme?.background?.preset || newTheme?.code || 'none',
             ornaments: newTheme?.background?.preset || newTheme?.code || 'none',
+            logoUrl: newTheme?.decorations?.logoUrl || '',
             logoOrnamentUrl: newTheme?.decorations?.logoOrnamentUrl || '',
             logoOrnamentPosition: newTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
             logoOrnamentSize: newTheme?.decorations?.logoOrnamentSize || '36px',
@@ -655,22 +676,47 @@ function AddThemeConfig() {
 
                   <CRow className="g-4 align-items-center">
                     <CCol md={7}>
-                      {/* Upload Box */}
-                      <div className="p-3 bg-light rounded border text-center mb-3">
-                        <label className="form-label font-semibold text-dark small mb-1">
-                          Tải ảnh phụ kiện trang trí Logo từ máy tính
-                        </label>
-                        <CFormInput
-                          type="file"
-                          accept="image/*"
-                          size="sm"
-                          className="mb-1"
-                          onChange={handleLogoOrnamentUpload}
-                        />
-                        <span className="text-muted text-xs">
-                          Khuyên dùng ảnh PNG / WEBP tách nền
-                        </span>
-                      </div>
+                      <CRow className="g-3 mb-3">
+                        {/* Upload Box 1: Campaign Main Logo */}
+                        <CCol md={6}>
+                          <div className="p-3 bg-light rounded border text-center h-100 d-flex flex-column justify-content-between">
+                            <div>
+                              <label className="form-label font-semibold text-dark small mb-1">
+                                Tải ảnh Logo chiến dịch (Thay logo mặc định)
+                              </label>
+                              <CFormInput
+                                type="file"
+                                accept="image/*"
+                                size="sm"
+                                className="mb-1"
+                                onChange={handleMainLogoUpload}
+                              />
+                            </div>
+                            <span className="text-muted text-xs">Ảnh PNG/WEBP tách nền logo</span>
+                          </div>
+                        </CCol>
+
+                        {/* Upload Box 2: Logo Ornament */}
+                        <CCol md={6}>
+                          <div className="p-3 bg-light rounded border text-center h-100 d-flex flex-column justify-content-between">
+                            <div>
+                              <label className="form-label font-semibold text-dark small mb-1">
+                                Tải ảnh phụ kiện đính trên Logo
+                              </label>
+                              <CFormInput
+                                type="file"
+                                accept="image/*"
+                                size="sm"
+                                className="mb-1"
+                                onChange={handleLogoOrnamentUpload}
+                              />
+                            </div>
+                            <span className="text-muted text-xs">
+                              Lá thông, nón Noel, cành mai...
+                            </span>
+                          </div>
+                        </CCol>
+                      </CRow>
 
                       {/* Position & Size */}
                       <CRow className="g-3">
@@ -735,7 +781,7 @@ function AddThemeConfig() {
                         >
                           <div className="position-relative d-inline-block p-2 bg-white rounded border">
                             <img
-                              src={logoNk}
+                              src={newTheme?.decorations?.logoUrl || logoNk}
                               alt="Logo"
                               style={{ height: '45px', objectFit: 'contain' }}
                             />
