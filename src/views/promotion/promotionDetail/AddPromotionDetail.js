@@ -322,7 +322,7 @@ function AddPromotionDetail() {
                           placeholder="VD: MBDE_3080SFF, MBDE_3456SSS"
                         />
                         <div className="form-text text-muted small">
-                          Nhập các Mã Kho SP cách nhau bởi dấu phẩy ","
+                          {'Nhập các Mã Kho SP cách nhau bởi dấu phẩy ","'}
                         </div>
                         <ErrorMessage
                           name="ordersHaveProductCode"
