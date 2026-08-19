@@ -385,11 +385,6 @@ function AddProductDetail() {
               Quản lý sản phẩm
             </CButton>
           </Link>
-          <Link to="/product/category">
-            <CButton color="primary" size="sm" className="fw-semibold shadow-xs">
-              Danh mục sản phẩm
-            </CButton>
-          </Link>
         </div>
       </div>
 
