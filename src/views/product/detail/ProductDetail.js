@@ -359,8 +359,8 @@ function ProductDetail() {
                 <span className="orange-txt m-0">{`#${item?.MaHH ? item?.MaHH : item?.macn}`}</span>
                 <button
                   type="button"
-                  className="btn btn-sm btn-light border py-0 px-1.5 d-inline-flex align-items-center justify-content-center text-secondary shadow-2xs ms-1"
-                  style={{ fontSize: '11px', lineHeight: 1 }}
+                  className="btn btn-sm btn-light border p-1 d-inline-flex align-items-center justify-content-center text-secondary shadow-2xs ms-1"
+                  style={{ lineHeight: 1 }}
                   title="Sao chép mã sản phẩm"
                   onClick={(e) => {
                     e.stopPropagation()
@@ -371,8 +371,7 @@ function ProductDetail() {
                     }
                   }}
                 >
-                  <CIcon icon={cilCopy} size="sm" className="me-1" />
-                  <span style={{ fontSize: '11px' }}>Copy</span>
+                  <CIcon icon={cilCopy} size="sm" />
                 </button>
               </div>
             </div>
