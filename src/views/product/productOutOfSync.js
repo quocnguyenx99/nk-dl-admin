@@ -653,15 +653,27 @@ function ProductOutOfSync() {
           </CRow>
 
           {/* Action Row */}
-          <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <CButton
-              onClick={handleDeleteSelectedCheckbox}
-              color="danger"
-              size="sm"
-              className="fw-semibold"
-            >
-              Xóa vĩnh viễn ({selectedCheckbox.length})
-            </CButton>
+          <div className="d-flex align-items-center justify-content-between my-3">
+            <div>
+              <CButton
+                onClick={handleDeleteSelectedCheckbox}
+                color="danger"
+                size="sm"
+                className="fw-semibold"
+              >
+                Xóa vĩnh viễn ({selectedCheckbox.length})
+              </CButton>
+            </div>
+            <div>
+              <CButton
+                color="primary"
+                size="sm"
+                className="fw-semibold d-flex align-items-center gap-1 shadow-xs"
+                onClick={() => setAddModalVisible(true)}
+              >
+                <CIcon icon={cilPlus} /> Thêm mới sản phẩm
+              </CButton>
+            </div>
           </div>
 
           {/* Product Out Of Sync Table */}
