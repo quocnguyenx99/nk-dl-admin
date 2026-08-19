@@ -262,10 +262,17 @@ function HireCategory() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const categoryList = dataHireCategory?.data || []
-  const totalItems = dataHireCategory?.total || 0
-  const perPage = dataHireCategory?.per_page || 10
+  const allCategories = Array.isArray(dataHireCategory)
+    ? dataHireCategory
+    : dataHireCategory?.data || []
+  const totalItems = Array.isArray(dataHireCategory)
+    ? dataHireCategory.length
+    : dataHireCategory?.total || allCategories.length
+  const perPage = Array.isArray(dataHireCategory) ? 10 : dataHireCategory?.per_page || 10
   const totalPages = Math.ceil(totalItems / perPage) || 1
+  const categoryList = Array.isArray(dataHireCategory)
+    ? allCategories.slice((pageNumber - 1) * perPage, pageNumber * perPage)
+    : allCategories
   const startItem = totalItems === 0 ? 0 : (pageNumber - 1) * perPage + 1
   const endItem = Math.min(pageNumber * perPage, totalItems)
 
