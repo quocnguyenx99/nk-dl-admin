@@ -578,171 +578,148 @@ function ProductDetail() {
             </CCol>
           </CRow>
 
-          <CCard className="mb-3 shadow-xs border">
-            <CCardHeader className="bg-white py-2 px-3 d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center gap-3">
-                <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
-                <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
-                  Tổng cộng:{' '}
-                  <span className="fw-bold text-white">
-                    {dataProductList?.total?.toLocaleString('vi-VN') || 0}
-                  </span>{' '}
-                  sản phẩm
-                </CBadge>
-              </div>
-              <CButton
-                color="light"
-                size="sm"
-                className="text-secondary fw-semibold border"
-                onClick={handleToggleCollapse}
-              >
-                {isCollapse ? 'Hiện bộ lọc ▼' : 'Ẩn bộ lọc ▲'}
-              </CButton>
-            </CCardHeader>
-
-            {!isCollapse && (
-              <CCardBody className="bg-light p-3">
-                <CRow className="g-2">
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Danh mục</label>
-                    <CFormSelect
-                      size="sm"
-                      aria-label="Chọn danh mục"
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      options={[
-                        { label: '-- Tất cả danh mục --', value: '' },
-                        ...(categories && categories.length > 0
-                          ? categories.map((cate) => ({
-                              label: cate.category_desc?.cat_name || cate.cat_name,
-                              value: cate.cat_id,
-                            }))
-                          : []),
-                      ]}
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Thương hiệu
-                    </label>
-                    <CFormSelect
-                      size="sm"
-                      aria-label="Chọn thương hiệu"
-                      value={selectedBrand}
-                      onChange={(e) => setSelectedBrand(e.target.value)}
-                      options={[
-                        { label: '-- Tất cả thương hiệu --', value: '' },
-                        ...(brands && brands.length > 0
-                          ? brands.map((brand) => ({
-                              label: brand.title,
-                              value: brand.brandId,
-                            }))
-                          : []),
-                      ]}
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Trạng thái hiển thị
-                    </label>
-                    <CFormSelect
-                      size="sm"
-                      aria-label="Chọn trạng thái"
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
-                      options={[
-                        { label: '-- Tất cả trạng thái --', value: '' },
-                        { label: 'Hiển thị', value: '1' },
-                        { label: 'Đang ẩn', value: '0' },
-                      ]}
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Tình trạng kho hàng
-                    </label>
-                    <CFormSelect
-                      size="sm"
-                      aria-label="Chọn tình trạng kho hàng"
-                      value={selectedStockStatus}
-                      onChange={(e) => setSelectedStockStatus(e.target.value)}
-                      options={[
-                        { label: '-- Tất cả kho hàng --', value: '' },
-                        { label: 'Còn hàng', value: '1' },
-                        { label: 'Hết hàng', value: '0' },
-                      ]}
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Từ ngày</label>
-                    <DatePicker
-                      className="form-control form-control-sm"
-                      showIcon
-                      dateFormat={'dd-MM-yyyy'}
-                      selected={startDate}
-                      onChange={handleStartDateChange}
-                      locale="vi"
-                      placeholderText="Chọn từ ngày"
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Đến ngày</label>
-                    <DatePicker
-                      className="form-control form-control-sm"
-                      showIcon
-                      dateFormat={'dd-MM-yyyy'}
-                      selected={endDate}
-                      onChange={handleEndDateChange}
-                      locale="vi"
-                      placeholderText="Chọn đến ngày"
-                    />
-                  </CCol>
-
-                  <CCol lg={6} md={8} sm={12}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Từ khóa tìm kiếm
-                    </label>
-                    <div className="d-flex gap-2">
-                      <CFormInput
-                        size="sm"
-                        type="text"
-                        placeholder="Tiêu đề, Mã kho, Mã số, Giá bán..."
-                        value={dataSearch}
-                        onChange={(e) => setDataSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
-                      />
-                      <CButton
-                        color="primary"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={() => handleSearch(dataSearch)}
-                      >
-                        Tìm kiếm
-                      </CButton>
-                      <CButton
-                        color="secondary"
-                        variant="outline"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={handleResetFilter}
-                      >
-                        Làm mới
-                      </CButton>
-                    </div>
-                  </CCol>
-                </CRow>
-                {errors.startDate && (
-                  <p className="text-danger small mt-1 mb-0">{errors.startDate}</p>
+          <CRow>
+            <CCol md={12}>
+              <table className="filter-table">
+                <thead>
+                  <tr>
+                    <th colSpan="2">
+                      <div className="d-flex justify-content-between">
+                        <span>Bộ lọc tìm kiếm</span>
+                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
+                          {isCollapse ? '▼' : '▲'}
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {!isCollapse && (
+                  <tbody>
+                    <tr>
+                      <td>Tổng cộng</td>
+                      <td className="total-count">{dataProductList?.total}</td>
+                    </tr>
+                    <tr>
+                      <td>Lọc</td>
+                      <td>
+                        <div
+                          className="d-flex"
+                          style={{
+                            columnGap: 10,
+                          }}
+                        >
+                          <CFormSelect
+                            className="component-size w-25"
+                            aria-label="Chọn yêu cầu lọc"
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            options={[
+                              { label: 'Chọn danh mục', value: '' },
+                              ...(categories && categories.length > 0
+                                ? categories.map((cate) => ({
+                                    label: cate.category_desc?.cat_name || cate.cat_name,
+                                    value: cate.cat_id,
+                                  }))
+                                : []),
+                            ]}
+                          />
+                          <CFormSelect
+                            className="component-size w-25"
+                            aria-label="Chọn thương hiệu"
+                            value={selectedBrand}
+                            onChange={(e) => setSelectedBrand(e.target.value)}
+                            options={[
+                              { label: 'Chọn thương hiệu', value: '' },
+                              ...(brands && brands.length > 0
+                                ? brands.map((brand) => ({
+                                    label: brand.title,
+                                    value: brand.brandId,
+                                  }))
+                                : []),
+                            ]}
+                          />
+                          <CFormSelect
+                            className="component-size w-25"
+                            aria-label="Chọn trạng thái"
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            options={[
+                              { label: 'Chọn trạng thái', value: '' },
+                              { label: 'Hiển thị', value: '1' },
+                              { label: 'Đang ẩn', value: '0' },
+                            ]}
+                          />
+                          <CFormSelect
+                            className="component-size w-25"
+                            aria-label="Chọn tình trạng kho hàng"
+                            value={selectedStockStatus}
+                            onChange={(e) => setSelectedStockStatus(e.target.value)}
+                            options={[
+                              { label: 'Chọn kho hàng', value: '' },
+                              { label: 'Còn hàng', value: '1' },
+                              { label: 'Hết hàng', value: '0' },
+                            ]}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Xem từ ngày</td>
+                      <td>
+                        <div className="custom-datepicker-wrapper">
+                          <DatePicker
+                            className="custom-datepicker"
+                            showIcon
+                            dateFormat={'dd-MM-yyyy'}
+                            selected={startDate}
+                            onChange={handleStartDateChange}
+                            locale="vi"
+                          />
+                          <p className="datepicker-label">{'đến ngày'}</p>
+                          <DatePicker
+                            className="custom-datepicker"
+                            showIcon
+                            dateFormat={'dd-MM-yyyy'}
+                            selected={endDate}
+                            onChange={handleEndDateChange}
+                            locale="vi"
+                          />
+                        </div>
+                        {errors.startDate && <p className="text-danger">{errors.startDate}</p>}
+                        {errors.endDate && <p className="text-danger">{errors.endDate}</p>}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tìm kiếm</td>
+                      <td>
+                        <strong>
+                          <em>Tìm kiếm theo Tiêu đề, Mã kho, Mã số, Giá bán</em>
+                        </strong>
+                        <div className="d-flex align-items-center gap-2 mt-1">
+                          <input
+                            type="text"
+                            className="search-input"
+                            value={dataSearch}
+                            onChange={(e) => setDataSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
+                          />
+                          <button onClick={() => handleSearch(dataSearch)} className="submit-btn">
+                            Submit
+                          </button>
+                          <button
+                            onClick={handleResetFilter}
+                            className="btn btn-sm btn-secondary ms-1"
+                          >
+                            Làm mới
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
                 )}
-                {errors.endDate && <p className="text-danger small mt-1 mb-0">{errors.endDate}</p>}
-              </CCardBody>
-            )}
-          </CCard>
+              </table>
+            </CCol>
+          </CRow>
 
           <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
             <CButton

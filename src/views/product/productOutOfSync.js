@@ -599,85 +599,66 @@ function ProductOutOfSync() {
             </CCardBody>
           </CCard>
 
-          {/* CoreUI Search Filter Card */}
-          <CCard className="mb-3 shadow-xs border">
-            <CCardHeader className="bg-white py-2 px-3 d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center gap-3">
-                <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
-                <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
-                  Tổng cộng:{' '}
-                  <span className="fw-bold text-white">
-                    {dataProductSkip?.pagination?.total?.toLocaleString('vi-VN') || 0}
-                  </span>{' '}
-                  sản phẩm
-                </CBadge>
-              </div>
-              <CButton
-                color="light"
-                size="sm"
-                className="text-secondary fw-semibold border"
-                onClick={handleToggleCollapse}
-              >
-                {isCollapse ? 'Hiện bộ lọc ▼' : 'Ẩn bộ lọc ▲'}
-              </CButton>
-            </CCardHeader>
-
-            {!isCollapse && (
-              <CCardBody className="bg-light p-3">
-                <CRow className="g-2">
-                  <CCol md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Loại sản phẩm
-                    </label>
-                    <CFormSelect
-                      size="sm"
-                      aria-label="Chọn loại lọc"
-                      options={[
-                        { label: '-- Tất cả loại --', value: '' },
-                        { label: 'Điều chỉnh giá (skip)', value: 'skip' },
-                        { label: 'So sánh giá (adjustment)', value: 'adjustment' },
-                      ]}
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                    />
-                  </CCol>
-
-                  <CCol md={8} sm={12}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Từ khóa tìm kiếm
-                    </label>
-                    <div className="d-flex gap-2">
-                      <CFormInput
-                        size="sm"
-                        type="text"
-                        placeholder="Nhập Mã kho, Tên sản phẩm..."
-                        value={dataSearch}
-                        onChange={(e) => setDataSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
-                      />
-                      <CButton
-                        color="primary"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={() => handleSearch(dataSearch)}
-                      >
-                        Tìm kiếm
-                      </CButton>
-                      <CButton
-                        color="secondary"
-                        variant="outline"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={handleResetFilter}
-                      >
-                        Làm mới
-                      </CButton>
-                    </div>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            )}
-          </CCard>
+          <CRow>
+            <CCol md={12}>
+              <table className="filter-table">
+                <thead>
+                  <tr>
+                    <th colSpan="2">
+                      <div className="d-flex justify-content-between">
+                        <span>Bộ lọc tìm kiếm</span>
+                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
+                          {isCollapse ? '▼' : '▲'}
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {!isCollapse && (
+                  <tbody>
+                    <tr>
+                      <td>Tổng cộng</td>
+                      <td className="total-count">{dataProductSkip?.pagination?.total}</td>
+                    </tr>
+                    <tr>
+                      <td>Lọc theo loại sản phẩm</td>
+                      <td>
+                        <CFormSelect
+                          className="component-size w-50"
+                          aria-label="Chọn loại lọc"
+                          options={[
+                            { label: 'Chọn loại lọc', value: '' },
+                            { label: 'Điều chỉnh giá', value: 'skip' },
+                            { label: 'So sánh giá', value: 'adjustment' },
+                          ]}
+                          value={selectedCategory}
+                          onChange={(e) => setSelectedCategory(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tìm kiếm</td>
+                      <td>
+                        <input
+                          type="text"
+                          className="search-input"
+                          value={dataSearch}
+                          onChange={(e) => setDataSearch(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
+                        />
+                        <button
+                          onClick={() => handleSearch(dataSearch)}
+                          className="submit-btn ms-2"
+                        >
+                          Submit
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                )}
+              </table>
+            </CCol>
+          </CRow>
 
           {/* Action Row */}
           <div className="d-flex flex-wrap align-items-center gap-2 mb-3">

@@ -329,98 +329,79 @@ function PromotionDetail() {
             </div>
           </div>
 
-          {/* CoreUI Search Filter Card */}
-          <CCard className="mb-3 shadow-xs border">
-            <CCardHeader className="bg-white py-2 px-3 d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center gap-3">
-                <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
-                <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
-                  Tổng cộng:{' '}
-                  <span className="fw-bold text-white">
-                    {countGiftPromotion?.toLocaleString('vi-VN') || 0}
-                  </span>{' '}
-                  đợt khuyến mãi
-                </CBadge>
-              </div>
-              <CButton
-                color="light"
-                size="sm"
-                className="text-secondary fw-semibold border"
-                onClick={handleToggleCollapse}
-              >
-                {isCollapse ? 'Hiện bộ lọc ▼' : 'Ẩn bộ lọc ▲'}
-              </CButton>
-            </CCardHeader>
+          <CRow>
+            <CCol md={12}>
+              <table className="filter-table">
+                <thead>
+                  <tr>
+                    <th colSpan="2">
+                      <div className="d-flex justify-content-between">
+                        <span>Bộ lọc tìm kiếm</span>
+                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
+                          {isCollapse ? '▼' : '▲'}
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {!isCollapse && (
+                  <tbody>
+                    <tr>
+                      <td>Tổng cộng</td>
+                      <td className="total-count">{countGiftPromotion}</td>
+                    </tr>
 
-            {!isCollapse && (
-              <CCardBody className="bg-light p-3">
-                <CRow className="g-2">
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Từ ngày</label>
-                    <DatePicker
-                      className="form-control form-control-sm"
-                      showIcon
-                      dateFormat={'dd-MM-yyyy'}
-                      selected={startDate}
-                      onChange={handleStartDateChange}
-                      locale="vi"
-                      placeholderText="Chọn từ ngày"
-                    />
-                  </CCol>
-
-                  <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Đến ngày</label>
-                    <DatePicker
-                      className="form-control form-control-sm"
-                      showIcon
-                      dateFormat={'dd-MM-yyyy'}
-                      selected={endDate}
-                      onChange={handleEndDateChange}
-                      locale="vi"
-                      placeholderText="Chọn đến ngày"
-                    />
-                  </CCol>
-
-                  <CCol lg={6} md={8} sm={12}>
-                    <label className="form-label fw-semibold text-dark small mb-1">
-                      Mã đợt / Tên khuyến mãi
-                    </label>
-                    <div className="d-flex gap-2">
-                      <CFormInput
-                        size="sm"
-                        type="text"
-                        placeholder="Nhập Mã đợt phát hành, Tên khuyến mãi..."
-                        value={dataSearch}
-                        onChange={(e) => setDataSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                      />
-                      <CButton
-                        color="primary"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={handleSearch}
-                      >
-                        Tìm kiếm
-                      </CButton>
-                      <CButton
-                        color="secondary"
-                        variant="outline"
-                        size="sm"
-                        className="px-3 text-nowrap"
-                        onClick={handleResetFilter}
-                      >
-                        Làm mới
-                      </CButton>
-                    </div>
-                  </CCol>
-                </CRow>
-                {errors.startDate && (
-                  <p className="text-danger small mt-1 mb-0">{errors.startDate}</p>
+                    <tr>
+                      <td>Tạo từ ngày</td>
+                      <td>
+                        <div className="custom-datepicker-wrapper">
+                          <DatePicker
+                            className="custom-datepicker"
+                            showIcon
+                            dateFormat={'dd-MM-yyyy'}
+                            selected={startDate}
+                            onChange={handleStartDateChange}
+                          />
+                          <p className="datepicker-label">{'đến ngày'}</p>
+                          <DatePicker
+                            className="custom-datepicker"
+                            showIcon
+                            dateFormat={'dd-MM-yyyy'}
+                            selected={endDate}
+                            onChange={handleEndDateChange}
+                          />
+                        </div>
+                        {errors.startDate && <p className="text-danger">{errors.startDate}</p>}
+                        {errors.endDate && <p className="text-danger">{errors.endDate}</p>}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tìm kiếm</td>
+                      <td>
+                        <CFormSelect
+                          className="component-size w-25"
+                          aria-label="Chọn yêu cầu lọc"
+                          options={[{ label: 'Mã đợt phát hành', value: '1' }]}
+                        />
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            className="search-input"
+                            value={dataSearch}
+                            onChange={(e) => setDataSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                          />
+                          <button onClick={handleSearch} className="submit-btn ms-2">
+                            Submit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
                 )}
-                {errors.endDate && <p className="text-danger small mt-1 mb-0">{errors.endDate}</p>}
-              </CCardBody>
-            )}
-          </CCard>
+              </table>
+            </CCol>
+          </CRow>
 
           {/* Action Row */}
           <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
