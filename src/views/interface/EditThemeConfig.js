@@ -1085,20 +1085,6 @@ function EditThemeConfig() {
                   </div>
                 )}
               </div>
-
-              {/* Action Save Button directly inside Right Column */}
-              <div className="pt-2 border-top d-grid">
-                <CButton
-                  color="primary"
-                  className="text-white py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-1.5"
-                  style={{ backgroundColor: '#2356c4', borderColor: '#2356c4', fontSize: '14px' }}
-                  disabled={isSaving}
-                  onClick={handleSave}
-                >
-                  <CIcon icon={cilSave} />
-                  <span>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</span>
-                </CButton>
-              </div>
             </CCardBody>
           </CCard>
         </CCol>
