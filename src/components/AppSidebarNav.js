@@ -72,12 +72,13 @@ export const AppSidebarNav = ({ items }) => {
   }
 
   const navItem = (item, index, indent = false) => {
-    const { component, name, badge, icon, ...rest } = item
+    const { component, name, badge, icon, end, ...rest } = item
     const Component = component
+    const isExactEnd = end !== undefined ? end : true
     return (
       <Component as="div" key={index}>
         {rest.to || rest.href ? (
-          <CNavLink {...(rest.to && { as: NavLink })} {...rest}>
+          <CNavLink {...(rest.to && { as: NavLink, end: isExactEnd })} {...rest}>
             {navLink(name, icon, badge, indent)}
           </CNavLink>
         ) : (
