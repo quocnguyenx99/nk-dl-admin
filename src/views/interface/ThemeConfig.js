@@ -1922,7 +1922,7 @@ const ThemeConfig = () => {
       <div className="mt-3 pt-3 border-top">
         <div className="d-flex align-items-center justify-content-between mb-1.5">
           <label className="form-label fw-bold text-dark small m-0 d-flex align-items-center gap-1.5">
-            <span>🖼️ Họa tiết & Hình nền Website (Background Pattern & Wallpaper)</span>
+            <span>Họa tiết & Hình nền Website (Background Pattern & Wallpaper)</span>
           </label>
           <span
             className="badge bg-light text-secondary border fw-normal"
@@ -1955,17 +1955,14 @@ const ThemeConfig = () => {
                 >
                   <div className="d-flex align-items-start gap-2">
                     <div
-                      className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                      className="rounded-2 flex-shrink-0"
                       style={{
-                        width: '36px',
-                        height: '36px',
+                        width: '24px',
+                        height: '24px',
                         background: item.gradient,
-                        fontSize: '18px',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                       }}
-                    >
-                      {item.icon}
-                    </div>
+                    />
                     <div className="flex-grow-1 overflow-hidden">
                       <div className="d-flex align-items-center justify-content-between mb-0.5">
                         <span
@@ -3526,8 +3523,7 @@ const ThemeConfig = () => {
           {/* Color Pickers inside Modal */}
           <div className="mt-4 pt-3 border-top">
             <h6 className="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-              <CIcon icon={cilColorPalette} className="text-primary" /> Màu chính & Thương hiệu
-              chiến dịch
+              <CIcon icon={cilColorPalette} className="text-primary" /> Màu tổng thể chiến dịch
             </h6>
 
             <CRow className="g-3 mb-4">
@@ -3749,8 +3745,7 @@ const ThemeConfig = () => {
             {/* COLOR PICKERS INSIDE EDIT MODAL */}
             <div className="mt-4 pt-3 border-top mb-3">
               <h6 className="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                <CIcon icon={cilColorPalette} className="text-primary" /> Màu chính & Thương hiệu
-                chiến dịch
+                <CIcon icon={cilColorPalette} className="text-primary" /> Màu tổng thể chiến dịch
               </h6>
 
               <CRow className="g-3">
