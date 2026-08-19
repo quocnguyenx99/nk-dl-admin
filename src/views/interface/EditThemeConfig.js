@@ -21,7 +21,7 @@ import { cilArrowLeft, cilSave } from '@coreui/icons'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
-import logoNk from '../../assets/brand/logo_nk.png'
+import logoNk from '../../assets/images/logo/nk viền.png'
 
 // Date Format Helpers (HTML5 <input type="date"> requires YYYY-MM-DD)
 const formatDateInput = (dateStr) => {

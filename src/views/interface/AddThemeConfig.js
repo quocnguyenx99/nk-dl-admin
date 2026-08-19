@@ -20,7 +20,7 @@ import { cilArrowLeft, cilSave } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
-import logoNk from '../../assets/brand/logo_nk.png'
+import logoNk from '../../assets/images/logo/nk viền.png'
 
 // Preset Background Patterns & Wallpapers
 const PRESET_BACKGROUNDS = [
