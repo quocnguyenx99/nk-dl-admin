@@ -658,14 +658,12 @@ function AddThemeConfig() {
           </CCard>
         </CCol>
       </CRow>
-
-      {/* ROW 2: Single Unified Card with Top Nav Tabs for Header Logo & Footer Ornaments */}
       <CRow className="mb-4">
         <CCol md={12}>
           <CCard className="shadow-xs border">
             <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
               <span className="fw-bold text-dark fs-6">
-                Thẻ 2: Cấu hình Trang trí Logo Header &amp; Chân trang Footer
+                Thẻ 3: Cấu hình Logo Header &amp; Chân trang Footer
               </span>
 
               {/* TOP NAV BUTTONS / TABS TO SWITCH BETWEEN HEADER & FOOTER */}
@@ -676,7 +674,7 @@ function AddThemeConfig() {
                     className="cursor-pointer fw-bold py-1.5 px-3"
                     onClick={() => setActiveOrnamentTab('header_logo')}
                   >
-                    🏷️ Trang trí Logo Header
+                    Logo Header
                   </CNavLink>
                 </CNavItem>
                 <CNavItem>
@@ -685,7 +683,7 @@ function AddThemeConfig() {
                     className="cursor-pointer fw-bold py-1.5 px-3"
                     onClick={() => setActiveOrnamentTab('footer')}
                   >
-                    🦶 Trang trí Chân trang Footer
+                    Chân trang Footer
                   </CNavLink>
                 </CNavItem>
               </CNav>
@@ -697,9 +695,7 @@ function AddThemeConfig() {
                 <div>
                   <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
                     <div>
-                      <h6 className="fw-bold text-primary mb-1">
-                        🏷️ Cấu hình Logo Header Chiến dịch
-                      </h6>
+                      <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
                       <p className="text-muted text-xs mb-0">
                         Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...)
                         hiển thị trên Header website.
@@ -757,12 +753,9 @@ function AddThemeConfig() {
                 <div>
                   <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
                     <div>
-                      <h6 className="fw-bold text-info mb-1">
-                        🦶 Cấu hình Trang trí Chân trang Footer
-                      </h6>
+                      <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
                       <p className="text-muted text-xs mb-0">
-                        Tải ảnh trang trí Chân trang Footer (cây thông, hộp quà, lồng đèn, hoa
-                        mai...) hiển thị ở hai bên lề Footer.
+                        Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
                       </p>
                     </div>
                     <CBadge color="info" className="text-white">
@@ -808,9 +801,7 @@ function AddThemeConfig() {
                               }))
                             }
                           >
-                            <option value="both-corners">
-                              Hai bên góc lề Footer (Tiêu chuẩn 🎄🎁)
-                            </option>
+                            <option value="both-corners">Hai bên góc lề Footer (Tiêu chuẩn)</option>
                             <option value="left-only">Chỉ góc bên trái Footer</option>
                             <option value="right-only">Chỉ góc bên phía phải Footer</option>
                           </CFormSelect>
@@ -862,9 +853,12 @@ function AddThemeConfig() {
                                 }}
                               />
                             ) : (
-                              <span className="fs-3">🎄🎁</span>
+                              <span className="text-muted text-xs fst-italic">
+                                [Hình trang trí]
+                              </span>
                             )}
                           </div>
+
                           <span className="text-muted text-xs fw-semibold">
                             © 2026 VI TÍNH NGUYÊN KIM
                           </span>
@@ -880,7 +874,9 @@ function AddThemeConfig() {
                                 }}
                               />
                             ) : (
-                              <span className="fs-3">🔔🎄</span>
+                              <span className="text-muted text-xs fst-italic">
+                                [Hình trang trí]
+                              </span>
                             )}
                           </div>
                         </div>
