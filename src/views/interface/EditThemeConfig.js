@@ -1243,35 +1243,6 @@ function EditThemeConfig() {
                 </div>
               )}
 
-              <div className="mb-3">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Bộ nhận diện lễ hội theo mùa
-                </label>
-                <CFormSelect
-                  size="sm"
-                  value={editingTheme?.decorations?.particles || editingTheme?.code || 'none'}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    setEditingTheme((prev) => ({
-                      ...prev,
-                      decorations: {
-                        particles: val,
-                        ornaments: val,
-                      },
-                    }))
-                  }}
-                >
-                  <option value="none">Không gắn phụ kiện lễ hội (Tiêu chuẩn)</option>
-                  <option value="trungthu">Tết Trung Thu (Lồng đèn, Trăng sao)</option>
-                  <option value="noel">Giáng Sinh / Noel (Lá thông, Bông tuyết)</option>
-                  <option value="tet">Tết Nguyên Đán (Cành mai, Lì xì)</option>
-                  <option value="women_day">Quốc tế Phụ nữ 8/3 & 20/10</option>
-                  <option value="backtoschool">Mùa Tựu Trường</option>
-                  <option value="blackfriday">Siêu Sale Black Friday</option>
-                  <option value="halloween">Lễ Hội Halloween</option>
-                </CFormSelect>
-              </div>
-
               {/* LIVE WATERMARK PREVIEW */}
               <div>
                 <span className="fw-semibold text-dark text-xs d-block mb-1">
