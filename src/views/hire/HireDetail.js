@@ -635,18 +635,18 @@ function HirePost() {
 
                           {/* Vị trí tuyển dụng & Sub-info */}
                           <CTableDataCell>
-                            <div className="d-flex align-items-center gap-2.5">
+                            <div className="d-flex align-items-center gap-3">
                               {jobImg ? (
                                 <img
                                   src={jobImg}
                                   alt={item.name}
-                                  className="rounded-2 border object-fit-cover flex-shrink-0 shadow-2xs"
-                                  style={{ width: '40px', height: '40px' }}
+                                  className="rounded-2 border object-fit-contain flex-shrink-0 bg-white p-1 me-2"
+                                  style={{ width: '42px', height: '42px' }}
                                 />
                               ) : (
                                 <div
-                                  className="rounded-2 bg-light border d-flex align-items-center justify-content-center flex-shrink-0 text-secondary fw-bold"
-                                  style={{ width: '40px', height: '40px', fontSize: '13px' }}
+                                  className="rounded-2 bg-light border d-flex align-items-center justify-content-center flex-shrink-0 text-secondary fw-bold me-2"
+                                  style={{ width: '42px', height: '42px', fontSize: '13px' }}
                                 >
                                   {item.name ? item.name.charAt(0).toUpperCase() : 'NK'}
                                 </div>
