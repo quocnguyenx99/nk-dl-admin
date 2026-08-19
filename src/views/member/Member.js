@@ -296,8 +296,11 @@ function Member() {
                 <tbody>
                   <tr>
                     <td>Tổng cộng</td>
-                    <td className="total-count">
-                      <span className="text-danger fw-bold">{countMember || 0}</span> thành viên
+                    <td style={{ textAlign: 'left', fontWeight: 600 }}>
+                      <span className="text-danger fw-bold" style={{ fontSize: '15px' }}>
+                        {countMember || 0}
+                      </span>{' '}
+                      <span className="text-dark fw-normal">thành viên</span>
                     </td>
                   </tr>
                   <tr>
