@@ -156,16 +156,16 @@ function Member() {
               <div className="d-flex flex-wrap align-items-center gap-1.5">
                 {customer?.member_code && (
                   <span
-                    className="badge bg-light text-dark border px-2 py-0.5"
-                    style={{ fontSize: '11px', fontWeight: 600 }}
+                    className="badge bg-light text-dark border px-2 py-1"
+                    style={{ fontSize: '12px', fontWeight: 600 }}
                   >
                     Mã KH: {customer.member_code}
                   </span>
                 )}
                 {customer?.tax_code && (
                   <span
-                    className="badge bg-light text-secondary border px-2 py-0.5"
-                    style={{ fontSize: '11px' }}
+                    className="badge bg-light text-secondary border px-2 py-1"
+                    style={{ fontSize: '12px', fontWeight: 500 }}
                   >
                     MST: {customer.tax_code}
                   </span>
@@ -296,7 +296,9 @@ function Member() {
                 <tbody>
                   <tr>
                     <td>Tổng cộng</td>
-                    <td className="fw-bold text-dark">{countMember || 0} thành viên</td>
+                    <td className="total-count">
+                      <span className="text-danger fw-bold">{countMember || 0}</span> thành viên
+                    </td>
                   </tr>
                   <tr>
                     <td>Tìm kiếm</td>
