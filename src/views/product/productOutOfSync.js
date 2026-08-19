@@ -212,8 +212,8 @@ function ProductOutOfSync() {
                 {item?.type === 'skip'
                   ? 'Điều chỉnh giá'
                   : item?.type === 'adjustment'
-                  ? 'So sánh giá'
-                  : item?.type || 'Điều chỉnh giá'}
+                    ? 'So sánh giá'
+                    : item?.type || 'Điều chỉnh giá'}
               </CBadge>
             </div>
           ),
@@ -501,13 +501,17 @@ function ProductOutOfSync() {
                 <h6 className="fw-bold text-primary mb-2">📘 Hướng dẫn & Quy định tải file</h6>
                 <ul className="mb-2 ps-3 small text-secondary">
                   <li>
-                    <strong>Bước 1:</strong> Chuẩn bị file Excel (.xls hoặc .xlsx) theo đúng mẫu hệ thống.
+                    <strong>Bước 1:</strong> Chuẩn bị file Excel (.xls hoặc .xlsx) theo đúng mẫu hệ
+                    thống.
                   </li>
                   <li>
-                    <strong>Bước 2:</strong> Điền đầy đủ thông tin cột <strong>Mã kho</strong>, <strong>Tên hàng</strong>, <strong>Giá</strong> và cột <strong>Loại</strong> (skip hoặc adjustment).
+                    <strong>Bước 2:</strong> Điền đầy đủ thông tin cột <strong>Mã kho</strong>,{' '}
+                    <strong>Tên hàng</strong>, <strong>Giá</strong> và cột <strong>Loại</strong>{' '}
+                    (skip hoặc adjustment).
                   </li>
                   <li>
-                    <strong>Bước 3:</strong> Chọn tệp bên dưới và bấm nút <strong>Tải lên để import</strong>.
+                    <strong>Bước 3:</strong> Chọn tệp bên dưới và bấm nút{' '}
+                    <strong>Tải lên để import</strong>.
                   </li>
                 </ul>
               </div>
@@ -594,7 +598,11 @@ function ProductOutOfSync() {
               <div className="d-flex align-items-center gap-3">
                 <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
                 <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
-                  Tổng cộng: <span className="fw-bold text-white">{dataProductSkip?.pagination?.total?.toLocaleString('vi-VN') || 0}</span> sản phẩm
+                  Tổng cộng:{' '}
+                  <span className="fw-bold text-white">
+                    {dataProductSkip?.pagination?.total?.toLocaleString('vi-VN') || 0}
+                  </span>{' '}
+                  sản phẩm
                 </CBadge>
               </div>
               <CButton
@@ -611,7 +619,9 @@ function ProductOutOfSync() {
               <CCardBody className="bg-light p-3">
                 <CRow className="g-2">
                   <CCol md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Loại sản phẩm</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Loại sản phẩm
+                    </label>
                     <CFormSelect
                       size="sm"
                       aria-label="Chọn loại lọc"
@@ -626,7 +636,9 @@ function ProductOutOfSync() {
                   </CCol>
 
                   <CCol md={8} sm={12}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Từ khóa tìm kiếm</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Từ khóa tìm kiếm
+                    </label>
                     <div className="d-flex gap-2">
                       <CFormInput
                         size="sm"
@@ -636,10 +648,21 @@ function ProductOutOfSync() {
                         onChange={(e) => setDataSearch(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
                       />
-                      <CButton color="primary" size="sm" className="px-3 text-nowrap" onClick={() => handleSearch(dataSearch)}>
+                      <CButton
+                        color="primary"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={() => handleSearch(dataSearch)}
+                      >
                         Tìm kiếm
                       </CButton>
-                      <CButton color="secondary" variant="outline" size="sm" className="px-3 text-nowrap" onClick={handleResetFilter}>
+                      <CButton
+                        color="secondary"
+                        variant="outline"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={handleResetFilter}
+                      >
                         Làm mới
                       </CButton>
                     </div>
@@ -651,7 +674,12 @@ function ProductOutOfSync() {
 
           {/* Action Row */}
           <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <CButton onClick={handleDeleteSelectedCheckbox} color="danger" size="sm" className="fw-semibold">
+            <CButton
+              onClick={handleDeleteSelectedCheckbox}
+              color="danger"
+              size="sm"
+              className="fw-semibold"
+            >
               Xóa vĩnh viễn ({selectedCheckbox.length})
             </CButton>
           </div>
@@ -659,7 +687,13 @@ function ProductOutOfSync() {
           {/* Product Out Of Sync Table */}
           <CCard className="mb-4 shadow-xs border">
             <CCardBody className="p-0">
-              <CTable hover responsive className="mb-0 align-middle" columns={columns} items={items} />
+              <CTable
+                hover
+                responsive
+                className="mb-0 align-middle"
+                columns={columns}
+                items={items}
+              />
             </CCardBody>
           </CCard>
 

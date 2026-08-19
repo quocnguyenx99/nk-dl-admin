@@ -208,7 +208,14 @@ function ProductDetail() {
 
   useEffect(() => {
     fetchProductData()
-  }, [pageNumber, debouncedSearch, selectedBrand, selectedCategory, selectedStatus, selectedStockStatus])
+  }, [
+    pageNumber,
+    debouncedSearch,
+    selectedBrand,
+    selectedCategory,
+    selectedStatus,
+    selectedStockStatus,
+  ])
 
   const handleAddNewClick = () => {
     navigate('/product/add')
@@ -576,7 +583,11 @@ function ProductDetail() {
               <div className="d-flex align-items-center gap-3">
                 <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
                 <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
-                  Tổng cộng: <span className="fw-bold text-white">{dataProductList?.total?.toLocaleString('vi-VN') || 0}</span> sản phẩm
+                  Tổng cộng:{' '}
+                  <span className="fw-bold text-white">
+                    {dataProductList?.total?.toLocaleString('vi-VN') || 0}
+                  </span>{' '}
+                  sản phẩm
                 </CBadge>
               </div>
               <CButton
@@ -612,7 +623,9 @@ function ProductDetail() {
                   </CCol>
 
                   <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Thương hiệu</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Thương hiệu
+                    </label>
                     <CFormSelect
                       size="sm"
                       aria-label="Chọn thương hiệu"
@@ -631,7 +644,9 @@ function ProductDetail() {
                   </CCol>
 
                   <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Trạng thái hiển thị</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Trạng thái hiển thị
+                    </label>
                     <CFormSelect
                       size="sm"
                       aria-label="Chọn trạng thái"
@@ -646,7 +661,9 @@ function ProductDetail() {
                   </CCol>
 
                   <CCol lg={3} md={4} sm={6}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Tình trạng kho hàng</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Tình trạng kho hàng
+                    </label>
                     <CFormSelect
                       size="sm"
                       aria-label="Chọn tình trạng kho hàng"
@@ -687,7 +704,9 @@ function ProductDetail() {
                   </CCol>
 
                   <CCol lg={6} md={8} sm={12}>
-                    <label className="form-label fw-semibold text-dark small mb-1">Từ khóa tìm kiếm</label>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Từ khóa tìm kiếm
+                    </label>
                     <div className="d-flex gap-2">
                       <CFormInput
                         size="sm"
@@ -697,23 +716,41 @@ function ProductDetail() {
                         onChange={(e) => setDataSearch(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSearch(dataSearch)}
                       />
-                      <CButton color="primary" size="sm" className="px-3 text-nowrap" onClick={() => handleSearch(dataSearch)}>
+                      <CButton
+                        color="primary"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={() => handleSearch(dataSearch)}
+                      >
                         Tìm kiếm
                       </CButton>
-                      <CButton color="secondary" variant="outline" size="sm" className="px-3 text-nowrap" onClick={handleResetFilter}>
+                      <CButton
+                        color="secondary"
+                        variant="outline"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={handleResetFilter}
+                      >
                         Làm mới
                       </CButton>
                     </div>
                   </CCol>
                 </CRow>
-                {errors.startDate && <p className="text-danger small mt-1 mb-0">{errors.startDate}</p>}
+                {errors.startDate && (
+                  <p className="text-danger small mt-1 mb-0">{errors.startDate}</p>
+                )}
                 {errors.endDate && <p className="text-danger small mt-1 mb-0">{errors.endDate}</p>}
               </CCardBody>
             )}
           </CCard>
 
           <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <CButton onClick={handleDeleteSelectedCheckbox} color="danger" size="sm" className="fw-semibold">
+            <CButton
+              onClick={handleDeleteSelectedCheckbox}
+              color="danger"
+              size="sm"
+              className="fw-semibold"
+            >
               Xóa vĩnh viễn
             </CButton>
             <CButton
@@ -747,6 +784,7 @@ function ProductDetail() {
               )}
             </CButton>
           </div>
+          <CRow>
             <CCol>
               {isLoading ? (
                 <Loading />
