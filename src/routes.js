@@ -843,9 +843,21 @@ const routes = [
     element: CandidateCV,
     exact: true,
   },
+  {
+    path: '/hire/candidate',
+    name: 'CandidateCV',
+    element: CandidateCV,
+    exact: true,
+  },
 
   {
     path: '/hire/candidate-cv/edit',
+    name: 'EditCandidateCV',
+    element: EditCandidateCV,
+    exact: true,
+  },
+  {
+    path: '/hire/candidate/edit',
     name: 'EditCandidateCV',
     element: EditCandidateCV,
     exact: true,

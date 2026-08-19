@@ -323,7 +323,7 @@ function HirePost() {
                   Danh mục tuyển dụng
                 </CButton>
               </Link>
-              <Link to="/hire/candidate">
+              <Link to="/hire/candidate-cv">
                 <CButton
                   color="light"
                   size="sm"
@@ -360,8 +360,8 @@ function HirePost() {
                 }}
               >
                 <div
-                  className="text-muted text-uppercase fw-bold text-truncate"
-                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Tổng bài đăng
                 </div>
@@ -387,8 +387,8 @@ function HirePost() {
                 }}
               >
                 <div
-                  className="text-muted text-uppercase fw-bold text-truncate"
-                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Đang tuyển dụng
                 </div>
@@ -414,8 +414,8 @@ function HirePost() {
                 }}
               >
                 <div
-                  className="text-muted text-uppercase fw-bold text-truncate"
-                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Đã hết hạn
                 </div>
@@ -431,15 +431,15 @@ function HirePost() {
             <div className="col-6 col-md-3">
               <div
                 className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
-                onClick={() => navigate('/hire/candidate')}
+                onClick={() => navigate('/hire/candidate-cv')}
                 style={{
                   borderLeft: '4px solid #7c3aed',
                   minHeight: '82px',
                 }}
               >
                 <div
-                  className="text-muted text-uppercase fw-bold text-truncate"
-                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
                 >
                   Hồ sơ ứng viên
                 </div>
@@ -742,7 +742,7 @@ function HirePost() {
                           {/* Hồ sơ ứng tuyển (CV) */}
                           <CTableDataCell className="text-center">
                             <Link
-                              to={`/hire/candidate?post_id=${item.id}`}
+                              to={`/hire/candidate-cv?post_id=${item.id}`}
                               className="btn btn-sm btn-light border position-relative py-1 px-2.5 shadow-2xs"
                               style={{ fontSize: '11.5px' }}
                               title="Xem danh sách ứng viên nộp bài này"
