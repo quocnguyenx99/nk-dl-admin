@@ -7,17 +7,13 @@ import {
   CCardBody,
   CCol,
   CFormCheck,
+  CFormSelect,
   CImage,
   CRow,
   CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHeaderCell,
-  CTableRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import Search from '../../../components/search/Search'
 import { axiosClient, imageBaseUrl } from '../../../axiosConfig'
 import moment from 'moment/moment'
 
@@ -42,6 +38,9 @@ function PromotionNews() {
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
 
   const [dataPromotionNews, setDataPromotionNews] = useState([])
+  const [dataSearch, setDataSearch] = useState('')
+  const [selectedDisplay, setSelectedDisplay] = useState('')
+  const [isCollapse, setIsCollapse] = useState(false)
 
   // show deleted Modal
   const [visible, setVisible] = useState(false)
@@ -59,16 +58,17 @@ function PromotionNews() {
     navigate(`/promotion/edit?id=${id}`)
   }
 
-  // search Data
-  const handleSearch = (keyword) => {
-    fetchPromotionNewsData(keyword)
-  }
-
-  const fetchPromotionNewsData = async (dataSearch = '') => {
+  const fetchPromotionNewsData = async (
+    keyword = dataSearch,
+    displayStatus = selectedDisplay,
+    page = pageNumber,
+  ) => {
     try {
-      const response = await axiosClient.get(
-        `admin/promotion?data=${dataSearch}&page=${pageNumber}`,
-      )
+      let url = `admin/promotion?data=${keyword}&page=${page}`
+      if (displayStatus !== '') {
+        url += `&display=${displayStatus}`
+      }
+      const response = await axiosClient.get(url)
 
       if (response.data.status === true) {
         setDataPromotionNews(response.data.list)
@@ -83,8 +83,24 @@ function PromotionNews() {
   }
 
   useEffect(() => {
-    fetchPromotionNewsData()
-  }, [pageNumber])
+    fetchPromotionNewsData(dataSearch, selectedDisplay, pageNumber)
+  }, [pageNumber, selectedDisplay])
+
+  const handleSearch = () => {
+    setPageNumber(1)
+    fetchPromotionNewsData(dataSearch, selectedDisplay, 1)
+  }
+
+  const handleResetFilter = () => {
+    setDataSearch('')
+    setSelectedDisplay('')
+    setPageNumber(1)
+    fetchPromotionNewsData('', '', 1)
+  }
+
+  const handleToggleCollapse = () => {
+    setIsCollapse(!isCollapse)
+  }
 
   // pagination data
   const handlePageChange = ({ selected }) => {
@@ -167,7 +183,7 @@ function PromotionNews() {
             />
           ),
           title: (
-            <div className="fw-semibold text-dark" style={{ maxWidth: '320px' }}>
+            <div className="fw-semibold text-dark" style={{ maxWidth: '300px' }}>
               {item?.promotion_desc?.title || 'Chưa có tiêu đề'}
             </div>
           ),
@@ -178,6 +194,14 @@ function PromotionNews() {
               style={{ width: '80px', height: '50px', objectFit: 'cover' }}
               className="rounded border shadow-xs"
             />
+          ),
+          display: (
+            <CBadge
+              color={Number(item?.display) === 1 ? 'success' : 'secondary'}
+              className="px-2 py-1"
+            >
+              {Number(item?.display) === 1 ? 'Hiển thị' : 'Không hiển thị'}
+            </CBadge>
           ),
           startDate: formatDate(item?.date_start_promotion, 'Chưa có'),
           expire: formatDate(item?.date_end_promotion, 'Chưa có'),
@@ -252,6 +276,11 @@ function PromotionNews() {
       _props: { scope: 'col' },
     },
     {
+      key: 'display',
+      label: 'Trạng thái',
+      _props: { scope: 'col' },
+    },
+    {
       key: 'startDate',
       label: 'Ngày bắt đầu',
       _props: { scope: 'col' },
@@ -306,9 +335,70 @@ function PromotionNews() {
           </div>
 
           <CRow>
-            {/* Search filter template cũ - Giữ nguyên Search component */}
+            {/* Search Filter Table */}
             <CCol md={12}>
-              <Search count={dataPromotionNews?.total} onSearchData={handleSearch} />
+              <table className="filter-table">
+                <thead>
+                  <tr>
+                    <th colSpan="2">
+                      <div className="d-flex justify-content-between">
+                        <span>Bộ lọc tìm kiếm</span>
+                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
+                          {isCollapse ? '▼' : '▲'}
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {!isCollapse && (
+                  <tbody>
+                    <tr>
+                      <td>Tổng cộng</td>
+                      <td className="total-count">{dataPromotionNews?.total || 0}</td>
+                    </tr>
+                    <tr>
+                      <td>Trạng thái hiển thị</td>
+                      <td>
+                        <CFormSelect
+                          className="component-size w-25"
+                          aria-label="Chọn trạng thái hiển thị"
+                          value={selectedDisplay}
+                          onChange={(e) => {
+                            setSelectedDisplay(e.target.value)
+                            setPageNumber(1)
+                          }}
+                          options={[
+                            { label: 'Tất cả trạng thái', value: '' },
+                            { label: 'Hiển thị', value: '1' },
+                            { label: 'Không hiển thị (Ẩn)', value: '0' },
+                          ]}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tìm kiếm</td>
+                      <td>
+                        <input
+                          type="text"
+                          className="search-input"
+                          value={dataSearch}
+                          onChange={(e) => setDataSearch(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        />
+                        <button onClick={handleSearch} className="submit-btn ms-2">
+                          Submit
+                        </button>
+                        <button
+                          onClick={handleResetFilter}
+                          className="btn btn-sm btn-secondary ms-2"
+                        >
+                          Làm mới
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                )}
+              </table>
             </CCol>
 
             {/* Action Row */}
