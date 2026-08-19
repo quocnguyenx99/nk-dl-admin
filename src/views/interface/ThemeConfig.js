@@ -2082,7 +2082,7 @@ const ThemeConfig = () => {
                       className="form-check-label text-dark text-xs cursor-pointer"
                       htmlFor={`bgMode_pattern_${currentTheme.id || 'new'}`}
                     >
-                      Lặp hoa văn chìm (Pattern)
+                      Lặp hoa văn
                     </label>
                   </div>
                   <div className="form-check">
@@ -2098,7 +2098,7 @@ const ThemeConfig = () => {
                       className="form-check-label text-dark text-xs cursor-pointer"
                       htmlFor={`bgMode_cover_${currentTheme.id || 'new'}`}
                     >
-                      Tràn toàn trang (Cover)
+                      Tràn toàn trang
                     </label>
                   </div>
                 </div>
