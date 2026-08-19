@@ -406,8 +406,7 @@ function HireCategory() {
                             <CButton
                               color="primary"
                               type="submit"
-                              size="sm"
-                              className="fw-bold px-3 shadow-xs w-100"
+                              className="fw-bold px-3 py-2 shadow-xs w-100"
                               disabled={isLoading}
                             >
                               {isLoading ? (
@@ -424,8 +423,7 @@ function HireCategory() {
                               <CButton
                                 color="light"
                                 type="button"
-                                size="sm"
-                                className="border fw-semibold text-nowrap"
+                                className="border fw-semibold text-nowrap py-2"
                                 onClick={() => handleCancelEdit(resetForm)}
                               >
                                 Hủy bỏ
