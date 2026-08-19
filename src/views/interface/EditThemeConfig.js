@@ -541,14 +541,6 @@ function EditThemeConfig() {
         </div>
         <div className="d-flex align-items-center gap-2">
           <CButton
-            color="secondary"
-            variant="outline"
-            className="fw-semibold d-flex align-items-center gap-1"
-            onClick={() => navigate('/theme-custom/config')}
-          >
-            <CIcon icon={cilArrowLeft} /> Quay lại danh sách
-          </CButton>
-          <CButton
             color="primary"
             className="text-white fw-bold d-flex align-items-center gap-1.5 shadow-sm"
             disabled={isSaving}
@@ -563,6 +555,14 @@ function EditThemeConfig() {
                 <CIcon icon={cilSave} /> <span>Lưu thay đổi</span>
               </>
             )}
+          </CButton>
+          <CButton
+            color="secondary"
+            variant="outline"
+            className="fw-semibold d-flex align-items-center gap-1"
+            onClick={() => navigate('/theme-custom/config')}
+          >
+            <CIcon icon={cilArrowLeft} /> Quay lại danh sách
           </CButton>
         </div>
       </div>
@@ -1028,20 +1028,20 @@ function EditThemeConfig() {
       {/* Footer Action Bar */}
       <div className="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
         <CButton
-          color="secondary"
-          variant="outline"
-          className="px-4 py-2 fw-semibold"
-          onClick={() => navigate('/theme-custom/config')}
-        >
-          Hủy / Quay lại
-        </CButton>
-        <CButton
           color="primary"
           className="text-white px-4 py-2 font-bold shadow-sm"
           disabled={isSaving}
           onClick={handleSave}
         >
           {isSaving ? 'Đang lưu...' : 'Lưu Thay Đổi Chiến Dịch'}
+        </CButton>
+        <CButton
+          color="secondary"
+          variant="outline"
+          className="px-4 py-2 fw-semibold"
+          onClick={() => navigate('/theme-custom/config')}
+        >
+          Hủy / Quay lại
         </CButton>
       </div>
     </div>
