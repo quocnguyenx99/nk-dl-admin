@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  CButton,
-  CCol,
-  CContainer,
-  CFormCheck,
-  CFormInput,
-  CRow,
-  CSpinner,
-  CTable,
-} from '@coreui/react'
+import { CButton, CCol, CFormCheck, CFormInput, CRow, CSpinner, CTable } from '@coreui/react'
 
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
@@ -16,7 +7,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Search from '../../components/search/Search'
 
 import CIcon from '@coreui/icons-react'
-import { cilTrash, cilColorBorder, flagSet } from '@coreui/icons'
+import { cilTrash, cilColorBorder } from '@coreui/icons'
 import DeletedModal from '../../components/deletedModal/DeletedModal'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
@@ -29,21 +20,16 @@ function GroupSupport() {
   const id = params.get('id')
   const sub = params.get('sub')
 
-  // check permission state
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
-
   const [isEditing, setIsEditing] = useState(false)
   const inputRef = useRef(null)
 
   const [dataSupportGroup, setDataSupportGroup] = useState([])
-  //loading button
   const [isLoading, setIsLoading] = useState(false)
 
-  // show deleted Modal
   const [visible, setVisible] = useState(false)
   const [deletedId, setDeletedId] = useState(null)
 
-  // selected checkbox
   const [isAllCheckbox, setIsAllCheckbox] = useState(false)
   const [selectedCheckbox, setSelectedCheckbox] = useState([])
 
@@ -66,7 +52,7 @@ function GroupSupport() {
     } else if (sub === 'edit' && id) {
       setIsEditing(true)
     }
-  }, [location.search])
+  }, [location.search, sub, id])
 
   const fetchDataSupportGroup = async (dataSearch = '') => {
     try {
@@ -75,7 +61,7 @@ function GroupSupport() {
         setDataSupportGroup(response.data.data)
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         setIsPermissionCheck(false)
       }
     } catch (error) {
@@ -101,9 +87,9 @@ function GroupSupport() {
       }
 
       if (
-        sub == 'edit' &&
+        sub === 'edit' &&
         response.data.status === false &&
-        response.data.mess == 'no permission'
+        response.data.mess === 'no permission'
       ) {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
@@ -114,7 +100,6 @@ function GroupSupport() {
 
   const handleSubmit = async (values, { resetForm }) => {
     if (isEditing) {
-      //call api update data
       try {
         setIsLoading(true)
         const response = await axiosClient.put(`admin/support-group/${id}`, {
@@ -131,7 +116,7 @@ function GroupSupport() {
           console.error('No data found for the given ID.')
         }
 
-        if (response.data.status === false && response.data.mess == 'no permission') {
+        if (response.data.status === false && response.data.mess === 'no permission') {
           toast.warn('Bạn không có quyền thực hiện tác vụ này!')
         }
       } catch (error) {
@@ -141,7 +126,6 @@ function GroupSupport() {
         setIsLoading(false)
       }
     } else {
-      //call api post new data
       try {
         setIsLoading(true)
         const response = await axiosClient.post('admin/support-group', {
@@ -155,7 +139,7 @@ function GroupSupport() {
           navigate('/group-support?sub=add')
         }
 
-        if (response.data.status === false && response.data.mess == 'no permission') {
+        if (response.data.status === false && response.data.mess === 'no permission') {
           toast.warn('Bạn không có quyền thực hiện tác vụ này!')
         }
       } catch (error) {
@@ -175,7 +159,6 @@ function GroupSupport() {
     navigate(`/group-support?id=${id}&sub=edit`)
   }
 
-  // delete row
   const handleDelete = async () => {
     setVisible(true)
     try {
@@ -183,9 +166,10 @@ function GroupSupport() {
       if (response.data.status === true) {
         setVisible(false)
         fetchDataSupportGroup()
+        toast.success('Xóa nhóm support thành công!')
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
@@ -194,7 +178,6 @@ function GroupSupport() {
     }
   }
 
-  // search Data
   const handleSearch = (keyword) => {
     fetchDataSupportGroup(keyword)
   }
@@ -206,12 +189,12 @@ function GroupSupport() {
       })
 
       if (response.data.status === true) {
-        toast.success('Xóa tất cả danh mục đã chọn thành công!')
+        toast.success('Đã xóa các nhóm được chọn!')
         fetchDataSupportGroup()
         setSelectedCheckbox([])
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
@@ -241,13 +224,28 @@ function GroupSupport() {
               }}
             />
           ),
-          title: item.title,
-          name: item.name,
-          actions: (
+          title: (
             <div>
+              <div className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
+                {item.title}
+              </div>
+              {item.name && (
+                <span
+                  className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-0.5 mt-1"
+                  style={{ fontSize: '11px' }}
+                >
+                  #{item.name}
+                </span>
+              )}
+            </div>
+          ),
+          name: <span className="fw-semibold text-secondary">{item.name || '—'}</span>,
+          actions: (
+            <div className="d-flex justify-content-center">
               <button
                 onClick={() => handleEditClick(item.id)}
                 className="button-action mr-2 bg-info"
+                title="Sửa nhóm"
               >
                 <CIcon icon={cilColorBorder} className="text-white" />
               </button>
@@ -257,6 +255,7 @@ function GroupSupport() {
                   setDeletedId(item.id)
                 }}
                 className="button-action bg-danger"
+                title="Xóa nhóm"
               >
                 <CIcon icon={cilTrash} className="text-white" />
               </button>
@@ -285,120 +284,185 @@ function GroupSupport() {
           }}
         />
       ),
+      _props: { scope: 'col', className: 'text-center' },
     },
     {
       key: 'title',
-      label: 'Tiêu đề',
+      label: 'Tiêu đề nhóm',
       _props: { scope: 'col' },
     },
     {
       key: 'name',
-      label: 'Name',
+      label: 'Mã Name',
       _props: { scope: 'col' },
     },
-
     {
       key: 'actions',
       label: 'Tác vụ',
-      _props: { scope: 'col' },
+      _props: { scope: 'col', className: 'text-center' },
     },
   ]
 
   return (
-    <div>
+    <div className="pb-4">
       {!isPermissionCheck ? (
-        <h5>
-          <div>Bạn không đủ quyền để thao tác trên danh mục quản trị này.</div>
-          <div className="mt-4">
-            Vui lòng quay lại trang chủ <Link to={'/dashboard'}>(Nhấn vào để quay lại)</Link>
-          </div>
-        </h5>
+        <div className="card shadow-sm p-4 text-center">
+          <h5 className="text-danger fw-bold mb-2">
+            Bạn không đủ quyền để thao tác trên danh mục quản trị này.
+          </h5>
+          <p className="text-muted">
+            Vui lòng quay lại{' '}
+            <Link to={'/dashboard'} className="fw-bold text-primary">
+              Bảng điều khiển
+            </Link>
+          </p>
+        </div>
       ) : (
         <>
           <DeletedModal visible={visible} setVisible={setVisible} onDelete={handleDelete} />
-          <CRow className="mb-3">
-            <CCol md={6}>
-              <h2>QUẢN LÝ NHÓM SUPPORT</h2>
-            </CCol>
-            <CCol md={6}>
-              <div className="d-flex justify-content-end">
-                <CButton
-                  onClick={handleAddNewClick}
-                  color="primary"
-                  type="submit"
-                  size="sm"
-                  className="button-add"
-                >
-                  Thêm mới
+
+          {/* PAGE HEADER */}
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+            <div>
+              <h3 className="fw-bold text-uppercase text-dark m-0">QUẢN LÝ NHÓM SUPPORT</h3>
+              <p className="text-muted text-xs m-0 mt-1">
+                Quản lý phân loại nhóm hỗ trợ khách hàng (Chăm sóc khách hàng, Kinh doanh Online...)
+              </p>
+            </div>
+            <div className="d-flex flex-wrap gap-2">
+              <CButton
+                onClick={handleAddNewClick}
+                color="primary"
+                size="sm"
+                className="fw-bold px-3 shadow-xs"
+              >
+                + Thêm nhóm mới
+              </CButton>
+              <Link to={'/support'}>
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Danh sách nhân viên Support
                 </CButton>
-                <Link to={'/group-support'}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
-                </Link>
+              </Link>
+            </div>
+          </div>
+
+          <CRow className="g-4">
+            {/* LEFT COLUMN: FORM */}
+            <CCol col={12} lg={4}>
+              <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white">
+                <div className="card-header bg-light border-bottom py-3">
+                  <h6 className="fw-bold text-dark m-0 text-uppercase" style={{ fontSize: '13px' }}>
+                    {!isEditing ? 'Thêm nhóm support mới' : 'Cập nhật nhóm support'}
+                  </h6>
+                </div>
+                <div className="card-body p-4">
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                  >
+                    {({ setValues }) => {
+                      useEffect(() => {
+                        fetchDataById(setValues)
+                      }, [setValues, id])
+                      return (
+                        <Form className="d-flex flex-column gap-3">
+                          <div>
+                            <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                              Tiêu đề nhóm <span className="text-danger">*</span>
+                            </label>
+                            <Field name="title">
+                              {({ field }) => (
+                                <CFormInput
+                                  {...field}
+                                  type="text"
+                                  id="title-input"
+                                  ref={inputRef}
+                                  placeholder="Ví dụ: Chăm sóc khách hàng"
+                                />
+                              )}
+                            </Field>
+                            <ErrorMessage
+                              name="title"
+                              component="div"
+                              className="text-danger small mt-1"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                              Mã Name (Duy nhất) <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              name="name"
+                              type="text"
+                              as={CFormInput}
+                              id="name-input"
+                              placeholder="Ví dụ: cskh"
+                            />
+                            <ErrorMessage
+                              name="name"
+                              component="div"
+                              className="text-danger small mt-1"
+                            />
+                          </div>
+
+                          <div className="pt-2">
+                            <CButton
+                              color="primary"
+                              type="submit"
+                              size="sm"
+                              className="w-100 py-2 fw-bold shadow-xs"
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <>
+                                  <CSpinner size="sm" /> Đang cập nhật...
+                                </>
+                              ) : isEditing ? (
+                                'Cập nhật nhóm'
+                              ) : (
+                                '+ Thêm nhóm mới'
+                              )}
+                            </CButton>
+                          </div>
+                        </Form>
+                      )
+                    }}
+                  </Formik>
+                </div>
               </div>
             </CCol>
-          </CRow>
 
-          <CRow>
-            <CCol md={4}>
-              <h6>{!isEditing ? 'Thêm nhóm support' : 'Cập nhật nhóm support'}</h6>
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              >
-                {({ setFieldValue, setValues }) => {
-                  useEffect(() => {
-                    fetchDataById(setValues)
-                  }, [setValues, id])
-                  return (
-                    <Form>
-                      <CCol md={12}>
-                        <label htmlFor="title-input">Tiêu đề </label>
-                        <Field name="title">
-                          {({ field }) => (
-                            <CFormInput {...field} type="text" id="title-input" ref={inputRef} />
-                          )}
-                        </Field>
-                        <ErrorMessage name="title" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+            {/* RIGHT COLUMN: SEARCH & TABLE */}
+            <CCol col={12} lg={8}>
+              <div className="mb-3">
+                <Search count={dataSupportGroup?.length} onSearchData={handleSearch} />
+              </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="name-input">Name</label>
-                        <Field name="name" type="text" as={CFormInput} id="name-input" />
-                        <ErrorMessage name="name" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+              {/* BATCH ACTION BAR */}
+              {selectedCheckbox.length > 0 && (
+                <div className="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 d-flex justify-content-between align-items-center p-2.5 px-3 rounded-3 mb-3">
+                  <div className="d-flex align-items-center gap-2">
+                    <span className="fw-bold text-primary">
+                      Đã chọn {selectedCheckbox.length} nhóm
+                    </span>
+                  </div>
+                  <CButton
+                    color="danger"
+                    size="sm"
+                    className="fw-semibold text-white shadow-xs"
+                    onClick={handleDeleteAll}
+                  >
+                    Xóa {selectedCheckbox.length} mục đã chọn
+                  </CButton>
+                </div>
+              )}
 
-                      <CCol xs={12}>
-                        <CButton color="primary" type="submit" size="sm" disabled={isLoading}>
-                          {isLoading ? (
-                            <>
-                              <CSpinner size="sm"></CSpinner> Đang cập nhật...
-                            </>
-                          ) : isEditing ? (
-                            'Cập nhật'
-                          ) : (
-                            'Thêm mới'
-                          )}
-                        </CButton>
-                      </CCol>
-                    </Form>
-                  )
-                }}
-              </Formik>
-            </CCol>
-
-            <CCol>
-              <Search count={dataSupportGroup?.length} onSearchData={handleSearch} />
-              <CCol md={12} className="mt-3">
-                <CButton onClick={handleDeleteAll} color="primary" size="sm">
-                  Xóa vĩnh viễn
-                </CButton>
-              </CCol>
-              <CTable className="mt-2" columns={columns} items={items} />
+              {/* TABLE CARD */}
+              <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white mb-4">
+                <CTable hover className="align-middle mb-0" columns={columns} items={items} />
+              </div>
             </CCol>
           </CRow>
         </>
