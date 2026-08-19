@@ -49,8 +49,11 @@ body {
   min-height: 3rem;
 }
 
-.footer {
+.footer,
+footer {
   min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
 }
 
 .container-responsive {

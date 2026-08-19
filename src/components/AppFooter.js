@@ -3,7 +3,7 @@ import { CFooter } from '@coreui/react'
 
 const AppFooter = () => {
   return (
-    <CFooter className="px-4 py-3 bg-white border-top small text-secondary">
+    <CFooter className="px-4 py-3 bg-white border-top small text-secondary mt-auto">
       <div>
         <a
           href="https://vitinhnguyenkim.vn"
