@@ -225,6 +225,8 @@ const Library = React.lazy(() => import('./views/library/Library.js'))
 
 // GIAO DIỆN
 const ThemeConfigView = React.lazy(() => import('./views/interface/ThemeConfig'))
+const AddThemeConfigView = React.lazy(() => import('./views/interface/AddThemeConfig'))
+const EditThemeConfigView = React.lazy(() => import('./views/interface/EditThemeConfig'))
 const MenuCategoryView = React.lazy(() => import('./views/interface/MenuCategory'))
 const StaticPagesView = React.lazy(() => import('./views/interface/StaticPages'))
 const BannerManagerView = React.lazy(() => import('./views/interface/BannerManager'))
@@ -235,7 +237,11 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme-custom/config', name: 'Cấu hình giao diện', element: ThemeConfigView },
+  { path: '/theme-custom/config/add', name: 'Thêm mới chiến dịch', element: AddThemeConfigView },
+  { path: '/theme-custom/config/edit', name: 'Chỉnh sửa chiến dịch', element: EditThemeConfigView },
   { path: '/admin/theme', name: 'Cấu hình giao diện', element: ThemeConfigView },
+  { path: '/admin/theme/add', name: 'Thêm mới chiến dịch', element: AddThemeConfigView },
+  { path: '/admin/theme/edit', name: 'Chỉnh sửa chiến dịch', element: EditThemeConfigView },
   { path: '/theme-custom/menu-category', name: 'Menu & Danh mục', element: MenuCategoryView },
   { path: '/theme-custom/static-pages', name: 'Trang tĩnh', element: StaticPagesView },
   { path: '/theme-custom/banner', name: 'Banner', element: BannerManagerView },

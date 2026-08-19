@@ -15,6 +15,7 @@ import {
   CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { useNavigate } from 'react-router-dom'
 import {
   cilColorPalette,
   cilPencil,
@@ -452,6 +453,7 @@ const FEATURED_PRODUCTS = [
 ]
 
 const ThemeConfig = () => {
+  const navigate = useNavigate()
   const [appliedThemeId, setAppliedThemeId] = useState(null)
   const [selectedThemeId, setSelectedThemeId] = useState(null)
   const [selectedFeaturedTab, setSelectedFeaturedTab] = useState(0)
@@ -2170,7 +2172,7 @@ const ThemeConfig = () => {
               color="primary"
               className="text-white px-3 py-1.5 fw-semibold rounded"
               style={{ backgroundColor: '#4f46e5', borderColor: '#4f46e5', fontSize: '13.5px' }}
-              onClick={() => setShowModal(true)}
+              onClick={() => navigate('/theme-custom/config/add')}
             >
               Thêm mới
             </CButton>
@@ -2374,7 +2376,10 @@ const ThemeConfig = () => {
                               height: '35px',
                             }}
                             title="Sửa thông tin chiến dịch"
-                            onClick={(e) => handleOpenEditModal(item, e)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              navigate(`/theme-custom/config/edit?id=${item.id}`)
+                            }}
                           >
                             <CIcon icon={cilPencil} size="lg" className="text-white" />
                           </CButton>
