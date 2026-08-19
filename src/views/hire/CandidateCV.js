@@ -199,11 +199,26 @@ function CandidateCV() {
     return moment(dateVal).isValid() ? moment(dateVal).format('DD/MM/YYYY HH:mm') : String(dateVal)
   }
 
-  const getFileUrl = (filePath) => {
+  const apiUploadBaseUrl = 'https://api-nk.vitinhnguyenkim.vn/'
+
+  const getRawFileUrl = (filePath) => {
     if (!filePath) return null
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath
     const cleanPath = filePath.replace(/^\/+/, '')
+    if (cleanPath.startsWith('uploads/candidate/')) {
+      return `${apiUploadBaseUrl}${cleanPath}`
+    }
     return `${imageBaseUrl}${cleanPath}`
+  }
+
+  const getViewableFileUrl = (filePath) => {
+    const rawUrl = getRawFileUrl(filePath)
+    if (!rawUrl) return null
+    const ext = rawUrl.split('.').pop()?.toLowerCase()
+    if (ext === 'doc' || ext === 'docx') {
+      return `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}`
+    }
+    return rawUrl
   }
 
   const candidateList = dataCandidate?.data || []
@@ -475,7 +490,7 @@ function CandidateCV() {
                   <CTableBody>
                     {candidateList.map((item) => {
                       const isSelected = selectedCheckbox.includes(item.id)
-                      const cvLink = getFileUrl(item.cv)
+                      const cvLink = getViewableFileUrl(item.cv)
 
                       return (
                         <CTableRow

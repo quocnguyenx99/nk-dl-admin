@@ -57,48 +57,45 @@ function EditCandidateCV() {
       : String(dateVal)
   }
 
-  const getFileUrl = (filePath) => {
+  const apiUploadBaseUrl = 'https://api-nk.vitinhnguyenkim.vn/'
+
+  const getRawFileUrl = (filePath) => {
     if (!filePath) return null
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath
     const cleanPath = filePath.replace(/^\/+/, '')
+    if (cleanPath.startsWith('uploads/candidate/')) {
+      return `${apiUploadBaseUrl}${cleanPath}`
+    }
     return `${imageBaseUrl}${cleanPath}`
   }
 
-  const handleDownloadFile = async (filePath, candidateName, defaultPrefix = 'CV') => {
+  const getViewableFileUrl = (filePath) => {
+    const rawUrl = getRawFileUrl(filePath)
+    if (!rawUrl) return null
+    const ext = rawUrl.split('.').pop()?.toLowerCase()
+    if (ext === 'doc' || ext === 'docx') {
+      return `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}`
+    }
+    return rawUrl
+  }
+
+  const handleDownloadFile = (filePath) => {
     if (!filePath) {
       toast.warn('Không có tệp tin để tải về!')
       return
     }
-
-    try {
-      toast.info('Đang chuẩn bị tải tệp xuống...')
-      const response = await axiosClient({
-        url: `admin/downloadFile-candidate?url=${encodeURIComponent(filePath)}`,
-        method: 'GET',
-        responseType: 'blob',
-      })
-
-      const ext = filePath.split('.').pop() || 'pdf'
-      const safeName = (candidateName || 'ung_vien').replace(/[^a-zA-Z0-9_-]/g, '_')
-      const fileName = `${defaultPrefix}_${safeName}.${ext}`
-
-      const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
+    const directUrl = getRawFileUrl(filePath)
+    if (directUrl) {
       const link = document.createElement('a')
-      link.href = blobUrl
-      link.setAttribute('download', fileName)
+      link.href = directUrl
+      link.target = '_blank'
+      link.setAttribute('download', filePath.split('/').pop() || 'file')
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      window.URL.revokeObjectURL(blobUrl)
-      toast.success('Tải tệp thành công!')
-    } catch (error) {
-      console.error('Download error:', error)
-      const directUrl = getFileUrl(filePath)
-      if (directUrl) {
-        window.open(directUrl, '_blank')
-      } else {
-        toast.error('Không thể tải tệp tin!')
-      }
+      toast.success('Đang bắt đầu tải tệp xuống!')
+    } else {
+      toast.error('Không tìm thấy đường dẫn tệp!')
     }
   }
 
@@ -118,8 +115,8 @@ function EditCandidateCV() {
     }
   }
 
-  const cvUrl = getFileUrl(candidateData?.cv)
-  const fileInfoUrl = getFileUrl(candidateData?.fileInfo)
+  const cvUrl = getViewableFileUrl(candidateData?.cv)
+  const fileInfoUrl = getViewableFileUrl(candidateData?.fileInfo)
 
   return (
     <div className="pb-4">
@@ -283,9 +280,7 @@ function EditCandidateCV() {
                           Ngày nộp hồ sơ
                         </label>
                         <div className="form-control bg-light border-0 text-secondary py-2">
-                          {formatCandidateDate(
-                            candidateData.date_post || candidateData.created_at,
-                          )}
+                          {formatCandidateDate(candidateData.date_post || candidateData.created_at)}
                         </div>
                       </div>
 
@@ -360,11 +355,7 @@ function EditCandidateCV() {
                               type="button"
                               className="btn btn-sm btn-outline-primary fw-semibold px-3"
                               onClick={() =>
-                                handleDownloadFile(
-                                  candidateData.cv,
-                                  candidateData.name,
-                                  'CV',
-                                )
+                                handleDownloadFile(candidateData.cv, candidateData.name, 'CV')
                               }
                             >
                               Tải về máy
