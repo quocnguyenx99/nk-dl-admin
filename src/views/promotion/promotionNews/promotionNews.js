@@ -133,10 +133,13 @@ function PromotionNews() {
     }
   }
 
-  const formatDate = (ts) => {
-    if (!ts || Number(ts) <= 0) return 'Không có ngày tạo'
-    const m = moment.unix(Number(ts))
-    return m.isValid() && m.year() >= 1980 ? m.format('DD-MM-YYYY') : 'Không có ngày tạo'
+  const formatDate = (val, fallback = 'Không có') => {
+    if (!val || val === '0' || Number(val) <= 0) return fallback
+    let m = moment(val)
+    if (!m.isValid() && !isNaN(val)) {
+      m = moment.unix(Number(val))
+    }
+    return m.isValid() && m.year() >= 1980 ? m.format('DD-MM-YYYY') : fallback
   }
 
   const items =
@@ -173,9 +176,14 @@ function PromotionNews() {
               className="rounded border shadow-xs"
             />
           ),
-          url: (
-            <span className="badge bg-light text-secondary border font-monospace px-2 py-1">
-              {item?.promotion_desc?.friendly_url || '---'}
+          startDate: (
+            <span className="badge bg-light text-success border border-success px-2 py-1">
+              {formatDate(item?.date_start_promotion, 'Chưa lập')}
+            </span>
+          ),
+          expire: (
+            <span className="badge bg-light text-danger border border-danger px-2 py-1">
+              {formatDate(item?.date_end_promotion, 'Chưa lập')}
             </span>
           ),
           info: (
@@ -183,7 +191,9 @@ function PromotionNews() {
               <span className="fw-semibold text-primary d-block small">
                 {item?.views || 0} lượt xem
               </span>
-              <div className="text-secondary small">{formatDate(item?.date_post)}</div>
+              <div className="text-secondary small">
+                {formatDate(item?.date_post, 'Không có ngày tạo')}
+              </div>
             </div>
           ),
           actions: (
@@ -247,8 +257,13 @@ function PromotionNews() {
       _props: { scope: 'col' },
     },
     {
-      key: 'url',
-      label: 'Chuỗi đường dẫn',
+      key: 'startDate',
+      label: 'Ngày bắt đầu',
+      _props: { scope: 'col' },
+    },
+    {
+      key: 'expire',
+      label: 'Ngày hết hạn',
       _props: { scope: 'col' },
     },
     {
