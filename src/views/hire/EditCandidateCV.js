@@ -1,220 +1,442 @@
-import { CButton, CCol, CContainer, CFormInput, CRow } from '@coreui/react'
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { CButton, CCol, CContainer, CRow } from '@coreui/react'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { axiosClient, imageBaseUrl } from '../../axiosConfig'
+import CIcon from '@coreui/icons-react'
+import { cilArrowLeft, cilCloudDownload, cilExternalLink, cilTrash } from '@coreui/icons'
 import moment from 'moment'
 import { toast } from 'react-toastify'
-
-import './css/editCandidateCV.css'
-import axios from 'axios'
+import Loading from '../../components/loading/Loading'
+import DeletedModal from '../../components/deletedModal/DeletedModal'
 
 function EditCandidateCV() {
   const location = useLocation()
+  const navigate = useNavigate()
   const searchParams = new URLSearchParams(location.search)
   const id = searchParams.get('id')
 
-  // check permission state
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [candidateData, setCandidateData] = useState(null)
+  const [visibleDelete, setVisibleDelete] = useState(false)
 
-  const [candidateData, setCandidateData] = useState([])
-
-  const initialValues = {
-    name: '',
-    email: '',
-    phone: '',
-    category: '',
-    dateSend: '',
-  }
-
-  const fetchDataById = async (setValues) => {
+  const fetchDataById = useCallback(async () => {
+    if (!id) {
+      setIsLoading(false)
+      return
+    }
     try {
+      setIsLoading(true)
       const response = await axiosClient.get(`admin/detail-candidates/${id}`)
-      const data = response.data.data
-
-      if (data && response.data.status === true) {
-        setCandidateData(data)
-        setValues({
-          name: data?.name,
-          email: data?.gmail,
-          phone: data?.phone,
-          category: data?.titlePost,
-          dateSend: moment.unix(data?.date_post).format('DD-MM-YYYY, hh:mm:ss A'),
-        })
+      if (response.data.status === true && response.data.data) {
+        setCandidateData(response.data.data)
       } else {
-        console.error('No data found for the given ID.')
+        toast.error('Không tìm thấy thông tin ứng viên!')
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         setIsPermissionCheck(false)
       }
     } catch (error) {
-      console.error('Fetch data id comment is error', error.message)
+      console.error('Fetch candidate detail error', error)
+      toast.error('Lỗi khi tải chi tiết hồ sơ ứng viên!')
+    } finally {
+      setIsLoading(false)
     }
+  }, [id])
+
+  useEffect(() => {
+    fetchDataById()
+  }, [fetchDataById])
+
+  const formatCandidateDate = (dateVal) => {
+    if (!dateVal) return 'Chưa cập nhật'
+    if (typeof dateVal === 'number' || (!isNaN(dateVal) && String(dateVal).length <= 11)) {
+      return moment.unix(Number(dateVal)).format('DD/MM/YYYY, HH:mm:ss')
+    }
+    return moment(dateVal).isValid()
+      ? moment(dateVal).format('DD/MM/YYYY, HH:mm:ss')
+      : String(dateVal)
   }
 
-  const downloadForm = async (nameFile, candidateName) => {
-    const format = nameFile.match(/\.(.*)$/)[1]
+  const getFileUrl = (filePath) => {
+    if (!filePath) return null
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath
+    const cleanPath = filePath.replace(/^\/+/, '')
+    return `${imageBaseUrl}${cleanPath}`
+  }
+
+  const handleDownloadFile = async (filePath, candidateName, defaultPrefix = 'CV') => {
+    if (!filePath) {
+      toast.warn('Không có tệp tin để tải về!')
+      return
+    }
 
     try {
+      toast.info('Đang chuẩn bị tải tệp xuống...')
       const response = await axiosClient({
-        url: `/admin/downloadFile-candidate?url=${nameFile}`,
+        url: `admin/downloadFile-candidate?url=${encodeURIComponent(filePath)}`,
         method: 'GET',
         responseType: 'blob',
       })
 
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        format === 'pdf' ? `CV_${candidateName}.pdf` : `Phiếu thông tin_${candidateName}.doc`,
-      )
+      const ext = filePath.split('.').pop() || 'pdf'
+      const safeName = (candidateName || 'ung_vien').replace(/[^a-zA-Z0-9_-]/g, '_')
+      const fileName = `${defaultPrefix}_${safeName}.${ext}`
 
+      const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.setAttribute('download', fileName)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+      toast.success('Tải tệp thành công!')
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Download error:', error)
+      // Fallback: direct browser open
+      const directUrl = getFileUrl(filePath)
+      if (directUrl) {
+        window.open(directUrl, '_blank')
+      } else {
+        toast.error('Không thể tải tệp tin!')
+      }
     }
   }
 
+  const handleDelete = async () => {
+    if (!id) return
+    try {
+      const response = await axiosClient.delete(`admin/candidates/${id}`)
+      if (response.data.status === true) {
+        toast.success('Xóa hồ sơ ứng viên thành công!')
+        navigate('/hire/candidate-cv')
+      } else {
+        toast.error('Xóa thất bại!')
+      }
+    } catch (error) {
+      console.error('Delete error', error)
+      toast.error('Đã xảy ra lỗi khi xóa!')
+    }
+  }
+
+  const cvUrl = getFileUrl(candidateData?.cv)
+  const fileInfoUrl = getFileUrl(candidateData?.fileInfo)
+
   return (
-    <div>
+    <div className="pb-4">
       {!isPermissionCheck ? (
-        <h5>
-          <div>Bạn không đủ quyền để thao tác trên danh mục quản trị này.</div>
-          <div className="mt-4">
-            Vui lòng quay lại trang chủ <Link to={'/dashboard'}>(Nhấn vào để quay lại)</Link>
-          </div>
-        </h5>
+        <div className="card shadow-sm p-4 text-center">
+          <h5 className="text-danger fw-bold mb-2">
+            Bạn không đủ quyền để truy cập trang quản trị này.
+          </h5>
+          <p className="text-muted">
+            Vui lòng quay lại{' '}
+            <Link to={'/dashboard'} className="fw-bold text-primary">
+              Bảng điều khiển
+            </Link>
+          </p>
+        </div>
       ) : (
         <>
-          <CRow className="mb-3">
-            <CCol>
-              <h2>HỒ SƠ ỨNG VIÊN</h2>
-            </CCol>
-            <CCol md={{ span: 4, offset: 4 }}>
-              <div className="d-flex justify-content-end">
-                <Link to={`/hire/candidate-CV`}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
+          <DeletedModal
+            visible={visibleDelete}
+            setVisible={setVisibleDelete}
+            onDelete={handleDelete}
+          />
+
+          {/* PAGE HEADER */}
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+            <div>
+              <h3 className="fw-bold text-uppercase text-dark m-0">CHI TIẾT HỒ SƠ ỨNG VIÊN</h3>
+              <p className="text-muted text-xs m-0 mt-1">
+                Xem thông tin liên hệ, vị trí ứng tuyển và tải tệp hồ sơ CV
+              </p>
+            </div>
+            <div className="d-flex flex-wrap gap-2">
+              <Link to="/hire/candidate-cv">
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Danh sách hồ sơ (CV)
+                </CButton>
+              </Link>
+              <Link to="/hire/post">
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Quản lý bài đăng
+                </CButton>
+              </Link>
+              <CButton
+                color="danger"
+                size="sm"
+                className="fw-semibold text-white shadow-xs"
+                onClick={() => setVisibleDelete(true)}
+              >
+                Xóa hồ sơ này
+              </CButton>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="p-5 text-center bg-white rounded-3 shadow-sm">
+              <Loading />
+            </div>
+          ) : !candidateData ? (
+            <div className="card border-0 shadow-sm p-5 text-center">
+              <h5 className="text-muted fw-bold">Không tìm thấy thông tin hồ sơ ứng viên</h5>
+              <div className="mt-3">
+                <Link to="/hire/candidate-cv" className="btn btn-primary btn-sm fw-bold">
+                  Quay lại danh sách
                 </Link>
               </div>
-            </CCol>
-          </CRow>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {/* LEFT COLUMN: CANDIDATE INFORMATION */}
+              <div className="col-12 col-lg-7">
+                <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white h-100">
+                  <div className="card-header bg-light border-bottom py-3">
+                    <h6
+                      className="fw-bold text-dark m-0 text-uppercase"
+                      style={{ fontSize: '13px' }}
+                    >
+                      Thông tin cá nhân ứng viên
+                    </h6>
+                  </div>
+                  <div className="card-body p-4">
+                    <div className="row g-3">
+                      {/* Name */}
+                      <div className="col-12">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Họ và tên ứng viên
+                        </label>
+                        <div className="form-control bg-light border-0 fw-bold text-dark py-2">
+                          {candidateData.name || 'Chưa cung cấp'}
+                        </div>
+                      </div>
 
-          <CRow>
-            <CCol md={6}>
-              <h6>{'Thông tin ứng viên'}</h6>
-              <Formik initialValues={initialValues}>
-                {({ setFieldValue, setValues }) => {
-                  useEffect(() => {
-                    fetchDataById(setValues)
-                  }, [setValues])
-                  return (
-                    <Form>
-                      <CCol md={12}>
-                        <label htmlFor="name-input">Tên ứng viên</label>
-                        <Field name="name">
-                          {({ field }) => (
-                            <CFormInput {...field} type="text" id="name-input" readOnly />
+                      {/* Email */}
+                      <div className="col-12 col-md-6">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Thư điện tử (Email)
+                        </label>
+                        <div className="form-control bg-light border-0 py-2">
+                          {candidateData.gmail ? (
+                            <a
+                              href={`mailto:${candidateData.gmail}`}
+                              className="text-primary fw-semibold text-decoration-none"
+                            >
+                              {candidateData.gmail}
+                            </a>
+                          ) : (
+                            <span className="text-muted">Chưa cung cấp</span>
                           )}
-                        </Field>
-                        <ErrorMessage name="name" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+                        </div>
+                      </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="email-input">Thư điện tử</label>
-                        <Field name="email" type="text" as={CFormInput} id="email-input" readOnly />
-                        <ErrorMessage name="email" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+                      {/* Phone */}
+                      <div className="col-12 col-md-6">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Số điện thoại
+                        </label>
+                        <div className="form-control bg-light border-0 py-2">
+                          {candidateData.phone ? (
+                            <a
+                              href={`tel:${candidateData.phone}`}
+                              className="text-dark fw-bold text-decoration-none"
+                            >
+                              {candidateData.phone}
+                            </a>
+                          ) : (
+                            <span className="text-muted">Chưa cung cấp</span>
+                          )}
+                        </div>
+                      </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="phone-input">Số điện thoại</label>
-                        <Field
-                          name="phone"
-                          type="number"
-                          as={CFormInput}
-                          id="phone-input"
-                          readOnly
-                        />
-                        <ErrorMessage name="phone" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+                      {/* Job Position */}
+                      <div className="col-12 col-md-6">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Vị trí ứng tuyển
+                        </label>
+                        <div className="form-control bg-light border-0 py-2">
+                          <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 fw-bold">
+                            {candidateData.titlePost ||
+                              candidateData.hire_post?.name ||
+                              'Không xác định'}
+                          </span>
+                        </div>
+                      </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="category-input">Vị trí ứng tuyển</label>
-                        <Field
-                          name="category"
-                          type="text"
-                          as={CFormInput}
-                          id="category-input"
-                          readOnly
-                        />
-                        <ErrorMessage name="category" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+                      {/* Category */}
+                      <div className="col-12 col-md-6">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Danh mục / Ban
+                        </label>
+                        <div className="form-control bg-light border-0 py-2">
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1">
+                            {candidateData.titleCategory ||
+                              candidateData.hire_post?.hire_category?.title ||
+                              'Chưa phân loại'}
+                          </span>
+                        </div>
+                      </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="dateSend-input">Ngày nộp hồ sơ</label>
-                        <Field
-                          name="dateSend"
-                          type="text"
-                          as={CFormInput}
-                          id="dateSend-input"
-                          readOnly
-                        />
-                        <ErrorMessage name="dateSend" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-                    </Form>
-                  )
-                }}
-              </Formik>
-            </CCol>
+                      {/* Submission Date */}
+                      <div className="col-12">
+                        <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                          Ngày nộp hồ sơ
+                        </label>
+                        <div className="form-control bg-light border-0 text-secondary py-2">
+                          {formatCandidateDate(candidateData.date_post || candidateData.created_at)}
+                        </div>
+                      </div>
 
-            <CCol md={6}>
-              <CCol md={12}>
-                <span>
-                  Nhấp vào đường link sau để xem CV ứng viên:{' '}
-                  <Link to={`${imageBaseUrl}${candidateData?.cv}`}>Xem chi tiết</Link>
-                </span>
-              </CCol>
-              <br />
-
-              <CCol md={12}>
-                <div>
-                  Tải về phiếu CV:
-                  <CButton
-                    size="sm"
-                    color="primary"
-                    onClick={() => downloadForm(candidateData.cv, candidateData.name)}
-                  >
-                    Tải về
-                  </CButton>
+                      {/* Message / Introduction Letter */}
+                      {candidateData.message && (
+                        <div className="col-12">
+                          <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                            Thư giới thiệu / Lời nhắn
+                          </label>
+                          <div
+                            className="form-control bg-light border-0 p-3 text-dark"
+                            style={{ minHeight: '100px', whiteSpace: 'pre-wrap' }}
+                          >
+                            {candidateData.message}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </CCol>
-              <br />
+              </div>
 
-              <CCol md={12}>
-                <div>
-                  Tải về phiếu thông tin ứng tuyển:{' '}
-                  <CButton
-                    size="sm"
-                    color="primary"
-                    onClick={() => downloadForm(candidateData.fileInfo, candidateData.name)}
-                  >
-                    Tải về
-                  </CButton>
+              {/* RIGHT COLUMN: ATTACHMENTS & CV FILES */}
+              <div className="col-12 col-lg-5">
+                <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white h-100">
+                  <div className="card-header bg-light border-bottom py-3">
+                    <h6
+                      className="fw-bold text-dark m-0 text-uppercase"
+                      style={{ fontSize: '13px' }}
+                    >
+                      Tệp đính kèm & Hồ sơ CV
+                    </h6>
+                  </div>
+                  <div className="card-body p-4 d-flex flex-column gap-4">
+                    {/* CV FILE CARD */}
+                    <div className="p-3 rounded-3 border bg-light">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="fw-bold text-dark" style={{ fontSize: '13px' }}>
+                          Tệp CV ứng viên
+                        </div>
+                        {candidateData.cv ? (
+                          <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-0.5">
+                            Có tệp đính kèm
+                          </span>
+                        ) : (
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-0.5">
+                            Không có tệp
+                          </span>
+                        )}
+                      </div>
+
+                      {candidateData.cv ? (
+                        <div>
+                          <div
+                            className="text-muted small text-truncate mb-3"
+                            title={candidateData.cv}
+                          >
+                            {candidateData.cv}
+                          </div>
+                          <div className="d-flex flex-wrap gap-2">
+                            {cvUrl && (
+                              <a
+                                href={cvUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-sm btn-primary fw-semibold px-3 shadow-xs"
+                              >
+                                Xem trực tiếp CV
+                              </a>
+                            )}
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-primary fw-semibold px-3"
+                              onClick={() =>
+                                handleDownloadFile(candidateData.cv, candidateData.name, 'CV')
+                              }
+                            >
+                              Tải về máy
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-muted small m-0">
+                          Ứng viên này không tải lên tệp CV đính kèm.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* ADDITIONAL INFO FILE CARD */}
+                    <div className="p-3 rounded-3 border bg-light">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="fw-bold text-dark" style={{ fontSize: '13px' }}>
+                          Phiếu thông tin ứng tuyển
+                        </div>
+                        {candidateData.fileInfo ? (
+                          <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-0.5">
+                            Có tệp đính kèm
+                          </span>
+                        ) : (
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-0.5">
+                            Không có tệp
+                          </span>
+                        )}
+                      </div>
+
+                      {candidateData.fileInfo ? (
+                        <div>
+                          <div
+                            className="text-muted small text-truncate mb-3"
+                            title={candidateData.fileInfo}
+                          >
+                            {candidateData.fileInfo}
+                          </div>
+                          <div className="d-flex flex-wrap gap-2">
+                            {fileInfoUrl && (
+                              <a
+                                href={fileInfoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-sm btn-primary fw-semibold px-3 shadow-xs"
+                              >
+                                Xem trực tiếp
+                              </a>
+                            )}
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-primary fw-semibold px-3"
+                              onClick={() =>
+                                handleDownloadFile(
+                                  candidateData.fileInfo,
+                                  candidateData.name,
+                                  'Phieu_Thong_Tin',
+                                )
+                              }
+                            >
+                              Tải về máy
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-muted small m-0">
+                          Không có phiếu thông tin ứng tuyển kèm theo.
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </CCol>
-            </CCol>
-          </CRow>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

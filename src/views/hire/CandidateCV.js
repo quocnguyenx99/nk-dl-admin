@@ -12,12 +12,12 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
-import { axiosClient } from '../../axiosConfig'
+import { axiosClient, imageBaseUrl } from '../../axiosConfig'
 import CIcon from '@coreui/icons-react'
-import { cilColorBorder, cilEnvelopeClosed, cilEnvelopeOpen, cilTrash } from '@coreui/icons'
+import { cilColorBorder, cilTrash } from '@coreui/icons'
 import moment from 'moment'
 import DeletedModal from '../../components/deletedModal/DeletedModal'
 import { toast } from 'react-toastify'
@@ -25,7 +25,9 @@ import Loading from '../../components/loading/Loading'
 
 function CandidateCV() {
   const navigate = useNavigate()
-  const [isCollapse, setIsCollapse] = useState(false)
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const initialPostId = searchParams.get('post_id') || ''
 
   // check permission state
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
@@ -37,311 +39,595 @@ function CandidateCV() {
   const [visible, setVisible] = useState(false)
   const [deletedId, setDeletedId] = useState(null)
 
-  // search input
+  // search & filter state
+  const [searchInput, setSearchInput] = useState('')
   const [dataSearch, setDataSearch] = useState('')
-
-  const [dataCandidate, setDataCandidate] = useState([])
-  const [dataHireCategory, setDataHireCategory] = useState([])
   const [selectedCate, setSelectedCate] = useState('')
+  const [selectedPost, setSelectedPost] = useState(initialPostId)
+  const [statusFilter, setStatusFilter] = useState('')
+
+  const [dataCandidate, setDataCandidate] = useState(null)
+  const [dataHireCategory, setDataHireCategory] = useState([])
+  const [dataHirePost, setDataHirePost] = useState([])
+  const [summary, setSummary] = useState({
+    total: 0,
+    unread: 0,
+    read: 0,
+  })
 
   // checkbox selected
   const [isAllCheckbox, setIsAllCheckbox] = useState(false)
   const [selectedCheckbox, setSelectedCheckbox] = useState([])
 
-  //pagination state
+  // pagination state
   const [pageNumber, setPageNumber] = useState(1)
 
-  // pagination data
+  // pagination handler
   const handlePageChange = ({ selected }) => {
     const newPage = selected + 1
-    if (newPage < 2) {
-      setPageNumber(newPage)
-      window.scrollTo(0, 0)
-      return
-    }
-    window.scrollTo(0, 0)
     setPageNumber(newPage)
-  }
-
-  // search Data
-  const handleSearch = (keyword) => {
-    fetchCommentData(keyword)
-  }
-
-  const handleToggleCollapse = () => {
-    setIsCollapse((prevState) => !prevState)
-  }
-
-  const handleEditClick = (id) => {
-    navigate(`/hire/candidate-CV/edit?id=${id}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const fetchHireCategory = async () => {
     try {
       const response = await axiosClient.get('admin/hire-category')
       const data = response.data.data
-      setDataHireCategory(data)
+      setDataHireCategory(data || [])
     } catch (error) {
-      console.error('Fetch data hire category is error', error)
+      console.error('Fetch hire category error', error)
+    }
+  }
+
+  const fetchHirePosts = async () => {
+    try {
+      const response = await axiosClient.get('admin/hire-post?per_page=100')
+      const data = response.data.data?.data || response.data.data || []
+      setDataHirePost(data)
+    } catch (error) {
+      console.error('Fetch hire posts error', error)
     }
   }
 
   useEffect(() => {
     fetchHireCategory()
+    fetchHirePosts()
   }, [])
 
-  const fetchDataCandidate = async (dataSearch = '') => {
+  const fetchDataCandidate = useCallback(async () => {
     try {
       setIsLoading(true)
-      const response = await axiosClient.get(
-        `admin/show-candidates?page=${pageNumber}&data=${dataSearch}&cat_id=${selectedCate}`,
-      )
+      const params = new URLSearchParams()
+      params.append('page', pageNumber)
+      if (dataSearch) params.append('data', dataSearch)
+      if (selectedCate) params.append('cat_id', selectedCate)
+      if (selectedPost) params.append('post_id', selectedPost)
+      if (statusFilter) params.append('status_filter', statusFilter)
+
+      const response = await axiosClient.get(`admin/show-candidates?${params.toString()}`)
 
       if (response.data.status === true) {
         setDataCandidate(response.data.data)
+        if (response.data.summary) {
+          setSummary(response.data.summary)
+        }
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         setIsPermissionCheck(false)
       }
     } catch (error) {
-      console.error('Fetch candidate data is error', error)
+      console.error('Fetch candidate data error', error)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [pageNumber, dataSearch, selectedCate, selectedPost, statusFilter])
 
   useEffect(() => {
     fetchDataCandidate()
-  }, [pageNumber, selectedCate])
+  }, [fetchDataCandidate])
 
-  const handleAddNewClick = () => {
-    navigate('/hire/candidate-CV/edit')
+  const handleSearchSubmit = (e) => {
+    e?.preventDefault()
+    setPageNumber(1)
+    setDataSearch(searchInput)
   }
 
-  // delete row
+  const handleResetFilters = () => {
+    setSearchInput('')
+    setDataSearch('')
+    setSelectedCate('')
+    setSelectedPost('')
+    setStatusFilter('')
+    setPageNumber(1)
+    navigate('/hire/candidate-cv', { replace: true })
+  }
+
+  const handleEditClick = (id) => {
+    navigate(`/hire/candidate-cv/edit?id=${id}`)
+  }
+
   const handleDelete = async () => {
-    setVisible(true)
     try {
-      const response = await axiosClient.delete(`admin/show-candidates/${deletedId}`)
+      const response = await axiosClient.delete(`admin/candidates/${deletedId}`)
       if (response.data.status === true) {
         setVisible(false)
+        toast.success('Xóa hồ sơ ứng viên thành công!')
         fetchDataCandidate()
-      }
-      if (response.data.status === false && response.data.mess == 'no permission') {
-        toast.warn('Bạn không có quyền thực hiện tác vụ này!')
+      } else {
+        toast.error('Không thể xóa hồ sơ này!')
       }
     } catch (error) {
-      console.error('Delete candidate id is error', error)
+      console.error('Delete candidate error', error)
       toast.error('Đã xảy ra lỗi khi xóa. Vui lòng thử lại!')
     }
   }
 
   const handleDeleteSelectedCheckbox = async () => {
+    if (!selectedCheckbox.length) return
+    if (
+      !window.confirm(
+        `Bạn có chắc chắn muốn xóa vĩnh viễn ${selectedCheckbox.length} hồ sơ đã chọn?`,
+      )
+    ) {
+      return
+    }
     try {
-      const response = await axiosClient.post('admin/show-candidates', {
+      const response = await axiosClient.post('admin/delete-all-candidates', {
         data: selectedCheckbox,
       })
 
       if (response.data.status === true) {
-        toast.success('Xóa tất cả các mục thành công!')
-        fetchDataHirePost()
+        toast.success(`Đã xóa ${selectedCheckbox.length} hồ sơ thành công!`)
+        fetchDataCandidate()
         setSelectedCheckbox([])
+        setIsAllCheckbox(false)
+      } else {
+        toast.error('Xóa thất bại!')
       }
     } catch (error) {
-      console.error('Delete selected checkbox is error', error)
+      console.error('Delete selected checkbox error', error)
+      toast.error('Đã xảy ra lỗi khi xóa!')
     }
   }
 
+  const formatCandidateDate = (dateVal) => {
+    if (!dateVal) return 'Chưa cập nhật'
+    if (typeof dateVal === 'number' || (!isNaN(dateVal) && String(dateVal).length <= 11)) {
+      return moment.unix(Number(dateVal)).format('DD/MM/YYYY HH:mm')
+    }
+    return moment(dateVal).isValid() ? moment(dateVal).format('DD/MM/YYYY HH:mm') : String(dateVal)
+  }
+
+  const getFileUrl = (filePath) => {
+    if (!filePath) return null
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath
+    const cleanPath = filePath.replace(/^\/+/, '')
+    return `${imageBaseUrl}${cleanPath}`
+  }
+
+  const candidateList = dataCandidate?.data || []
+  const totalItems = dataCandidate?.total || 0
+  const perPage = dataCandidate?.per_page || 10
+  const totalPages = Math.ceil(totalItems / perPage) || 1
+  const startItem = totalItems === 0 ? 0 : (pageNumber - 1) * perPage + 1
+  const endItem = Math.min(pageNumber * perPage, totalItems)
+
   return (
-    <div>
+    <div className="pb-4">
       {!isPermissionCheck ? (
-        <h5>
-          <div>Bạn không đủ quyền để thao tác trên danh mục quản trị này.</div>
-          <div className="mt-4">
-            Vui lòng quay lại trang chủ <Link to={'/dashboard'}>(Nhấn vào để quay lại)</Link>
-          </div>
-        </h5>
+        <div className="card shadow-sm p-4 text-center">
+          <h5 className="text-danger fw-bold mb-2">
+            Bạn không đủ quyền để truy cập trang quản trị này.
+          </h5>
+          <p className="text-muted">
+            Vui lòng quay lại{' '}
+            <Link to={'/dashboard'} className="fw-bold text-primary">
+              Bảng điều khiển
+            </Link>
+          </p>
+        </div>
       ) : (
         <>
           <DeletedModal visible={visible} setVisible={setVisible} onDelete={handleDelete} />
 
-          <CRow className="mb-3">
-            <CCol md={6}>
-              <h2>QUẢN LÝ HỒ SƠ ỨNG TUYỂN</h2>
-            </CCol>
-            <CCol md={6}>
-              <div className="d-flex justify-content-end">
-                <CButton
-                  onClick={handleAddNewClick}
-                  color="primary"
-                  type="submit"
-                  size="sm"
-                  className="button-add"
-                >
-                  Thêm mới
+          {/* PAGE HEADER */}
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+            <div>
+              <h3 className="fw-bold text-uppercase text-dark m-0">QUẢN LÝ HỒ SƠ ỨNG TUYỂN</h3>
+              <p className="text-muted text-xs m-0 mt-1">
+                Theo dõi thông tin ứng viên, xem và tải hồ sơ CV ứng tuyển theo từng vị trí
+              </p>
+            </div>
+            <div className="d-flex flex-wrap gap-2">
+              <Link to="/hire/post">
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Quản lý bài đăng tuyển dụng
                 </CButton>
-                <Link to={`/hire/candidate-CV`}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
-                </Link>
+              </Link>
+              <Link to="/hire/category">
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Danh mục tuyển dụng
+                </CButton>
+              </Link>
+            </div>
+          </div>
+
+          {/* KPI STATISTICS CARDS */}
+          <div className="row g-3 mb-4">
+            <div className="col-12 col-md-4">
+              <div
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
+                onClick={handleResetFilters}
+                style={{ borderLeft: '4px solid #2563eb', minHeight: '82px' }}
+              >
+                <div
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                >
+                  Tổng hồ sơ ứng tuyển
+                </div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#1e293b' }}
+                >
+                  {summary.total || totalItems}
+                </div>
               </div>
-            </CCol>
-          </CRow>
+            </div>
 
-          <CRow>
-            <CCol>
-              <table className="filter-table">
-                <thead>
-                  <tr>
-                    <th colSpan="2">
-                      <div className="d-flex justify-content-between">
-                        <span>Bộ lọc tìm kiếm</span>
-                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
-                          {isCollapse ? '▼' : '▲'}
-                        </span>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                {!isCollapse && (
-                  <tbody>
-                    <tr>
-                      <td>Tổng cộng</td>
-                      <td className="total-count">6</td>
-                    </tr>
-                    <tr>
-                      <td>Lọc theo vị trí</td>
-                      <td>
-                        <CFormSelect
-                          className="component-size w-50"
-                          aria-label="Chọn yêu cầu lọc"
-                          options={[
-                            { label: 'Chọn danh mục tuyển dụng', value: '' },
-                            ...(dataHireCategory && dataHireCategory?.length > 0
-                              ? dataHireCategory.map((cate) => ({
-                                  label: cate.title,
-                                  value: cate.id,
-                                }))
-                              : []),
-                          ]}
-                          value={selectedCate}
-                          onChange={(e) => setSelectedCate(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Tìm kiếm</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="search-input"
-                          value={dataSearch}
-                          onChange={(e) => setDataSearch(e.target.value)}
-                        />
-                        <button onClick={() => handleSearch(dataSearch)} className="submit-btn">
-                          Submit
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                )}
-              </table>
-            </CCol>
+            <div className="col-12 col-md-4">
+              <div
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
+                onClick={() => {
+                  setStatusFilter('unread')
+                  setPageNumber(1)
+                }}
+                style={{ borderLeft: '4px solid #f59e0b', minHeight: '82px' }}
+              >
+                <div
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                >
+                  Hồ sơ chưa xem
+                </div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#d97706' }}
+                >
+                  {summary.unread || 0}
+                </div>
+              </div>
+            </div>
 
-            <CCol md={12} className="mt-3">
-              <CButton onClick={handleDeleteSelectedCheckbox} color="primary" size="sm">
-                Xóa vĩnh viễn
+            <div className="col-12 col-md-4">
+              <div
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
+                onClick={() => {
+                  setStatusFilter('read')
+                  setPageNumber(1)
+                }}
+                style={{ borderLeft: '4px solid #16a34a', minHeight: '82px' }}
+              >
+                <div
+                  className="fw-bold text-truncate"
+                  style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.2' }}
+                >
+                  Hồ sơ đã xem
+                </div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#16a34a' }}
+                >
+                  {summary.read || 0}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FILTER & SEARCH CARD */}
+          <div className="card border-0 shadow-sm rounded-3 p-3 mb-4 bg-white">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="row g-2 align-items-center">
+                <div className="col-12 col-md-4">
+                  <div className="input-group">
+                    <span className="input-group-text bg-light border-end-0 text-muted">🔍</span>
+                    <input
+                      type="text"
+                      className="form-control border-start-0 ps-0"
+                      placeholder="Tìm tên ứng viên, email, SĐT..."
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-12 col-md-3">
+                  <CFormSelect
+                    value={selectedCate}
+                    onChange={(e) => {
+                      setSelectedCate(e.target.value)
+                      setPageNumber(1)
+                    }}
+                  >
+                    <option value="">📁 Tất cả danh mục</option>
+                    {dataHireCategory?.map((cate) => (
+                      <option key={cate.id} value={cate.id}>
+                        {cate.title}
+                      </option>
+                    ))}
+                  </CFormSelect>
+                </div>
+
+                <div className="col-12 col-md-3">
+                  <CFormSelect
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value)
+                      setPageNumber(1)
+                    }}
+                  >
+                    <option value="">Tất cả trạng thái xem</option>
+                    <option value="unread">Chưa xem (Mới)</option>
+                    <option value="read">Đã xem</option>
+                  </CFormSelect>
+                </div>
+
+                <div className="col-12 col-md-2 d-flex gap-2">
+                  <CButton type="submit" color="primary" className="w-100 fw-semibold shadow-xs">
+                    Tìm kiếm
+                  </CButton>
+                  {(dataSearch || selectedCate || selectedPost || statusFilter || searchInput) && (
+                    <CButton
+                      type="button"
+                      color="light"
+                      className="border shadow-xs px-2.5 text-nowrap"
+                      title="Đặt lại bộ lọc"
+                      onClick={handleResetFilters}
+                    >
+                      Đặt lại
+                    </CButton>
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* BATCH ACTION BAR (If items are selected) */}
+          {selectedCheckbox.length > 0 && (
+            <div className="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 d-flex justify-content-between align-items-center p-2.5 px-3 rounded-3 mb-3">
+              <div className="d-flex align-items-center gap-2">
+                <span className="fw-bold text-primary">
+                  Đã chọn {selectedCheckbox.length} hồ sơ ứng tuyển
+                </span>
+              </div>
+              <CButton
+                color="danger"
+                size="sm"
+                className="fw-semibold text-white shadow-xs"
+                onClick={handleDeleteSelectedCheckbox}
+              >
+                Xóa {selectedCheckbox.length} mục đã chọn
               </CButton>
-            </CCol>
-            <CCol className="mt-3">
-              {isLoading ? (
+            </div>
+          )}
+
+          {/* DATA TABLE */}
+          <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white mb-4">
+            {isLoading ? (
+              <div className="p-5 text-center">
                 <Loading />
-              ) : (
-                <CTable className="border" hover>
-                  <CTableHead>
+              </div>
+            ) : candidateList.length === 0 ? (
+              <div className="p-5 text-center text-muted">
+                <h6 className="fw-bold text-dark">Chưa có hồ sơ ứng tuyển nào</h6>
+                <p className="small text-muted mb-0">
+                  Khi ứng viên nộp CV qua website, thông tin sẽ hiển thị tự động tại đây.
+                </p>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <CTable hover className="align-middle mb-0">
+                  <CTableHead
+                    className="bg-light text-secondary text-uppercase"
+                    style={{ fontSize: '11.5px' }}
+                  >
                     <CTableRow>
-                      <CTableHeaderCell scope="col">
+                      <CTableHeaderCell style={{ width: '40px' }} className="text-center">
                         <CFormCheck
                           aria-label="Select all"
-                          checked={isAllCheckbox}
+                          checked={
+                            candidateList.length > 0 &&
+                            candidateList.every((item) => selectedCheckbox.includes(item.id))
+                          }
                           onChange={(e) => {
                             const isChecked = e.target.checked
                             setIsAllCheckbox(isChecked)
                             if (isChecked) {
-                              const allIds = dataCandidate?.data.map((item) => item.id) || []
-                              setSelectedCheckbox(allIds)
+                              setSelectedCheckbox(candidateList.map((item) => item.id))
                             } else {
                               setSelectedCheckbox([])
                             }
                           }}
                         />
                       </CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Tên ứng viên</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Vị trí ứng tuyển</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Ngày nộp hồ sơ</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">
-                        <CIcon icon={cilEnvelopeClosed} size="lg" />
+                      <CTableHeaderCell style={{ minWidth: '220px' }}>Ứng viên</CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '180px' }}>
+                        Email & Liên hệ
                       </CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Tác vụ</CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '200px' }}>
+                        Vị trí ứng tuyển
+                      </CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '140px' }}>
+                        Ngày nộp hồ sơ
+                      </CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '110px' }} className="text-center">
+                        Trạng thái
+                      </CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '110px' }} className="text-center">
+                        Tệp CV
+                      </CTableHeaderCell>
+                      <CTableHeaderCell style={{ minWidth: '100px' }} className="text-center">
+                        Tác vụ
+                      </CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {dataCandidate?.data &&
-                      dataCandidate?.data.length > 0 &&
-                      dataCandidate?.data.map((item) => (
-                        <CTableRow key={item.id}>
-                          <CTableHeaderCell scope="row">
+                    {candidateList.map((item) => {
+                      const isSelected = selectedCheckbox.includes(item.id)
+                      const cvLink = getFileUrl(item.cv)
+
+                      return (
+                        <CTableRow
+                          key={item.id}
+                          className={isSelected ? 'table-primary bg-opacity-25' : ''}
+                        >
+                          {/* Checkbox */}
+                          <CTableDataCell className="text-center">
                             <CFormCheck
-                              key={item?.id}
-                              aria-label="Default select example"
-                              defaultChecked={item?.id}
-                              id={`flexCheckDefault_${item?.id}`}
-                              value={item?.id}
-                              checked={selectedCheckbox.includes(item?.id)}
+                              value={item.id}
+                              checked={isSelected}
                               onChange={(e) => {
-                                const candidateId = item?.id
                                 const isChecked = e.target.checked
                                 if (isChecked) {
-                                  setSelectedCheckbox([...selectedCheckbox, candidateId])
+                                  setSelectedCheckbox([...selectedCheckbox, item.id])
                                 } else {
                                   setSelectedCheckbox(
-                                    selectedCheckbox.filter((id) => id !== candidateId),
+                                    selectedCheckbox.filter((id) => id !== item.id),
                                   )
                                 }
                               }}
                             />
-                          </CTableHeaderCell>
+                          </CTableDataCell>
 
-                          <CTableDataCell>{item.name}</CTableDataCell>
-
+                          {/* Candidate Name & Initials */}
                           <CTableDataCell>
-                            <div>{item?.gmail}</div>
+                            <div className="d-flex align-items-center gap-2.5">
+                              <div
+                                className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
+                                style={{ width: '38px', height: '38px', fontSize: '13px' }}
+                              >
+                                {item.name ? item.name.charAt(0).toUpperCase() : 'U'}
+                              </div>
+                              <div>
+                                <div
+                                  className="fw-bold text-dark cursor-pointer text-truncate"
+                                  style={{ fontSize: '13.5px' }}
+                                  onClick={() => handleEditClick(item.id)}
+                                >
+                                  {item.name || 'Ứng viên chưa nhập tên'}
+                                </div>
+                                {item.phone && (
+                                  <a
+                                    href={`tel:${item.phone}`}
+                                    className="text-muted text-decoration-none"
+                                    style={{ fontSize: '11.5px' }}
+                                  >
+                                    {item.phone}
+                                  </a>
+                                )}
+                              </div>
+                            </div>
                           </CTableDataCell>
 
+                          {/* Email */}
                           <CTableDataCell>
-                            <div>{item?.hire_post?.hire_category?.title}</div>
-                          </CTableDataCell>
-
-                          <CTableDataCell style={{ fontSize: 13 }} className="orange-txt">
-                            {moment.unix(item.date_post).format('DD-MM-YYYY, hh:mm:ss A')}
-                          </CTableDataCell>
-
-                          <CTableDataCell style={{ fontSize: 13 }} className="orange-txt">
-                            {item?.status === 1 ? (
-                              <CIcon icon={cilEnvelopeOpen} />
+                            {item.gmail ? (
+                              <a
+                                href={`mailto:${item.gmail}`}
+                                className="text-primary text-decoration-none fw-semibold text-truncate d-block"
+                                style={{ fontSize: '12.5px', maxWidth: '200px' }}
+                                title={item.gmail}
+                              >
+                                {item.gmail}
+                              </a>
                             ) : (
-                              <CIcon icon={cilEnvelopeClosed} className="text-warning" size="lg" />
+                              <span className="text-muted small">Chưa có email</span>
                             )}
                           </CTableDataCell>
 
-                          <CTableDataCell className="orange-txt">
-                            <div className="d-flex">
+                          {/* Position */}
+                          <CTableDataCell>
+                            <div className="fw-semibold text-dark" style={{ fontSize: '12.5px' }}>
+                              {item.hire_post?.name || 'Vị trí tuyển dụng đã đóng/xóa'}
+                            </div>
+                            {item.hire_post?.hire_category?.title && (
+                              <span
+                                className="badge mt-1 px-2 py-0.5 rounded-pill"
+                                style={{
+                                  backgroundColor: '#eff6ff',
+                                  color: '#1d4ed8',
+                                  border: '1px solid #bfdbfe',
+                                  fontSize: '11px',
+                                }}
+                              >
+                                {item.hire_post.hire_category.title}
+                              </span>
+                            )}
+                          </CTableDataCell>
+
+                          {/* Date Submitted */}
+                          <CTableDataCell>
+                            <div className="text-secondary" style={{ fontSize: '12px' }}>
+                              {formatCandidateDate(item.date_post || item.created_at)}
+                            </div>
+                          </CTableDataCell>
+
+                          {/* Status */}
+                          <CTableDataCell className="text-center">
+                            {item.status === 1 ? (
+                              <span
+                                className="badge px-2 py-1 rounded-pill"
+                                style={{
+                                  backgroundColor: '#f1f5f9',
+                                  color: '#475569',
+                                  border: '1px solid #cbd5e1',
+                                  fontSize: '11px',
+                                }}
+                              >
+                                Đã xem
+                              </span>
+                            ) : (
+                              <span
+                                className="badge px-2 py-1 rounded-pill"
+                                style={{
+                                  backgroundColor: '#fef3c7',
+                                  color: '#b45309',
+                                  border: '1px solid #fde68a',
+                                  fontSize: '11px',
+                                }}
+                              >
+                                Chưa xem
+                              </span>
+                            )}
+                          </CTableDataCell>
+
+                          {/* View CV file */}
+                          <CTableDataCell className="text-center">
+                            {cvLink ? (
+                              <a
+                                href={cvLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-sm btn-outline-primary py-0.5 px-2 fw-semibold"
+                                style={{ fontSize: '11px' }}
+                              >
+                                Xem CV
+                              </a>
+                            ) : (
+                              <span className="text-muted" style={{ fontSize: '11px' }}>
+                                Không có
+                              </span>
+                            )}
+                          </CTableDataCell>
+
+                          {/* Actions */}
+                          <CTableDataCell className="text-center">
+                            <div className="d-flex justify-content-center">
                               <button
                                 onClick={() => handleEditClick(item.id)}
                                 className="button-action mr-2 bg-info"
+                                title="Xem chi tiết hồ sơ"
                               >
                                 <CIcon icon={cilColorBorder} className="text-white" />
                               </button>
@@ -351,19 +637,30 @@ function CandidateCV() {
                                   setDeletedId(item.id)
                                 }}
                                 className="button-action bg-danger"
+                                title="Xóa hồ sơ"
                               >
                                 <CIcon icon={cilTrash} className="text-white" />
                               </button>
                             </div>
                           </CTableDataCell>
                         </CTableRow>
-                      ))}
+                      )
+                    })}
                   </CTableBody>
                 </CTable>
-              )}
-              <div className="d-flex justify-content-end">
+              </div>
+            )}
+
+            {/* PAGINATION FOOTER */}
+            {candidateList.length > 0 && (
+              <div className="card-footer bg-white border-top d-flex flex-wrap justify-content-between align-items-center gap-3 p-3">
+                <div className="text-muted small">
+                  Hiển thị <strong>{startItem}</strong> - <strong>{endItem}</strong> trên tổng số{' '}
+                  <strong>{totalItems}</strong> hồ sơ ứng tuyển
+                </div>
                 <ReactPaginate
-                  pageCount={Math.ceil(dataCandidate?.total / dataCandidate?.per_page)}
+                  pageCount={totalPages}
+                  forcePage={pageNumber - 1}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageClassName="page-item"
@@ -376,14 +673,14 @@ function CandidateCV() {
                   breakClassName="page-item"
                   breakLinkClassName="page-link"
                   onPageChange={handlePageChange}
-                  containerClassName={'pagination'}
+                  containerClassName={'pagination pagination-sm m-0'}
                   activeClassName={'active'}
-                  previousLabel={'<<'}
-                  nextLabel={'>>'}
+                  previousLabel={'« Trước'}
+                  nextLabel={'Sau »'}
                 />
               </div>
-            </CCol>
-          </CRow>
+            )}
+          </div>
         </>
       )}
     </div>
