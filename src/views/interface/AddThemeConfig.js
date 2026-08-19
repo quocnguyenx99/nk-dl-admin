@@ -698,183 +698,52 @@ function AddThemeConfig() {
                   <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
                     <div>
                       <h6 className="fw-bold text-primary mb-1">
-                        🏷️ Cấu hình Trang trí Logo Header
+                        🏷️ Cấu hình Logo Header Chiến dịch
                       </h6>
                       <p className="text-muted text-xs mb-0">
-                        Tải ảnh phụ kiện trang trí (lá thông giáng sinh, nón Noel, cành mai...) để
-                        gắn trực tiếp lên Logo website.
+                        Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...)
+                        hiển thị trên Header website.
                       </p>
                     </div>
-                    <CBadge color="primary">Logo Emblem</CBadge>
+                    <CBadge color="primary">Header Logo</CBadge>
                   </div>
 
                   <CRow className="g-4 align-items-center">
                     <CCol md={7}>
-                      <CRow className="g-3 mb-3">
-                        {/* Upload Box 1: Campaign Main Logo */}
-                        <CCol md={6}>
-                          <div className="p-3 bg-light rounded border text-center h-100 d-flex flex-column justify-content-between">
-                            <div>
-                              <label className="form-label font-semibold text-dark small mb-1">
-                                Tải ảnh Logo chiến dịch (Thay logo mặc định)
-                              </label>
-                              <CFormInput
-                                type="file"
-                                accept="image/*"
-                                size="sm"
-                                className="mb-1"
-                                onChange={handleMainLogoUpload}
-                              />
-                            </div>
-                            <span className="text-muted text-xs">Ảnh PNG/WEBP tách nền logo</span>
-                          </div>
-                        </CCol>
-
-                        {/* Upload Box 2: Logo Ornament */}
-                        <CCol md={6}>
-                          <div className="p-3 bg-light rounded border text-center h-100 d-flex flex-column justify-content-between">
-                            <div>
-                              <label className="form-label font-semibold text-dark small mb-1">
-                                Tải ảnh phụ kiện đính trên Logo
-                              </label>
-                              <CFormInput
-                                type="file"
-                                accept="image/*"
-                                size="sm"
-                                className="mb-1"
-                                onChange={handleLogoOrnamentUpload}
-                              />
-                            </div>
-                            <span className="text-muted text-xs">
-                              Lá thông, nón Noel, cành mai...
-                            </span>
-                          </div>
-                        </CCol>
-                      </CRow>
-
-                      {/* Position & Size */}
-                      <CRow className="g-3">
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark small mb-1">
-                            Vị trí gắn hình trên Logo
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={newTheme?.decorations?.logoOrnamentPosition || 'bottom-left'}
-                            onChange={(e) =>
-                              setNewTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  logoOrnamentPosition: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="bottom-left">Góc dưới trái (Giáng Sinh 🌿🍒)</option>
-                            <option value="top-left">Góc trên trái</option>
-                            <option value="top-right">Góc trên phải</option>
-                            <option value="bottom-right">Góc dưới phải</option>
-                          </CFormSelect>
-                        </CCol>
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark small mb-1">
-                            Kích thước hình phụ kiện
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={newTheme?.decorations?.logoOrnamentSize || '36px'}
-                            onChange={(e) =>
-                              setNewTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  logoOrnamentSize: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="24px">Nhỏ (24px)</option>
-                            <option value="36px">Vừa tiêu chuẩn (36px)</option>
-                            <option value="48px">Lớn (48px)</option>
-                            <option value="64px">Rất lớn (64px)</option>
-                          </CFormSelect>
-                        </CCol>
-                      </CRow>
+                      <div className="p-4 bg-light rounded border text-center">
+                        <label className="form-label font-semibold text-dark mb-2">
+                          Tải ảnh Logo chiến dịch mới từ máy tính
+                        </label>
+                        <CFormInput
+                          type="file"
+                          accept="image/*"
+                          size="sm"
+                          className="mb-2"
+                          onChange={handleMainLogoUpload}
+                        />
+                        <span className="text-muted text-xs d-block">
+                          Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo
+                          mặc định trên Header website.
+                        </span>
+                      </div>
                     </CCol>
 
                     {/* Live Logo Preview Box */}
                     <CCol md={5}>
                       <div className="p-3 bg-light rounded border text-center">
                         <span className="fw-semibold text-dark text-xs d-block mb-2">
-                          Xem trước trực tiếp Logo kèm Phụ kiện
+                          Xem trước trực tiếp Logo Header
                         </span>
                         <div
                           className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
                           style={{ height: '120px' }}
                         >
-                          <div className="position-relative d-inline-block p-2 bg-white rounded border">
+                          <div className="p-2 bg-white rounded border">
                             <img
                               src={newTheme?.decorations?.logoUrl || logoNk}
-                              alt="Logo"
-                              style={{ height: '45px', objectFit: 'contain' }}
+                              alt="Logo Header"
+                              style={{ height: '55px', objectFit: 'contain' }}
                             />
-                            {newTheme?.decorations?.logoOrnamentUrl ? (
-                              <img
-                                src={newTheme.decorations.logoOrnamentUrl}
-                                alt="Ornament"
-                                className="position-absolute"
-                                style={{
-                                  width: newTheme?.decorations?.logoOrnamentSize || '36px',
-                                  height: newTheme?.decorations?.logoOrnamentSize || '36px',
-                                  objectFit: 'contain',
-                                  top: newTheme?.decorations?.logoOrnamentPosition?.includes('top')
-                                    ? '-8px'
-                                    : 'auto',
-                                  bottom: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'bottom',
-                                  )
-                                    ? '-8px'
-                                    : 'auto',
-                                  left: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'left',
-                                  )
-                                    ? '-8px'
-                                    : 'auto',
-                                  right: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'right',
-                                  )
-                                    ? '-8px'
-                                    : 'auto',
-                                }}
-                              />
-                            ) : (
-                              <span
-                                className="position-absolute fs-5"
-                                style={{
-                                  top: newTheme?.decorations?.logoOrnamentPosition?.includes('top')
-                                    ? '-10px'
-                                    : 'auto',
-                                  bottom: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'bottom',
-                                  )
-                                    ? '-10px'
-                                    : 'auto',
-                                  left: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'left',
-                                  )
-                                    ? '-10px'
-                                    : 'auto',
-                                  right: newTheme?.decorations?.logoOrnamentPosition?.includes(
-                                    'right',
-                                  )
-                                    ? '-10px'
-                                    : 'auto',
-                                }}
-                              >
-                                🌿🍒
-                              </span>
-                            )}
                           </div>
                         </div>
                       </div>
