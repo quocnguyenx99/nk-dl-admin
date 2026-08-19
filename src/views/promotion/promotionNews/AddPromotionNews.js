@@ -1,10 +1,11 @@
 import {
   CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
   CCol,
-  CContainer,
   CFormInput,
   CFormSelect,
-  CFormTextarea,
   CImage,
   CRow,
   CSpinner,
@@ -13,15 +14,18 @@ import React, { useState } from 'react'
 
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import CKedtiorCustom from '../../../components/customEditor/ckEditorCustom'
 import { axiosClient, imageBaseUrl } from '../../../axiosConfig'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
+import CIcon from '@coreui/icons-react'
+import { cilArrowLeft } from '@coreui/icons'
 
 function AddPromotionNews() {
+  const navigate = useNavigate()
   const [editorData, setEditorData] = useState('')
 
   //loading button
@@ -35,11 +39,11 @@ function AddPromotionNews() {
     metaDesc: '',
     startDate: new Date(),
     endDate: new Date(),
-    visible: 0,
+    visible: 1,
   }
 
   const validationSchema = Yup.object({
-    // title: Yup.string().required('Tiêu đề là bắt buộc.'),
+    title: Yup.string().required('Tiêu đề bài viết là bắt buộc.'),
     startDate: Yup.date().required('Thời gian bắt đầu là bắt buộc.'),
     endDate: Yup.date()
       .required('Thời gian kết thúc là bắt buộc.')
@@ -47,12 +51,6 @@ function AddPromotionNews() {
         const { startDate } = this.parent
         return value && startDate ? value > startDate : true
       }),
-
-    // friendlyUrl: Yup.string().required('Chuỗi đường dẫn là bắt buộc.'),
-    // pageTitle: Yup.string().required('Tiêu đề bài viết là bắt buộc.'),
-    // metaKeyword: Yup.string().required('Meta keywords là bắt buộc.'),
-    // metaDesc: Yup.string().required('Meta description là bắt buộc.'),
-    // visible: Yup.string().required('Cho phép hiển thị là bắt buộc.'),
   })
 
   const handleSubmit = async (values) => {
@@ -73,13 +71,14 @@ function AddPromotionNews() {
 
       if (response.data.status === true) {
         toast.success('Thêm tin khuyến mãi thành công!')
+        navigate('/promotion')
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
-      console.error('Post data promotion news is error', error)
+      console.error('Post data promotion news error', error)
       toast.error('Đã xảy ra lỗi. Vui lòng thử lại!')
     } finally {
       setIsLoading(false)
@@ -97,221 +96,288 @@ function AddPromotionNews() {
     const fileUrls = []
 
     Array.from(files).forEach((file) => {
-      // Create a URL for the file
       fileUrls.push(URL.createObjectURL(file))
-
-      // Read the file as base64
       const fileReader = new FileReader()
       fileReader.readAsDataURL(file)
-
       fileReader.onload = (event) => {
         selectedFiles.push(event.target.result)
-        // Set base64 data after all files have been read
         if (selectedFiles.length === files.length) {
           setSelectedFile(selectedFiles)
         }
       }
     })
-
-    // Set file URLs for immediate preview
     setFile(fileUrls)
   }
 
   return (
     <div>
-      <CRow className="mb-3">
-        <CCol>
-          <h3>THÊM MỚI TIN KHUYẾN MÃI</h3>
-        </CCol>
-        <CCol md={6}>
-          <div className="d-flex justify-content-end">
-            <Link to={'/promotion'}>
-              <CButton color="primary" type="button" size="sm">
-                Danh sách
-              </CButton>
-            </Link>
-          </div>
-        </CCol>
-      </CRow>
-
-      <CRow>
-        <CCol md={12}>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
+      {/* Top Title & Actions */}
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h4 className="fw-bold text-dark mb-1">THÊM MỚI TIN KHUYẾN MÃI</h4>
+          <p className="text-muted small mb-0">
+            Tạo tin tức khuyến mãi mới để hiển thị trên website
+          </p>
+        </div>
+        <div>
+          <CButton
+            color="secondary"
+            variant="outline"
+            className="fw-semibold d-flex align-items-center gap-1 shadow-xs"
+            onClick={() => navigate('/promotion')}
           >
-            {({ setFieldValue, setValues, values }) => {
-              return (
-                <Form>
-                  <CRow>
-                    <CCol md={8}>
-                      <CCol md={12}>
-                        <label htmlFor="title-input">Tiêu đề </label>
-                        <Field name="title">
-                          {({ field }) => (
-                            <CFormInput
-                              {...field}
-                              type="text"
-                              id="title-input"
-                              text="Tên riêng sẽ hiển thị lên trang web của bạn."
+            <CIcon icon={cilArrowLeft} /> Quay lại danh sách
+          </CButton>
+        </div>
+      </div>
+
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ setFieldValue, values }) => (
+          <Form>
+            <CRow className="g-3">
+              <CCol lg={8} md={12}>
+                <CCard className="shadow-xs border mb-3">
+                  <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
+                    📄 Thông tin bài viết
+                  </CCardHeader>
+                  <CCardBody className="p-3">
+                    <div className="mb-3">
+                      <label htmlFor="title-input" className="form-label fw-semibold text-dark">
+                        Tiêu đề bài viết <span className="text-danger">*</span>
+                      </label>
+                      <Field name="title">
+                        {({ field }) => (
+                          <CFormInput
+                            {...field}
+                            type="text"
+                            id="title-input"
+                            placeholder="Nhập tiêu đề tin khuyến mãi..."
+                          />
+                        )}
+                      </Field>
+                      <div className="form-text text-muted small">
+                        Tên riêng sẽ hiển thị trên trang web của bạn.
+                      </div>
+                      <ErrorMessage
+                        name="title"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label fw-semibold text-dark">Nội dung bài viết</label>
+                      <CKedtiorCustom
+                        data={editorData}
+                        onChangeData={(data) => setEditorData(data)}
+                      />
+                    </div>
+                  </CCardBody>
+                </CCard>
+
+                <CCard className="shadow-xs border mb-3">
+                  <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
+                    🔍 Cấu hình SEO (Search Engine Optimization)
+                  </CCardHeader>
+                  <CCardBody className="p-3">
+                    <div className="mb-3">
+                      <label htmlFor="url-input" className="form-label fw-semibold text-dark">
+                        Chuỗi đường dẫn (Friendly URL)
+                      </label>
+                      <Field
+                        name="friendlyUrl"
+                        type="text"
+                        as={CFormInput}
+                        id="url-input"
+                        placeholder="VD: thu-may-cu-doi-may-moi-cung-dell"
+                      />
+                      <div className="form-text text-muted small">
+                        Phiên bản tên tĩnh của URL. Chứa chữ cái thường, số và dấu gạch ngang (-).
+                      </div>
+                      <ErrorMessage
+                        name="friendlyUrl"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="pageTitle-input" className="form-label fw-semibold text-dark">
+                        Tiêu đề trang (Meta Title)
+                      </label>
+                      <Field
+                        name="pageTitle"
+                        type="text"
+                        as={CFormInput}
+                        id="pageTitle-input"
+                        placeholder="Tiêu đề hiển thị trên tab trình duyệt..."
+                      />
+                      <div className="form-text text-muted small">Tối đa 60 ký tự.</div>
+                      <ErrorMessage
+                        name="pageTitle"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label
+                        htmlFor="metaKeyword-input"
+                        className="form-label fw-semibold text-dark"
+                      >
+                        Meta Keywords
+                      </label>
+                      <Field
+                        name="metaKeyword"
+                        type="text"
+                        as={CFormInput}
+                        id="metaKeyword-input"
+                        placeholder="Từ khóa cách nhau bởi dấu phẩy..."
+                      />
+                      <div className="form-text text-muted small">
+                        Độ dài chuẩn 100 đến 150 ký tự, gồm các từ khóa chính.
+                      </div>
+                      <ErrorMessage
+                        name="metaKeyword"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="metaDesc-input" className="form-label fw-semibold text-dark">
+                        Meta Description
+                      </label>
+                      <Field
+                        name="metaDesc"
+                        type="text"
+                        as={CFormInput}
+                        id="metaDesc-input"
+                        placeholder="Mô tả tóm tắt nội dung khi tìm kiếm..."
+                      />
+                      <div className="form-text text-muted small">Tối đa 140-200 ký tự.</div>
+                      <ErrorMessage
+                        name="metaDesc"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+
+              <CCol lg={4} md={12}>
+                <CCard className="shadow-xs border mb-3">
+                  <CCardHeader className="bg-white py-3 px-3 fw-bold text-primary">
+                    🖼️ Ảnh đại diện & Thời gian
+                  </CCardHeader>
+                  <CCardBody className="p-3">
+                    <div className="mb-3">
+                      <label htmlFor="formFile" className="form-label fw-semibold text-dark">
+                        Ảnh đại diện
+                      </label>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        size="sm"
+                        onChange={(e) => onFileChange(e)}
+                      />
+                      <div className="mt-2 text-center">
+                        {file.length > 0 ? (
+                          file.map((item, index) => (
+                            <CImage
+                              className="border rounded p-1 shadow-xs"
+                              key={index}
+                              src={item}
+                              style={{ maxWidth: '100%', maxHeight: '160px', objectFit: 'cover' }}
                             />
-                          )}
-                        </Field>
-                        <ErrorMessage name="title" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
+                          ))
+                        ) : (
+                          <div className="p-3 border rounded text-muted bg-light small">
+                            Chưa chọn ảnh
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                      <CCol md={12}>
-                        <label htmlFor="visible-select">Nội dung bài viết</label>
-                        <CKedtiorCustom
-                          data={editorData}
-                          onChangeData={(data) => setEditorData(data)}
-                        />
-                      </CCol>
-                      <br />
+                    <hr />
 
-                      <h6>Search Engine Optimization</h6>
-                      <br />
-                      <CCol md={12}>
-                        <label htmlFor="url-input">Chuỗi đường dẫn</label>
-                        <Field
-                          name="friendlyUrl"
-                          type="text"
-                          as={CFormInput}
-                          id="url-input"
-                          text="Chuỗi dẫn tĩnh là phiên bản của tên hợp chuẩn với Đường dẫn (URL). Chuỗi này bao gồm chữ cái thường, số và dấu gạch ngang (-). VD: vi-tinh-nguyen-kim-to-chuc-su-kien-tri-an-dip-20-nam-thanh-lap"
-                        />
-                        <ErrorMessage name="friendlyUrl" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-                      <CCol md={12}>
-                        <label htmlFor="pageTitle-input">Tiêu đề trang</label>
-                        <Field
-                          name="pageTitle"
-                          type="text"
-                          as={CFormInput}
-                          id="pageTitle-input"
-                          text="Độ dài của tiêu đề trang tối đa 60 ký tự."
-                        />
-                        <ErrorMessage name="pageTitle" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-                      <CCol md={12}>
-                        <label htmlFor="metaKeyword-input">Meta keywords</label>
-                        <Field
-                          name="metaKeyword"
-                          type="text"
-                          as={CFormInput}
-                          id="metaKeyword-input"
-                          text="Độ dài của meta keywords chuẩn là từ 100 đến 150 ký tự, trong đó có ít nhất 4 dấu phẩy (,)."
-                        />
-                        <ErrorMessage name="metaKeyword" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-                      <CCol md={12}>
-                        <label htmlFor="metaDesc-input">Meta description</label>
-                        <Field
-                          name="metaDesc"
-                          type="text"
-                          as={CFormInput}
-                          id="metaDesc-input"
-                          text="Thẻ meta description chỉ nên dài khoảng 140 kí tự để có thể hiển thị hết được trên Google. Tối đa 200 ký tự."
-                        />
-                        <ErrorMessage name="metaDesc" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-                    </CCol>
+                    <div className="mb-3">
+                      <label className="form-label fw-semibold text-dark d-block">
+                        Thời gian áp dụng từ <span className="text-danger">*</span>
+                      </label>
+                      <DatePicker
+                        className="form-control form-control-sm mb-2"
+                        dateFormat={'dd-MM-yyyy'}
+                        showIcon
+                        selected={values.startDate}
+                        onChange={(date) => setFieldValue('startDate', date)}
+                      />
+                      <ErrorMessage
+                        name="startDate"
+                        component="div"
+                        className="text-danger small mb-2"
+                      />
 
-                    <CCol md={4}>
-                      <CCol md={12}>
-                        <CFormInput
-                          name="avatar"
-                          type="file"
-                          id="formFile"
-                          label="Ảnh đại diện"
-                          size="sm"
-                          onChange={(e) => onFileChange(e)}
-                        />
-                        <br />
-                        <ErrorMessage name="avatar" component="div" className="text-danger" />
+                      <label className="form-label fw-semibold text-dark d-block">
+                        đến ngày <span className="text-danger">*</span>
+                      </label>
+                      <DatePicker
+                        className="form-control form-control-sm mb-2"
+                        dateFormat={'dd-MM-yyyy'}
+                        showIcon
+                        selected={values.endDate}
+                        onChange={(date) => setFieldValue('endDate', date)}
+                      />
+                      <ErrorMessage
+                        name="endDate"
+                        component="div"
+                        className="text-danger small mb-2"
+                      />
+                    </div>
 
-                        <div>
-                          {file.length == 0 ? (
-                            <div>
-                              <CImage
-                                className="border"
-                                src={`${imageBaseUrl}${selectedFile}`}
-                                width={200}
-                              />
-                            </div>
-                          ) : (
-                            file.map((item, index) => (
-                              <CImage className="border" key={index} src={item} width={200} />
-                            ))
-                          )}
-                        </div>
-                      </CCol>
-                      <br />
+                    <hr />
 
-                      <CCol>
-                        <label>Thời gian áp dụng từ</label>
-                        <div className="d-flex flex-column gap-2">
-                          <DatePicker
-                            dateFormat={'dd-MM-yyyy'}
-                            showIcon
-                            selected={values.startDate}
-                            onChange={(date) => setFieldValue('startDate', date)}
-                          />
+                    <div className="mb-3">
+                      <label htmlFor="visible-select" className="form-label fw-semibold text-dark">
+                        Trạng thái hiển thị
+                      </label>
+                      <Field
+                        name="visible"
+                        as={CFormSelect}
+                        id="visible-select"
+                        options={[
+                          { label: 'Có', value: '1' },
+                          { label: 'Không', value: '0' },
+                        ]}
+                      />
+                    </div>
 
-                          {'đến ngày'}
-
-                          <DatePicker
-                            dateFormat={'dd-MM-yyyy'}
-                            showIcon
-                            selected={values.endDate}
-                            onChange={(date) => setFieldValue('endDate', date)}
-                          />
-                        </div>
-                        <ErrorMessage name="startDate" component="p" className="text-danger" />
-                        <ErrorMessage name="endDate" component="p" className="text-danger" />
-                      </CCol>
-                      <br />
-
-                      <CCol md={12}>
-                        <label htmlFor="visible-select">Hiển thị</label>
-                        <Field
-                          name="visible"
-                          as={CFormSelect}
-                          id="visible-select"
-                          options={[
-                            { label: 'Không', value: '0' },
-                            { label: 'Có', value: '1' },
-                          ]}
-                        />
-                        <ErrorMessage name="visible" component="div" className="text-danger" />
-                      </CCol>
-                      <br />
-
-                      <CCol xs={12}>
-                        <CButton color="primary" type="submit" size="sm" disabled={isLoading}>
-                          {isLoading ? (
-                            <>
-                              <CSpinner size="sm"></CSpinner> Đang cập nhật...
-                            </>
-                          ) : (
-                            'Thêm mới'
-                          )}
-                        </CButton>
-                      </CCol>
-                    </CCol>
-                  </CRow>
-                </Form>
-              )
-            }}
-          </Formik>
-        </CCol>
-      </CRow>
+                    <CButton
+                      color="primary"
+                      type="submit"
+                      className="w-100 fw-semibold mt-2 shadow-xs"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <CSpinner size="sm" className="me-1" /> Đang thêm mới...
+                        </>
+                      ) : (
+                        'Thêm mới tin khuyến mãi'
+                      )}
+                    </CButton>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </Form>
+        )}
+      </Formik>
     </div>
   )
 }

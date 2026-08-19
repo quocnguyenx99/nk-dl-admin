@@ -133,11 +133,14 @@ function PromotionNews() {
     }
   }
 
-  const formatDate = (val, fallback = 'Không có') => {
+  const formatDate = (val, fallback = 'Chưa có') => {
     if (!val || val === '0' || Number(val) <= 0) return fallback
-    let m = moment(val)
-    if (!m.isValid() && !isNaN(val)) {
-      m = moment.unix(Number(val))
+    let m
+    if (!isNaN(val)) {
+      const num = Number(val)
+      m = num < 10000000000 ? moment.unix(num) : moment(num)
+    } else {
+      m = moment(val)
     }
     return m.isValid() && m.year() >= 1980 ? m.format('DD-MM-YYYY') : fallback
   }
