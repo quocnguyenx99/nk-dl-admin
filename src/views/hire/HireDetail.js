@@ -352,57 +352,101 @@ function HirePost() {
           <div className="row g-3 mb-4">
             <div className="col-6 col-md-3">
               <div
-                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
                 onClick={handleResetFilters}
-                style={{ borderLeft: '4px solid #2563eb' }}
+                style={{
+                  borderLeft: '4px solid #2563eb',
+                  minHeight: '82px',
+                }}
               >
-                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                <div
+                  className="text-muted text-uppercase fw-bold text-truncate"
+                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                >
                   Tổng bài đăng
                 </div>
-                <div className="h4 fw-bold text-dark m-0">{summary.total || totalPosts}</div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#1e293b' }}
+                >
+                  {summary.total || totalPosts}
+                </div>
               </div>
             </div>
 
             <div className="col-6 col-md-3">
               <div
-                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
                 onClick={() => {
                   setStatusFilter('active')
                   setPageNumber(1)
                 }}
-                style={{ borderLeft: '4px solid #16a34a' }}
+                style={{
+                  borderLeft: '4px solid #16a34a',
+                  minHeight: '82px',
+                }}
               >
-                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                <div
+                  className="text-muted text-uppercase fw-bold text-truncate"
+                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                >
                   Đang tuyển dụng
                 </div>
-                <div className="h4 fw-bold text-success m-0">{summary.active || 0}</div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#16a34a' }}
+                >
+                  {summary.active || 0}
+                </div>
               </div>
             </div>
 
             <div className="col-6 col-md-3">
               <div
-                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
                 onClick={() => {
                   setStatusFilter('expired')
                   setPageNumber(1)
                 }}
-                style={{ borderLeft: '4px solid #dc2626' }}
+                style={{
+                  borderLeft: '4px solid #dc2626',
+                  minHeight: '82px',
+                }}
               >
-                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">Đã hết hạn</div>
-                <div className="h4 fw-bold text-danger m-0">{summary.expired || 0}</div>
+                <div
+                  className="text-muted text-uppercase fw-bold text-truncate"
+                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                >
+                  Đã hết hạn
+                </div>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#dc2626' }}
+                >
+                  {summary.expired || 0}
+                </div>
               </div>
             </div>
 
             <div className="col-6 col-md-3">
               <div
-                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer"
+                className="card border-0 shadow-sm rounded-3 p-3 bg-white cursor-pointer h-100 d-flex flex-column justify-content-between"
                 onClick={() => navigate('/hire/candidate')}
-                style={{ borderLeft: '4px solid #7c3aed' }}
+                style={{
+                  borderLeft: '4px solid #7c3aed',
+                  minHeight: '82px',
+                }}
               >
-                <div className="text-muted text-xs text-uppercase fw-semibold mb-1">
+                <div
+                  className="text-muted text-uppercase fw-bold text-truncate"
+                  style={{ fontSize: '11.5px', letterSpacing: '0.02em', lineHeight: '1.2' }}
+                >
                   Hồ sơ ứng viên
                 </div>
-                <div className="h4 fw-bold m-0" style={{ color: '#7c3aed' }}>
+                <div
+                  className="fw-bold mt-2"
+                  style={{ fontSize: '24px', lineHeight: '1', color: '#7c3aed' }}
+                >
                   {summary.candidates || 0}
                 </div>
               </div>
