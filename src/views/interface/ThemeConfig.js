@@ -1829,12 +1829,13 @@ const ThemeConfig = () => {
       bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15,
     )
     const opacityDebounceTimerRef = useRef(null)
+    const isSlidingRef = useRef(false)
 
     useEffect(() => {
-      if (bgConfig.opacity !== undefined && Math.abs(bgConfig.opacity - localOpacity) > 0.001) {
+      if (!isSlidingRef.current && bgConfig.opacity !== undefined) {
         setLocalOpacity(bgConfig.opacity)
       }
-    }, [bgConfig.opacity, currentTheme.id])
+    }, [currentTheme.id])
 
     const handleSelectPreset = (key) => {
       setTargetTheme({
@@ -1854,6 +1855,7 @@ const ThemeConfig = () => {
     const handleBgOpacityChange = (val) => {
       const numVal = parseFloat(val)
       setLocalOpacity(numVal)
+      isSlidingRef.current = true
 
       if (opacityDebounceTimerRef.current) {
         clearTimeout(opacityDebounceTimerRef.current)
@@ -1867,7 +1869,22 @@ const ThemeConfig = () => {
             opacity: numVal,
           },
         }))
-      }, 150)
+        isSlidingRef.current = false
+      }, 300)
+    }
+
+    const handleSliderMouseUp = () => {
+      if (opacityDebounceTimerRef.current) {
+        clearTimeout(opacityDebounceTimerRef.current)
+      }
+      isSlidingRef.current = false
+      setTargetTheme((prev) => ({
+        ...prev,
+        background: {
+          ...(prev.background || bgConfig),
+          opacity: localOpacity,
+        },
+      }))
     }
 
     const handleBgModeChange = (mode) => {
@@ -2034,6 +2051,8 @@ const ThemeConfig = () => {
                   step="0.01"
                   value={localOpacity}
                   onChange={(e) => handleBgOpacityChange(e.target.value)}
+                  onMouseUp={handleSliderMouseUp}
+                  onTouchEnd={handleSliderMouseUp}
                 />
                 <div
                   className="d-flex justify-content-between text-muted"
