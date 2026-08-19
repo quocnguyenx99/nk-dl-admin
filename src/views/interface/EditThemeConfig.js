@@ -1104,18 +1104,15 @@ function EditThemeConfig() {
             </CCardBody>
           </CCard>
         </CCol>
-      </CRow>
 
-      {/* ROW 4: Color Scheme & Design Tokens */}
-      <CRow className="mb-4">
-        {/* Thẻ 6: Colors */}
-        <CCol md={12}>
-          <CCard className="shadow-xs border">
+        {/* Thẻ 5: Colors */}
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
               <span>Thẻ 5: Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
             </CCardHeader>
-            <CCardBody className="p-3">
-              <CRow className="g-3">
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <CRow className="g-2">
                 {[
                   { label: 'Màu chính (Nút & Viền)', key: 'primary' },
                   { label: 'Màu thanh Menu Topbar', key: 'secondary' },
@@ -1123,7 +1120,7 @@ function EditThemeConfig() {
                   { label: 'Màu nền website', key: 'background' },
                   { label: 'Màu chữ văn bản', key: 'text' },
                 ].map((item) => (
-                  <CCol key={item.key} md={2.4}>
+                  <CCol key={item.key} md={12}>
                     <div className="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
                       <span className="small text-secondary fw-semibold">{item.label}</span>
                       <div className="d-flex align-items-center gap-2">
@@ -1144,7 +1141,7 @@ function EditThemeConfig() {
                           size="sm"
                           value={editingTheme?.colors?.[item.key] || '#2356c4'}
                           className="font-monospace text-uppercase"
-                          style={{ width: '75px', fontSize: '11px' }}
+                          style={{ width: '85px', fontSize: '11px' }}
                           onChange={(e) => {
                             const newCols = {
                               ...(editingTheme?.colors || {}),
