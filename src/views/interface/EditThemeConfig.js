@@ -467,6 +467,26 @@ function EditThemeConfig() {
     }
   }
 
+  const handleFooterOrnamentUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setEditingTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            footerOrnamentUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh trang trí Chân trang Footer thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh trang trí Footer: ' + err.message)
+    }
+  }
+
   const handleSave = async () => {
     if (!editingTheme?.name) {
       toast.error('Vui lòng nhập tên chiến dịch giao diện!')
@@ -493,6 +513,10 @@ function EditThemeConfig() {
             logoOrnamentUrl: editingTheme?.decorations?.logoOrnamentUrl || '',
             logoOrnamentPosition: editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
             logoOrnamentSize: editingTheme?.decorations?.logoOrnamentSize || '36px',
+            footerOrnamentUrl: editingTheme?.decorations?.footerOrnamentUrl || '',
+            footerOrnamentPosition:
+              editingTheme?.decorations?.footerOrnamentPosition || 'both-corners',
+            footerOrnamentSize: editingTheme?.decorations?.footerOrnamentSize || '48px',
           },
           background: editingTheme.background || {
             preset: editingTheme.decorations?.particles || 'none',
@@ -557,110 +581,141 @@ function EditThemeConfig() {
         </div>
       </div>
 
-      {/* TOP ROW: Theme Overview Card */}
+      {/* ROW 1: Campaign Overview & Schedule */}
       <CRow className="mb-4">
-        {/* Card 1: Theme Overview */}
+        {/* Thẻ 1: Thông tin chung & Lập lịch chiến dịch */}
         <CCol md={12}>
           <CCard className="shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Tổng quan chiến dịch (Theme Overview)
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>
+                Thẻ 1: Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)
+              </span>
+              <CBadge color={editingTheme?.isActive ? 'success' : 'warning'}>
+                {editingTheme?.isActive ? 'Đang áp dụng' : 'Bản nháp'}
+              </CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
-              <div className="d-flex gap-3">
-                <div
-                  className="rounded border overflow-hidden bg-light flex-shrink-0"
-                  style={{ width: '100px', height: '140px' }}
-                >
-                  <CImage
-                    src={editingTheme?.image}
-                    className="w-100 h-100"
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className="flex-grow-1">
-                  <div className="d-flex align-items-center justify-content-between mb-1">
-                    <span className="fw-bold text-dark fs-6">{editingTheme?.name}</span>
-                    <CBadge color={editingTheme?.isActive ? 'success' : 'warning'}>
-                      {editingTheme?.isActive ? 'Đang áp dụng' : 'Bản nháp'}
-                    </CBadge>
+              <CRow className="g-3 align-items-center">
+                <CCol md={2}>
+                  <div
+                    className="rounded border overflow-hidden bg-light mx-auto"
+                    style={{ width: '110px', height: '110px' }}
+                  >
+                    <CImage
+                      src={editingTheme?.image}
+                      className="w-100 h-100"
+                      style={{ objectFit: 'cover' }}
+                    />
                   </div>
-                  <div className="text-muted text-xs mb-1">Loại: {editingTheme?.tag}</div>
-                  <div className="text-muted text-xs mb-1">Mã slug: #{editingTheme?.code}</div>
-                  <div className="text-muted text-xs mb-2">
-                    {editingTheme?.description || 'Chưa có mô tả chi tiết'}
+                </CCol>
+                <CCol md={10}>
+                  <CRow className="g-2 mb-2">
+                    <CCol md={4}>
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Tên chiến dịch *
+                      </label>
+                      <CFormInput
+                        size="sm"
+                        value={editingTheme?.name || ''}
+                        onChange={(e) =>
+                          setEditingTheme((prev) => ({ ...prev, name: e.target.value }))
+                        }
+                      />
+                    </CCol>
+                    <CCol md={4}>
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Mã Code (Slug)
+                      </label>
+                      <CFormInput
+                        size="sm"
+                        value={editingTheme?.code || ''}
+                        onChange={(e) =>
+                          setEditingTheme((prev) => ({ ...prev, code: e.target.value }))
+                        }
+                      />
+                    </CCol>
+                    <CCol md={4}>
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Phân loại chiến dịch
+                      </label>
+                      <CFormInput
+                        size="sm"
+                        value={editingTheme?.tag || 'festive'}
+                        onChange={(e) =>
+                          setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))
+                        }
+                      />
+                    </CCol>
+                  </CRow>
+
+                  <CRow className="g-2 mb-2">
+                    <CCol md={4}>
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Ngày bắt đầu
+                      </label>
+                      <CFormInput
+                        type="date"
+                        size="sm"
+                        value={formatDateInput(editingTheme?.startDate)}
+                        onChange={(e) =>
+                          setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
+                        }
+                      />
+                    </CCol>
+                    <CCol md={4}>
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Ngày kết thúc
+                      </label>
+                      <CFormInput
+                        type="date"
+                        size="sm"
+                        value={formatDateInput(editingTheme?.endDate)}
+                        onChange={(e) =>
+                          setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
+                        }
+                      />
+                    </CCol>
+                    <CCol md={4} className="d-flex align-items-end">
+                      <div className="p-2 border rounded bg-light w-100">
+                        <CFormCheck
+                          type="switch"
+                          id="isActiveSwitch"
+                          label="Kích hoạt áp dụng ngay"
+                          checked={editingTheme?.isActive}
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
+                          }
+                        />
+                      </div>
+                    </CCol>
+                  </CRow>
+
+                  <div>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Mô tả chi tiết chiến dịch
+                    </label>
+                    <CFormInput
+                      size="sm"
+                      value={editingTheme?.description || ''}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                      }
+                    />
                   </div>
-                  <CFormCheck
-                    type="switch"
-                    id="isActiveSwitch"
-                    label="Kích hoạt áp dụng ngay"
-                    checked={editingTheme?.isActive}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
-                    }
-                  />
-                </div>
-              </div>
+                </CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
 
-      {/* SECOND ROW: Banners & Logo Ornament */}
+      {/* ROW 2: Header Logo & Footer Seasonal Ornaments */}
       <CRow className="g-4 mb-4">
-        {/* Card 2: Banners & Assets */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Banner & Hình ảnh Giao diện (Banners & Assets)
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-2">
-                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
-                </p>
-
-                {/* Upload Box */}
-                <div className="p-3 bg-light rounded border text-center mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tải banner mới từ máy tính
-                  </label>
-                  <CFormInput
-                    type="file"
-                    accept="image/*"
-                    size="sm"
-                    className="mb-2"
-                    onChange={handleFileChange}
-                  />
-                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
-                </div>
-
-                {editingTheme?.image && (
-                  <div>
-                    <span className="form-label font-semibold text-dark small d-block mb-1">
-                      Ảnh đại diện chiến dịch
-                    </span>
-                    <div
-                      className="rounded border overflow-hidden bg-light mb-3"
-                      style={{ height: '140px' }}
-                    >
-                      <CImage
-                        src={editingTheme.image}
-                        className="w-100 h-100"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 3: Header Logo Ornament */}
+        {/* Thẻ 2: Header Logo Ornament */}
         <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Phụ kiện Trang trí Logo Header</span>
+              <span>Thẻ 2: Cấu hình Trang trí Logo Header</span>
               <CBadge color="primary">Logo Emblem</CBadge>
             </CCardHeader>
             <CCardBody className="p-3 d-flex flex-column justify-content-between">
@@ -801,70 +856,195 @@ function EditThemeConfig() {
             </CCardBody>
           </CCard>
         </CCol>
-      </CRow>
 
-      {/* BOTTOM ROW: 3 CARDS (Colors, Effects & Background, Schedule) */}
-      <CRow className="g-4 mb-4">
-        {/* Card 5: Colors (Design Tokens) */}
-        <CCol md={4}>
+        {/* Thẻ 3: Footer Seasonal Ornaments */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Màu tổng thể chiến dịch (Colors)
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Thẻ 3: Cấu hình Trang trí Chân trang Footer</span>
+              <CBadge color="info" className="text-white">
+                Footer Emblem
+              </CBadge>
             </CCardHeader>
-            <CCardBody className="p-3">
-              <div className="d-flex flex-column gap-2">
-                {[
-                  { label: 'Màu chính (Nút & Viền)', key: 'primary' },
-                  { label: 'Màu thanh Menu Topbar', key: 'secondary' },
-                  { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
-                  { label: 'Màu nền website', key: 'background' },
-                  { label: 'Màu chữ văn bản', key: 'text' },
-                ].map((item) => (
-                  <div
-                    key={item.key}
-                    className="d-flex align-items-center justify-content-between p-2 border rounded bg-light"
-                  >
-                    <span className="small text-secondary fw-semibold">{item.label}</span>
-                    <div className="d-flex align-items-center gap-2">
-                      <input
-                        type="color"
-                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                        className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
-                        style={{ width: '28px', height: '28px' }}
-                        onChange={(e) => {
-                          const newCols = {
-                            ...(editingTheme?.colors || {}),
-                            [item.key]: e.target.value,
-                          }
-                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Tải ảnh trang trí Chân trang Footer (cây thông, hộp quà, lồng đèn, hoa mai...)
+                  hiển thị ở hai bên lề Footer.
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải ảnh trang trí Chân trang Footer
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-1"
+                    onChange={handleFooterOrnamentUpload}
+                  />
+                  <span className="text-muted text-xs">Khuyên dùng ảnh PNG / WEBP tách nền</span>
+                </div>
+
+                {/* Position & Size */}
+                <CRow className="g-2 mb-3">
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Vị trí hiển thị trên Footer
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            footerOrnamentPosition: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="both-corners">Hai bên góc lề Footer (Tiêu chuẩn 🎄🎁)</option>
+                      <option value="left-only">Chỉ góc bên trái Footer</option>
+                      <option value="right-only">Chỉ góc bên phải Footer</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Kích thước hình trang trí
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            footerOrnamentSize: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="32px">Nhỏ (32px)</option>
+                      <option value="48px">Vừa tiêu chuẩn (48px)</option>
+                      <option value="64px">Lớn (64px)</option>
+                      <option value="80px">Rất lớn (80px)</option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </div>
+
+              {/* LIVE FOOTER ORNAMENT PREVIEW */}
+              <div className="pt-2 border-top">
+                <span className="fw-semibold text-dark text-xs d-block mb-1">
+                  Xem trước trực tiếp Chân trang Footer
+                </span>
+                <div
+                  className="p-3 bg-white rounded border position-relative d-flex align-items-center justify-content-between overflow-hidden"
+                  style={{ height: '90px' }}
+                >
+                  <div className="d-flex align-items-center gap-2">
+                    {editingTheme?.decorations?.footerOrnamentUrl ? (
+                      <img
+                        src={editingTheme.decorations.footerOrnamentUrl}
+                        alt="Footer Left"
+                        style={{
+                          height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                          objectFit: 'contain',
                         }}
                       />
-                      <CFormInput
-                        size="sm"
-                        value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                        className="font-monospace text-uppercase"
-                        style={{ width: '80px', fontSize: '11px' }}
-                        onChange={(e) => {
-                          const newCols = {
-                            ...(editingTheme?.colors || {}),
-                            [item.key]: e.target.value,
-                          }
-                          setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                    ) : (
+                      <span className="fs-3">🎄🎁</span>
+                    )}
+                  </div>
+
+                  <span className="text-muted text-xs fw-semibold">
+                    © 2026 VI TÍNH NGUYÊN KIM - FOOTER PREVIEW
+                  </span>
+
+                  <div className="d-flex align-items-center gap-2">
+                    {editingTheme?.decorations?.footerOrnamentUrl ? (
+                      <img
+                        src={editingTheme.decorations.footerOrnamentUrl}
+                        alt="Footer Right"
+                        style={{
+                          height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                          objectFit: 'contain',
                         }}
+                      />
+                    ) : (
+                      <span className="fs-3">🔔🎄</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* ROW 3: Banners & Watermarks */}
+      <CRow className="g-4 mb-4">
+        {/* Thẻ 4: Banner & Hero Assets */}
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Thẻ 4: Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
+              <CBadge color="secondary">Hero Assets</CBadge>
+            </CCardHeader>
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải banner mới từ máy tính
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-2"
+                    onChange={handleFileChange}
+                  />
+                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
+                </div>
+
+                {editingTheme?.image && (
+                  <div>
+                    <span className="form-label font-semibold text-dark small d-block mb-1">
+                      Ảnh đại diện chiến dịch
+                    </span>
+                    <div
+                      className="rounded border overflow-hidden bg-light mb-3"
+                      style={{ height: '140px' }}
+                    >
+                      <CImage
+                        src={editingTheme.image}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'cover' }}
                       />
                     </div>
                   </div>
-                ))}
+                )}
               </div>
             </CCardBody>
           </CCard>
         </CCol>
 
-        {/* Card 6: Effects & Background Patterns */}
-        <CCol md={4}>
+        {/* Thẻ 5: Background & Watermarks */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Họa tiết & Hiệu ứng lễ hội (Effects)
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Thẻ 5: Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
+              <CBadge color="success">Patterns</CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
               <div className="mb-3">
@@ -965,7 +1145,7 @@ function EditThemeConfig() {
                   className="rounded border overflow-hidden position-relative"
                   style={{
                     backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                    height: '180px',
+                    height: '140px',
                   }}
                 >
                   <ThemeBackgroundWatermarkLayer
@@ -977,77 +1157,63 @@ function EditThemeConfig() {
             </CCardBody>
           </CCard>
         </CCol>
+      </CRow>
 
-        {/* Card 7: Schedule & Form Information */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Thông tin chung & Lập lịch (Schedule)
+      {/* ROW 4: Color Scheme & Design Tokens */}
+      <CRow className="mb-4">
+        {/* Thẻ 6: Colors */}
+        <CCol md={12}>
+          <CCard className="shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Thẻ 6: Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
+              <CBadge color="warning" className="text-dark">
+                Theme Colors
+              </CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
-              <div className="mb-2">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Tên chiến dịch *
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.name || ''}
-                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="mb-2">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Mã Code (Slug)
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.code || ''}
-                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
-                />
-              </div>
-
-              <CRow className="g-2 mb-2">
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày bắt đầu
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.startDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
-                    }
-                  />
-                </CCol>
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày kết thúc
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.endDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
-                    }
-                  />
-                </CCol>
+              <CRow className="g-3">
+                {[
+                  { label: 'Màu chính (Nút & Viền)', key: 'primary' },
+                  { label: 'Màu thanh Menu Topbar', key: 'secondary' },
+                  { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
+                  { label: 'Màu nền website', key: 'background' },
+                  { label: 'Màu chữ văn bản', key: 'text' },
+                ].map((item) => (
+                  <CCol key={item.key} md={2.4}>
+                    <div className="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+                      <span className="small text-secondary fw-semibold">{item.label}</span>
+                      <div className="d-flex align-items-center gap-2">
+                        <input
+                          type="color"
+                          value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                          className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
+                          style={{ width: '28px', height: '28px' }}
+                          onChange={(e) => {
+                            const newCols = {
+                              ...(editingTheme?.colors || {}),
+                              [item.key]: e.target.value,
+                            }
+                            setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                          }}
+                        />
+                        <CFormInput
+                          size="sm"
+                          value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                          className="font-monospace text-uppercase"
+                          style={{ width: '75px', fontSize: '11px' }}
+                          onChange={(e) => {
+                            const newCols = {
+                              ...(editingTheme?.colors || {}),
+                              [item.key]: e.target.value,
+                            }
+                            setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </CCol>
+                ))}
               </CRow>
-
-              <div>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Mô tả chi tiết
-                </label>
-                <CFormInput
-                  size="sm"
-                  value={editingTheme?.description || ''}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
-                  }
-                />
-              </div>
             </CCardBody>
           </CCard>
         </CCol>
