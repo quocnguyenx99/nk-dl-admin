@@ -1,8 +1,12 @@
 import {
+  CBadge,
   CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
   CCol,
-  CContainer,
   CFormCheck,
+  CFormInput,
   CFormSelect,
   CRow,
   CTable,
@@ -16,12 +20,10 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { Link, useNavigate } from 'react-router-dom'
-
 import CIcon from '@coreui/icons-react'
-import { cilTrash, cilColorBorder } from '@coreui/icons'
-
-import axios from 'axios'
+import { cilTrash, cilColorBorder, cilPlus } from '@coreui/icons'
 import moment from 'moment/moment'
+
 import DeletedModal from '../../../components/deletedModal/DeletedModal'
 import { axiosClient } from '../../../axiosConfig'
 import { toast } from 'react-toastify'
@@ -29,12 +31,10 @@ import { toast } from 'react-toastify'
 function PromotionDetail() {
   const navigate = useNavigate()
   const [isCollapse, setIsCollapse] = useState(false)
-
-  // check permission state
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
 
   const [dataGiftPromotion, setDataGiftPromotion] = useState([])
-  const [countGiftPromotion, setCountGiftPromotion] = useState(null)
+  const [countGiftPromotion, setCountGiftPromotion] = useState(0)
 
   const [isAllCheckbox, setIsAllCheckbox] = useState(false)
   const [selectedCheckbox, setSelectedCheckbox] = useState([])
@@ -46,12 +46,9 @@ function PromotionDetail() {
   // search input
   const [dataSearch, setDataSearch] = useState('')
 
-  //pagination state
-  const [pageNumber, setPageNumber] = useState(1)
-
   // date picker
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
   const [errors, setErrors] = useState({ startDate: '', endDate: '' })
 
   const handleToggleCollapse = () => {
@@ -82,18 +79,6 @@ function PromotionDetail() {
     validateDates(startDate, date)
   }
 
-  // pagination data
-  const handlePageChange = ({ selected }) => {
-    const newPage = selected + 1
-    if (newPage < 2) {
-      setPageNumber(newPage)
-      window.scrollTo(0, 0)
-      return
-    }
-    window.scrollTo(0, 0)
-    setPageNumber(newPage)
-  }
-
   // delete row
   const handleDelete = async () => {
     setVisible(true)
@@ -102,20 +87,26 @@ function PromotionDetail() {
       if (response.data.status === true) {
         setVisible(false)
         fetchGiftPromotion()
+        toast.success('Xóa chương trình khuyến mãi thành công!')
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
-      console.error('Delete status order is error', error)
+      console.error('Delete promotion error', error)
       toast.error('Đã xảy ra lỗi khi xóa. Vui lòng thử lại!')
     }
   }
 
-  // search Data
-  const handleSearch = (keyword) => {
-    fetchDataById(keyword)
+  const handleSearch = () => {
+    fetchGiftPromotion()
+  }
+
+  const handleResetFilter = () => {
+    setDataSearch('')
+    setStartDate(null)
+    setEndDate(null)
   }
 
   const handleEditClick = (id) => {
@@ -123,7 +114,7 @@ function PromotionDetail() {
   }
 
   // sorting columns
-  const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' })
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'ascending' })
 
   const handleSort = (columnKey) => {
     let direction = 'ascending'
@@ -133,56 +124,60 @@ function PromotionDetail() {
     setSortConfig({ key: columnKey, direction })
   }
 
-  const convertStringToTimeStamp = (dateString) => {
-    if (dateString == '') {
-      return ''
-    } else {
-      const dateMoment = moment(dateString, 'ddd MMM DD YYYY HH:mm:ss GMTZ')
-      return dateMoment.unix()
-    }
+  const convertStringToTimeStamp = (dateObj) => {
+    if (!dateObj) return ''
+    return moment(dateObj).unix()
   }
 
   const fetchGiftPromotion = async () => {
     try {
       const response = await axiosClient.get(
-        `admin/gift-promotion?data=${dataSearch}&StartDate=${startDate !== null ? convertStringToTimeStamp(startDate) : ''}&EndDate=${endDate !== null ? convertStringToTimeStamp(endDate) : ''}`,
+        `admin/gift-promotion?data=${dataSearch}&StartDate=${startDate ? convertStringToTimeStamp(startDate) : ''}&EndDate=${endDate ? convertStringToTimeStamp(endDate) : ''}`,
       )
       if (response.data.status === true) {
         setDataGiftPromotion(response.data.data)
         setCountGiftPromotion(response.data.data.length)
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         setIsPermissionCheck(false)
       }
     } catch (error) {
-      console.error('Fetch coupon data is error', error)
+      console.error('Fetch gift promotion error', error)
     }
   }
 
   useEffect(() => {
     fetchGiftPromotion()
-  }, [dataSearch, startDate, endDate])
+  }, [])
 
   const handleDeleteAll = async () => {
-    console.log('>>> check undeal', selectedCheckbox)
-    // alert('Chức năng đang thực hiện...')
+    if (selectedCheckbox.length === 0) {
+      toast.warn('Vui lòng chọn ít nhất 1 khuyến mãi để xóa!')
+      return
+    }
     try {
       const response = await axiosClient.post(`admin/delete-all-gift-promotion`, {
         data: selectedCheckbox,
       })
       if (response.data.status === true) {
-        toast.success('Xóa tất cả thành công!')
+        toast.success('Xóa tất cả đợt khuyến mãi thành công!')
         fetchGiftPromotion()
         setSelectedCheckbox([])
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
       toast.error('Đã xảy ra lỗi. Vui lòng thử lại!')
     }
+  }
+
+  const formatDate = (ts) => {
+    if (!ts || Number(ts) <= 0) return '---'
+    const m = moment.unix(Number(ts))
+    return m.isValid() && m.year() >= 1980 ? m.format('DD-MM-YYYY') : '---'
   }
 
   const columns = [
@@ -208,7 +203,7 @@ function PromotionDetail() {
     { key: 'releaseCode', label: 'Mã đợt phát hành' },
     { key: 'name', label: 'Đợt phát hành' },
     { key: 'rangePrice', label: 'Phân khúc giá' },
-    { key: 'giftType', label: 'Áp dụng' },
+    { key: 'giftType', label: 'Đối tượng áp dụng' },
     { key: 'startDate', label: 'Ngày bắt đầu' },
     { key: 'expire', label: 'Hết hạn' },
     { key: 'actions', label: 'Tác vụ' },
@@ -218,8 +213,7 @@ function PromotionDetail() {
     id: (
       <CFormCheck
         key={item?.id}
-        aria-label="Default select example"
-        defaultChecked={item?.id}
+        aria-label="Select item"
         id={`flexCheckDefault_${item?.id}`}
         checked={selectedCheckbox.includes(item?.id)}
         value={item.id}
@@ -234,28 +228,49 @@ function PromotionDetail() {
         }}
       />
     ),
-    releaseCode: <span className="blue-txt">{item.code}</span>,
-    name: item.title,
-    rangePrice: `${Number(item.priceMin).toLocaleString('vi-VN')}đ - ${Number(item.priceMax).toLocaleString('vi-VN')}đ`,
-
-    giftType: item.type === 0 ? 'Áp dụng cho nghành hàng' : 'Áp dụng cho Mã SP chỉ định',
-    startDate: moment.unix(Number(item.StartDate)).format('DD-MM-YYYY'),
-    expire: moment.unix(Number(item.EndDate)).format('DD-MM-YYYY'),
+    releaseCode: (
+      <span className="badge bg-light text-primary border border-primary px-2 py-1 fs-6">
+        {item.code}
+      </span>
+    ),
+    name: <div className="fw-semibold text-dark">{item.title}</div>,
+    rangePrice: (
+      <span className="fw-bold text-danger">
+        {Number(item.priceMin).toLocaleString('vi-VN')}đ -{' '}
+        {Number(item.priceMax).toLocaleString('vi-VN')}đ
+      </span>
+    ),
+    giftType: (
+      <CBadge color={item.type === 0 ? 'info' : 'primary'} className="px-2 py-1 fs-6">
+        {item.type === 0 ? 'Ngành hàng' : 'Mã SP chỉ định'}
+      </CBadge>
+    ),
+    startDate: formatDate(item.StartDate),
+    expire: formatDate(item.EndDate),
     actions: (
-      <div className="d-flex">
-        <button onClick={() => handleEditClick(item.id)} className="button-action mr-2 bg-info">
-          <CIcon icon={cilColorBorder} className="text-white" />
-        </button>
+      <div className="d-flex gap-1">
+        <CButton
+          size="sm"
+          color="info"
+          className="text-white p-1"
+          onClick={() => handleEditClick(item.id)}
+          title="Chỉnh sửa"
+        >
+          <CIcon icon={cilColorBorder} />
+        </CButton>
 
-        <button
+        <CButton
+          size="sm"
+          color="danger"
+          className="text-white p-1"
           onClick={() => {
             setVisible(true)
             setDeletedId(item.id)
           }}
-          className="button-action bg-danger"
+          title="Xóa"
         >
-          <CIcon icon={cilTrash} className="text-white" />
-        </button>
+          <CIcon icon={cilTrash} />
+        </CButton>
       </div>
     ),
     _cellProps: { id: { scope: 'row' } },
@@ -280,7 +295,7 @@ function PromotionDetail() {
   return (
     <div>
       {!isPermissionCheck ? (
-        <h5>
+        <h5 className="p-4 text-center">
           <div>Bạn không đủ quyền để thao tác trên danh mục quản trị này.</div>
           <div className="mt-4">
             Vui lòng quay lại trang chủ <Link to={'/dashboard'}>(Nhấn vào để quay lại)</Link>
@@ -289,116 +304,138 @@ function PromotionDetail() {
       ) : (
         <>
           <DeletedModal visible={visible} setVisible={setVisible} onDelete={handleDelete} />
-          <CRow className="mb-3">
-            <CCol>
-              <h3>QUẢN LÝ KHUYẾN MÃI</h3>
-            </CCol>
-            <CCol md={{ span: 4, offset: 4 }}>
-              <div className="d-flex justify-content-end">
-                <CButton
-                  onClick={handleAddNewClick}
-                  color="primary"
-                  type="submit"
-                  size="sm"
-                  className="button-add"
-                >
-                  Thêm mới
-                </CButton>
-                <Link to={`/promotion-detail`}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
-                </Link>
+
+          {/* Header Title & Actions */}
+          <div className="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h4 className="fw-bold text-dark mb-1">QUẢN LÝ KHUYẾN MÃI & QUÀ TẶNG</h4>
+              <p className="text-muted small mb-0">
+                Quản lý các đợt phát hành chương trình khuyến mãi, quà tặng theo phân khúc giá và
+                danh mục
+              </p>
+            </div>
+            <div>
+              <CButton
+                color="primary"
+                className="fw-semibold d-flex align-items-center gap-1 shadow-xs"
+                onClick={handleAddNewClick}
+              >
+                <CIcon icon={cilPlus} /> Thêm mới khuyến mãi
+              </CButton>
+            </div>
+          </div>
+
+          {/* CoreUI Search Filter Card */}
+          <CCard className="mb-3 shadow-xs border">
+            <CCardHeader className="bg-white py-2 px-3 d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-3">
+                <span className="fw-bold text-dark">Bộ lọc tìm kiếm</span>
+                <CBadge color="danger" className="px-2 py-1 fs-6 font-normal">
+                  Tổng cộng:{' '}
+                  <span className="fw-bold text-white">
+                    {countGiftPromotion?.toLocaleString('vi-VN') || 0}
+                  </span>{' '}
+                  đợt khuyến mãi
+                </CBadge>
               </div>
-            </CCol>
-          </CRow>
+              <CButton
+                color="light"
+                size="sm"
+                className="text-secondary fw-semibold border"
+                onClick={handleToggleCollapse}
+              >
+                {isCollapse ? 'Hiện bộ lọc ▼' : 'Ẩn bộ lọc ▲'}
+              </CButton>
+            </CCardHeader>
 
-          <CRow>
-            <CCol md={12}>
-              <table className="filter-table">
-                <thead>
-                  <tr>
-                    <th colSpan="2">
-                      <div className="d-flex justify-content-between">
-                        <span>Bộ lọc tìm kiếm</span>
-                        <span className="toggle-pointer" onClick={handleToggleCollapse}>
-                          {isCollapse ? '▼' : '▲'}
-                        </span>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                {!isCollapse && (
-                  <tbody>
-                    <tr>
-                      <td>Tổng cộng</td>
-                      <td className="total-count">{countGiftPromotion}</td>
-                    </tr>
+            {!isCollapse && (
+              <CCardBody className="bg-light p-3">
+                <CRow className="g-2">
+                  <CCol lg={3} md={4} sm={6}>
+                    <label className="form-label fw-semibold text-dark small mb-1">Từ ngày</label>
+                    <DatePicker
+                      className="form-control form-control-sm"
+                      showIcon
+                      dateFormat={'dd-MM-yyyy'}
+                      selected={startDate}
+                      onChange={handleStartDateChange}
+                      locale="vi"
+                      placeholderText="Chọn từ ngày"
+                    />
+                  </CCol>
 
-                    <tr>
-                      <td>Tạo từ ngày</td>
-                      <td>
-                        <div className="custom-datepicker-wrapper">
-                          <DatePicker
-                            className="custom-datepicker"
-                            showIcon
-                            dateFormat={'dd-MM-yyyy'}
-                            selected={startDate}
-                            onChange={handleStartDateChange}
-                          />
-                          <p className="datepicker-label">{'đến ngày'}</p>
-                          <DatePicker
-                            className="custom-datepicker"
-                            showIcon
-                            dateFormat={'dd-MM-yyyy'}
-                            selected={endDate}
-                            onChange={handleEndDateChange}
-                          />
-                        </div>
-                        {errors.startDate && <p className="text-danger">{errors.startDate}</p>}
-                        {errors.endDate && <p className="text-danger">{errors.endDate}</p>}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Tìm kiếm</td>
-                      <td>
-                        <CFormSelect
-                          className="component-size w-25"
-                          aria-label="Chọn yêu cầu lọc"
-                          options={[{ label: 'Mã đợt phát hành', value: '1' }]}
-                        />
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            className="search-input"
-                            value={dataSearch}
-                            onChange={(e) => setDataSearch(e.target.value)}
-                          />
-                          <button onClick={handleSearch} className="submit-btn">
-                            Submit
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
+                  <CCol lg={3} md={4} sm={6}>
+                    <label className="form-label fw-semibold text-dark small mb-1">Đến ngày</label>
+                    <DatePicker
+                      className="form-control form-control-sm"
+                      showIcon
+                      dateFormat={'dd-MM-yyyy'}
+                      selected={endDate}
+                      onChange={handleEndDateChange}
+                      locale="vi"
+                      placeholderText="Chọn đến ngày"
+                    />
+                  </CCol>
+
+                  <CCol lg={6} md={8} sm={12}>
+                    <label className="form-label fw-semibold text-dark small mb-1">
+                      Mã đợt / Tên khuyến mãi
+                    </label>
+                    <div className="d-flex gap-2">
+                      <CFormInput
+                        size="sm"
+                        type="text"
+                        placeholder="Nhập Mã đợt phát hành, Tên khuyến mãi..."
+                        value={dataSearch}
+                        onChange={(e) => setDataSearch(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                      />
+                      <CButton
+                        color="primary"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={handleSearch}
+                      >
+                        Tìm kiếm
+                      </CButton>
+                      <CButton
+                        color="secondary"
+                        variant="outline"
+                        size="sm"
+                        className="px-3 text-nowrap"
+                        onClick={handleResetFilter}
+                      >
+                        Làm mới
+                      </CButton>
+                    </div>
+                  </CCol>
+                </CRow>
+                {errors.startDate && (
+                  <p className="text-danger small mt-1 mb-0">{errors.startDate}</p>
                 )}
-              </table>
-            </CCol>
+                {errors.endDate && <p className="text-danger small mt-1 mb-0">{errors.endDate}</p>}
+              </CCardBody>
+            )}
+          </CCard>
 
-            <CCol>
-              <CCol md={12} className="mt-3">
-                <CButton onClick={handleDeleteAll} color="primary" size="sm">
-                  Xóa vĩnh viễn
-                </CButton>
-              </CCol>
-              <CTable hover className="mt-3 border">
+          {/* Action Row */}
+          <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <CButton onClick={handleDeleteAll} color="danger" size="sm" className="fw-semibold">
+              Xóa vĩnh viễn ({selectedCheckbox.length})
+            </CButton>
+          </div>
+
+          {/* Table */}
+          <CCard className="mb-4 shadow-xs border">
+            <CCardBody className="p-0">
+              <CTable hover responsive className="mb-0 align-middle">
                 <thead>
                   <tr>
                     {columns.map((column) => (
                       <CTableHeaderCell
                         key={column.key}
                         onClick={() => handleSort(column.key)}
-                        className="prevent-select"
+                        className="prevent-select bg-light"
                       >
                         {column.label}
                         {sortConfig.key === column.key
@@ -420,8 +457,8 @@ function PromotionDetail() {
                   ))}
                 </CTableBody>
               </CTable>
-            </CCol>
-          </CRow>
+            </CCardBody>
+          </CCard>
         </>
       )}
     </div>
