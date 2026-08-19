@@ -1145,7 +1145,7 @@ function AddThemeConfig() {
                   className="rounded border overflow-hidden position-relative"
                   style={{
                     backgroundColor: newTheme?.colors?.background || '#f7f7f7',
-                    height: '80px',
+                    height: '180px',
                   }}
                 >
                   <ThemeBackgroundWatermarkLayer
