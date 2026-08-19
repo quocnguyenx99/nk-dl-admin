@@ -8,7 +8,7 @@ import {
   CCol,
   CFormInput,
   CFormSelect,
-  CFormSwitch,
+  CFormCheck,
   CImage,
   CNav,
   CNavItem,
@@ -566,7 +566,9 @@ function EditThemeConfig() {
                   <div className="text-muted text-xs mb-2">
                     {editingTheme?.description || 'Chưa có mô tả chi tiết'}
                   </div>
-                  <CFormSwitch
+                  <CFormCheck
+                    type="switch"
+                    id="isActiveSwitch"
                     label="Kích hoạt áp dụng ngay"
                     checked={editingTheme?.isActive}
                     onChange={(e) =>

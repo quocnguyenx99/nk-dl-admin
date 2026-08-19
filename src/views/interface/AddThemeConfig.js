@@ -8,7 +8,7 @@ import {
   CCol,
   CFormInput,
   CFormSelect,
-  CFormSwitch,
+  CFormCheck,
   CImage,
   CNav,
   CNavItem,
