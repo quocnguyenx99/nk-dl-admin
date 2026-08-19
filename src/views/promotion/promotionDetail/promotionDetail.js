@@ -131,12 +131,16 @@ function PromotionDetail() {
 
   const fetchGiftPromotion = async () => {
     try {
-      const response = await axiosClient.get(
-        `admin/gift-promotion?data=${dataSearch}&StartDate=${startDate ? convertStringToTimeStamp(startDate) : ''}&EndDate=${endDate ? convertStringToTimeStamp(endDate) : ''}`,
-      )
+      let queryUrl = `admin/gift-promotion?data=${dataSearch || ''}`
+      if (startDate && endDate) {
+        const startTs = moment(startDate).startOf('day').unix()
+        const endTs = moment(endDate).endOf('day').unix()
+        queryUrl += `&StartDate=${startTs}&EndDate=${endTs}`
+      }
+      const response = await axiosClient.get(queryUrl)
       if (response.data.status === true) {
-        setDataGiftPromotion(response.data.data)
-        setCountGiftPromotion(response.data.data.length)
+        setDataGiftPromotion(response.data.data || [])
+        setCountGiftPromotion(response.data.data ? response.data.data.length : 0)
       }
 
       if (response.data.status === false && response.data.mess === 'no permission') {
