@@ -1009,7 +1009,7 @@ function EditThemeConfig() {
                     Xem trước hình ảnh
                   </span>
                   <div
-                    className="rounded border overflow-hidden bg-light"
+                    className="rounded border overflow-hidden bg-light mb-3"
                     style={{ height: '180px' }}
                   >
                     <CImage
@@ -1020,6 +1020,29 @@ function EditThemeConfig() {
                   </div>
                 </div>
               )}
+
+              {/* Action Save Button inside Right Column */}
+              <div className="pt-2 border-top d-grid gap-2">
+                <CButton
+                  color="primary"
+                  className="text-white py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-1.5"
+                  style={{ backgroundColor: '#2356c4', borderColor: '#2356c4', fontSize: '14px' }}
+                  disabled={isSaving}
+                  onClick={handleSave}
+                >
+                  <CIcon icon={cilSave} />
+                  <span>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</span>
+                </CButton>
+                <CButton
+                  color="secondary"
+                  variant="outline"
+                  className="py-1.5 fw-semibold"
+                  style={{ fontSize: '13px' }}
+                  onClick={() => navigate('/theme-custom/config')}
+                >
+                  Quay lại danh sách
+                </CButton>
+              </div>
             </CCardBody>
           </CCard>
         </CCol>
