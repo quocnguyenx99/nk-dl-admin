@@ -414,13 +414,16 @@ function HirePost() {
             <form onSubmit={handleSearchSubmit}>
               <div className="row g-2 align-items-center">
                 <div className="col-12 col-md-4">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Tìm kiếm vị trí tuyển dụng..."
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                  />
+                  <div className="input-group">
+                    <span className="input-group-text bg-light border-end-0 text-muted">🔍</span>
+                    <input
+                      type="text"
+                      className="form-control border-start-0 ps-0"
+                      placeholder="Tìm kiếm vị trí tuyển dụng..."
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div className="col-12 col-md-3">
@@ -431,7 +434,7 @@ function HirePost() {
                       setPageNumber(1)
                     }}
                   >
-                    <option value="">Tất cả danh mục</option>
+                    <option value="">📁 Tất cả danh mục</option>
                     {dataHireCategory?.map((cate) => (
                       <option key={cate.id} value={cate.id}>
                         {cate.title}
