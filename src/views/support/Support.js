@@ -61,6 +61,7 @@ function Support() {
     skyName: '',
     type: '',
     groupType: '',
+    display: 1,
   }
 
   const validationSchema = Yup.object().shape({
@@ -74,6 +75,7 @@ function Support() {
       is: 'group',
       then: Yup.string().required('Nhóm support là bắt buộc.'),
     }),
+    display: Yup.number().required('Trạng thái hiển thị là bắt buộc.'),
   })
 
   useEffect(() => {
@@ -139,6 +141,7 @@ function Support() {
           skyName: data?.name || '',
           type: data?.type || '',
           groupType: data?.group || '',
+          display: data?.display !== undefined ? data.display : 1,
         })
       } else {
         console.error('No data found for the given ID.')
@@ -167,6 +170,7 @@ function Support() {
           name: values.skyName,
           type: values.type,
           group: values.groupType,
+          display: values.display,
         })
 
         if (response.data.status === true) {
@@ -197,6 +201,7 @@ function Support() {
           name: values.skyName,
           type: values.type,
           group: values.groupType,
+          display: values.display,
         })
 
         if (response.data.status === true) {
@@ -312,11 +317,11 @@ function Support() {
           contact: (
             <div className="d-flex flex-column gap-1">
               {item?.phone && (
-                <div className="fw-semibold text-primary" style={{ fontSize: '13px' }}>
-                  📞 {item.phone}
+                <div className="fw-semibold text-dark" style={{ fontSize: '13px' }}>
+                  {item.phone}
                 </div>
               )}
-              {item?.email && <div className="text-secondary small">✉️ {item.email}</div>}
+              {item?.email && <div className="text-secondary small">{item.email}</div>}
             </div>
           ),
           skyName: <span className="text-secondary small">{item?.name || '—'}</span>,
@@ -338,6 +343,25 @@ function Support() {
                 </span>
               ) : (
                 <span className="text-muted small">—</span>
+              )}
+            </div>
+          ),
+          status: (
+            <div className="text-center">
+              {item?.display === 1 || item?.display === '1' ? (
+                <span
+                  className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1"
+                  style={{ fontSize: '11px', fontWeight: 600 }}
+                >
+                  Hiển thị
+                </span>
+              ) : (
+                <span
+                  className="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1"
+                  style={{ fontSize: '11px', fontWeight: 600 }}
+                >
+                  Đang ẩn
+                </span>
               )}
             </div>
           ),
@@ -391,6 +415,7 @@ function Support() {
     { key: 'contact', label: 'Liên hệ (SĐT & Email)', _props: { scope: 'col' } },
     { key: 'skyName', label: 'Skype Name', _props: { scope: 'col' } },
     { key: 'type', label: 'Loại', _props: { scope: 'col' } },
+    { key: 'status', label: 'Trạng thái', _props: { scope: 'col', className: 'text-center' } },
     { key: 'actions', label: 'Tác vụ', _props: { scope: 'col', className: 'text-center' } },
   ]
 
@@ -587,6 +612,27 @@ function Support() {
                             />
                             <ErrorMessage
                               name="groupType"
+                              component="div"
+                              className="text-danger small mt-1"
+                            />
+                          </div>
+
+                          {/* Display */}
+                          <div>
+                            <label className="form-label text-muted small fw-semibold text-uppercase mb-1">
+                              Trạng thái hiển thị <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              name="display"
+                              as={CFormSelect}
+                              id="display-select"
+                              options={[
+                                { label: 'Có (Hiển thị)', value: 1 },
+                                { label: 'Không (Đang ẩn)', value: 0 },
+                              ]}
+                            />
+                            <ErrorMessage
+                              name="display"
                               component="div"
                               className="text-danger small mt-1"
                             />
