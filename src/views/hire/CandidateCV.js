@@ -17,7 +17,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import { axiosClient, imageBaseUrl } from '../../axiosConfig'
 import CIcon from '@coreui/icons-react'
-import { cilColorBorder, cilTrash } from '@coreui/icons'
+import { cilColorBorder, cilEnvelopeClosed, cilEnvelopeOpen, cilTrash } from '@coreui/icons'
 import moment from 'moment'
 import DeletedModal from '../../components/deletedModal/DeletedModal'
 import { toast } from 'react-toastify'
@@ -461,8 +461,8 @@ function CandidateCV() {
                       <CTableHeaderCell style={{ minWidth: '140px' }}>
                         Ngày nộp hồ sơ
                       </CTableHeaderCell>
-                      <CTableHeaderCell style={{ minWidth: '110px' }} className="text-center">
-                        Trạng thái
+                      <CTableHeaderCell style={{ width: '80px' }} className="text-center">
+                        <CIcon icon={cilEnvelopeClosed} size="lg" title="Trạng thái xem hồ sơ" />
                       </CTableHeaderCell>
                       <CTableHeaderCell style={{ minWidth: '110px' }} className="text-center">
                         Tệp CV
@@ -573,32 +573,22 @@ function CandidateCV() {
                             </div>
                           </CTableDataCell>
 
-                          {/* Status */}
+                          {/* Status - Envelope Icons */}
                           <CTableDataCell className="text-center">
                             {item.status === 1 ? (
-                              <span
-                                className="badge px-2 py-1 rounded-pill"
-                                style={{
-                                  backgroundColor: '#f1f5f9',
-                                  color: '#475569',
-                                  border: '1px solid #cbd5e1',
-                                  fontSize: '11px',
-                                }}
-                              >
-                                Đã xem
-                              </span>
+                              <CIcon
+                                icon={cilEnvelopeOpen}
+                                className="text-secondary"
+                                size="lg"
+                                title="Đã xem"
+                              />
                             ) : (
-                              <span
-                                className="badge px-2 py-1 rounded-pill"
-                                style={{
-                                  backgroundColor: '#fef3c7',
-                                  color: '#b45309',
-                                  border: '1px solid #fde68a',
-                                  fontSize: '11px',
-                                }}
-                              >
-                                Chưa xem
-                              </span>
+                              <CIcon
+                                icon={cilEnvelopeClosed}
+                                className="text-warning"
+                                size="lg"
+                                title="Chưa xem (Mới)"
+                              />
                             )}
                           </CTableDataCell>
 
