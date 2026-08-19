@@ -3291,18 +3291,6 @@ const ThemeConfig = () => {
               </option>
               <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ở Logo & Chân trang)</option>
             </select>
-            <div className="bg-light p-2.5 rounded border">
-              <span className="text-dark fw-bold text-xs d-block mb-1.5">
-                ✨ Các điểm chạm tự động thay đổi theo mẫu thiết kế:
-              </span>
-              <div className="row g-2 text-xs text-secondary">
-                <div className="col-6">✓ Góc Logo trên Header</div>
-                <div className="col-6">✓ Họa tiết chìm Watermark toàn trang</div>
-                <div className="col-6">✓ Góc Hộp Giỏ hàng & Thanh toán</div>
-                <div className="col-6">✓ Góc Nút Đặt hàng / Mua ngay</div>
-                <div className="col-12">✓ Cụm đồ họa 2 bên góc Chân trang Footer</div>
-              </div>
-            </div>
           </div>
 
           {/* File Upload Input & Image Preview right below it */}
@@ -3537,18 +3525,6 @@ const ThemeConfig = () => {
                 </option>
                 <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô ở Logo & Chân trang)</option>
               </select>
-              <div className="bg-light p-2.5 rounded border">
-                <span className="text-dark fw-bold text-xs d-block mb-1.5">
-                  ✨ Các điểm chạm tự động thay đổi theo mẫu thiết kế:
-                </span>
-                <div className="row g-2 text-xs text-secondary">
-                  <div className="col-6">✓ Góc Logo trên Header</div>
-                  <div className="col-6">✓ Họa tiết chìm Watermark toàn trang</div>
-                  <div className="col-6">✓ Góc Hộp Giỏ hàng & Thanh toán</div>
-                  <div className="col-6">✓ Góc Nút Đặt hàng / Mua ngay</div>
-                  <div className="col-12">✓ Cụm đồ họa 2 bên góc Chân trang Footer</div>
-                </div>
-              </div>
             </div>
 
             {/* FILE UPLOAD INPUT PLACED DIRECTLY ABOVE IMAGE PREVIEW */}
