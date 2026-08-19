@@ -262,6 +262,7 @@ function EditThemeConfig() {
   const [editingTheme, setEditingTheme] = useState(null)
   const [localOpacity, setLocalOpacity] = useState(0.15)
   const [activePreviewTab, setActivePreviewTab] = useState('home')
+  const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
 
   // Pages & Layout State
   const [pagesLayouts, setPagesLayouts] = useState([
@@ -709,289 +710,349 @@ function EditThemeConfig() {
         </CCol>
       </CRow>
 
-      {/* ROW 2: Single Unified Card for Logo Header & Footer Ornaments */}
+      {/* ROW 2: Single Unified Card with Top Nav Tabs for Header Logo & Footer Ornaments */}
       <CRow className="mb-4">
         <CCol md={12}>
           <CCard className="shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 2: Cấu hình Trang trí Logo Header &amp; Chân trang Footer</span>
-              <CBadge color="primary">Logo &amp; Footer Ornaments</CBadge>
+            <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <span className="fw-bold text-dark fs-6">
+                Thẻ 2: Cấu hình Trang trí Logo Header &amp; Chân trang Footer
+              </span>
+
+              {/* TOP NAV BUTTONS / TABS TO SWITCH BETWEEN HEADER & FOOTER */}
+              <CNav variant="pills" className="small">
+                <CNavItem>
+                  <CNavLink
+                    active={activeOrnamentTab === 'header_logo'}
+                    className="cursor-pointer fw-bold py-1.5 px-3"
+                    onClick={() => setActiveOrnamentTab('header_logo')}
+                  >
+                    🏷️ Trang trí Logo Header
+                  </CNavLink>
+                </CNavItem>
+                <CNavItem>
+                  <CNavLink
+                    active={activeOrnamentTab === 'footer'}
+                    className="cursor-pointer fw-bold py-1.5 px-3"
+                    onClick={() => setActiveOrnamentTab('footer')}
+                  >
+                    🦶 Trang trí Chân trang Footer
+                  </CNavLink>
+                </CNavItem>
+              </CNav>
             </CCardHeader>
-            <CCardBody className="p-3">
-              <CRow className="g-4">
-                {/* Left Column: Logo Header */}
-                <CCol md={6} className="border-end">
-                  <h6 className="fw-bold text-primary mb-2 d-flex align-items-center gap-1">
-                    🏷️ 1. Trang trí Logo Header
-                  </h6>
-                  <p className="text-muted text-xs mb-3">
-                    Tải ảnh phụ kiện trang trí (lá thông giáng sinh, nón Noel, cành mai...) để gắn
-                    trực tiếp lên Logo website.
-                  </p>
 
-                  {/* Upload Box */}
-                  <div className="p-3 bg-light rounded border text-center mb-3">
-                    <label className="form-label font-semibold text-dark small mb-1">
-                      Tải ảnh phụ kiện trang trí Logo
-                    </label>
-                    <CFormInput
-                      type="file"
-                      accept="image/*"
-                      size="sm"
-                      className="mb-1"
-                      onChange={handleLogoOrnamentUpload}
-                    />
-                    <span className="text-muted text-xs">Khuyên dùng ảnh PNG / WEBP tách nền</span>
+            <CCardBody className="p-4">
+              {/* TAB 1: LOGO HEADER */}
+              {activeOrnamentTab === 'header_logo' && (
+                <div>
+                  <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <div>
+                      <h6 className="fw-bold text-primary mb-1">
+                        🏷️ Cấu hình Trang trí Logo Header
+                      </h6>
+                      <p className="text-muted text-xs mb-0">
+                        Tải ảnh phụ kiện trang trí (lá thông giáng sinh, nón Noel, cành mai...) để
+                        gắn trực tiếp lên Logo website.
+                      </p>
+                    </div>
+                    <CBadge color="primary">Logo Emblem</CBadge>
                   </div>
 
-                  {/* Position & Size */}
-                  <CRow className="g-2 mb-3">
-                    <CCol md={6}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Vị trí gắn hình trên Logo
-                      </label>
-                      <CFormSelect
-                        size="sm"
-                        value={editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({
-                            ...prev,
-                            decorations: {
-                              ...(prev?.decorations || {}),
-                              logoOrnamentPosition: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        <option value="bottom-left">Góc dưới trái (Giáng Sinh 🌿🍒)</option>
-                        <option value="top-left">Góc trên trái</option>
-                        <option value="top-right">Góc trên phải</option>
-                        <option value="bottom-right">Góc dưới phải</option>
-                      </CFormSelect>
-                    </CCol>
-                    <CCol md={6}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Kích thước hình phụ kiện
-                      </label>
-                      <CFormSelect
-                        size="sm"
-                        value={editingTheme?.decorations?.logoOrnamentSize || '36px'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({
-                            ...prev,
-                            decorations: {
-                              ...(prev?.decorations || {}),
-                              logoOrnamentSize: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        <option value="24px">Nhỏ (24px)</option>
-                        <option value="36px">Vừa tiêu chuẩn (36px)</option>
-                        <option value="48px">Lớn (48px)</option>
-                        <option value="64px">Rất lớn (64px)</option>
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-
-                  {/* LIVE LOGO ORNAMENT PREVIEW */}
-                  <div className="pt-2 border-top">
-                    <span className="fw-semibold text-dark text-xs d-block mb-1">
-                      Xem trước trực tiếp Logo kèm Phụ kiện
-                    </span>
-                    <div
-                      className="p-3 bg-light rounded border text-center position-relative d-flex align-items-center justify-content-center"
-                      style={{ height: '90px' }}
-                    >
-                      <div className="position-relative d-inline-block p-2 bg-white rounded border shadow-xs">
-                        <img
-                          src={logoNk}
-                          alt="Logo"
-                          style={{ height: '42px', objectFit: 'contain' }}
+                  <CRow className="g-4 align-items-center">
+                    <CCol md={7}>
+                      {/* Upload Box */}
+                      <div className="p-3 bg-light rounded border text-center mb-3">
+                        <label className="form-label font-semibold text-dark small mb-1">
+                          Tải ảnh phụ kiện trang trí Logo từ máy tính
+                        </label>
+                        <CFormInput
+                          type="file"
+                          accept="image/*"
+                          size="sm"
+                          className="mb-1"
+                          onChange={handleLogoOrnamentUpload}
                         />
-                        {editingTheme?.decorations?.logoOrnamentUrl ? (
-                          <img
-                            src={editingTheme.decorations.logoOrnamentUrl}
-                            alt="Ornament"
-                            className="position-absolute"
-                            style={{
-                              width: editingTheme?.decorations?.logoOrnamentSize || '36px',
-                              height: editingTheme?.decorations?.logoOrnamentSize || '36px',
-                              objectFit: 'contain',
-                              top: editingTheme?.decorations?.logoOrnamentPosition?.includes('top')
-                                ? '-8px'
-                                : 'auto',
-                              bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'bottom',
-                              )
-                                ? '-8px'
-                                : 'auto',
-                              left: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'left',
-                              )
-                                ? '-8px'
-                                : 'auto',
-                              right: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'right',
-                              )
-                                ? '-8px'
-                                : 'auto',
-                            }}
-                          />
-                        ) : (
-                          <span
-                            className="position-absolute fs-5"
-                            style={{
-                              top: editingTheme?.decorations?.logoOrnamentPosition?.includes('top')
-                                ? '-10px'
-                                : 'auto',
-                              bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'bottom',
-                              )
-                                ? '-10px'
-                                : 'auto',
-                              left: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'left',
-                              )
-                                ? '-10px'
-                                : 'auto',
-                              right: editingTheme?.decorations?.logoOrnamentPosition?.includes(
-                                'right',
-                              )
-                                ? '-10px'
-                                : 'auto',
-                            }}
-                          >
-                            🌿🍒
-                          </span>
-                        )}
+                        <span className="text-muted text-xs">
+                          Khuyên dùng ảnh PNG / WEBP tách nền
+                        </span>
                       </div>
-                    </div>
-                  </div>
-                </CCol>
 
-                {/* Right Column: Footer */}
-                <CCol md={6}>
-                  <h6 className="fw-bold text-info mb-2 d-flex align-items-center gap-1">
-                    🦶 2. Trang trí Chân trang Footer
-                  </h6>
-                  <p className="text-muted text-xs mb-3">
-                    Tải ảnh trang trí Chân trang Footer (cây thông, hộp quà, lồng đèn, hoa mai...)
-                    hiển thị ở hai bên lề Footer.
-                  </p>
-
-                  {/* Upload Box */}
-                  <div className="p-3 bg-light rounded border text-center mb-3">
-                    <label className="form-label font-semibold text-dark small mb-1">
-                      Tải ảnh trang trí Chân trang Footer
-                    </label>
-                    <CFormInput
-                      type="file"
-                      accept="image/*"
-                      size="sm"
-                      className="mb-1"
-                      onChange={handleFooterOrnamentUpload}
-                    />
-                    <span className="text-muted text-xs">Khuyên dùng ảnh PNG / WEBP tách nền</span>
-                  </div>
-
-                  {/* Position & Size */}
-                  <CRow className="g-2 mb-3">
-                    <CCol md={6}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Vị trí hiển thị trên Footer
-                      </label>
-                      <CFormSelect
-                        size="sm"
-                        value={editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({
-                            ...prev,
-                            decorations: {
-                              ...(prev?.decorations || {}),
-                              footerOrnamentPosition: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        <option value="both-corners">
-                          Hai bên góc lề Footer (Tiêu chuẩn 🎄🎁)
-                        </option>
-                        <option value="left-only">Chỉ góc bên trái Footer</option>
-                        <option value="right-only">Chỉ góc bên phải Footer</option>
-                      </CFormSelect>
+                      {/* Position & Size */}
+                      <CRow className="g-3">
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark small mb-1">
+                            Vị trí gắn hình trên Logo
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left'}
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  logoOrnamentPosition: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="bottom-left">Góc dưới trái (Giáng Sinh 🌿🍒)</option>
+                            <option value="top-left">Góc trên trái</option>
+                            <option value="top-right">Góc trên phải</option>
+                            <option value="bottom-right">Góc dưới phải</option>
+                          </CFormSelect>
+                        </CCol>
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark small mb-1">
+                            Kích thước hình phụ kiện
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={editingTheme?.decorations?.logoOrnamentSize || '36px'}
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  logoOrnamentSize: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="24px">Nhỏ (24px)</option>
+                            <option value="36px">Vừa tiêu chuẩn (36px)</option>
+                            <option value="48px">Lớn (48px)</option>
+                            <option value="64px">Rất lớn (64px)</option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
                     </CCol>
-                    <CCol md={6}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Kích thước hình trang trí
-                      </label>
-                      <CFormSelect
-                        size="sm"
-                        value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({
-                            ...prev,
-                            decorations: {
-                              ...(prev?.decorations || {}),
-                              footerOrnamentSize: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        <option value="32px">Nhỏ (32px)</option>
-                        <option value="48px">Vừa tiêu chuẩn (48px)</option>
-                        <option value="64px">Lớn (64px)</option>
-                        <option value="80px">Rất lớn (80px)</option>
-                      </CFormSelect>
+
+                    {/* Live Logo Preview Box */}
+                    <CCol md={5}>
+                      <div className="p-3 bg-light rounded border text-center">
+                        <span className="fw-semibold text-dark text-xs d-block mb-2">
+                          Xem trước trực tiếp Logo kèm Phụ kiện
+                        </span>
+                        <div
+                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
+                          style={{ height: '120px' }}
+                        >
+                          <div className="position-relative d-inline-block p-2 bg-white rounded border">
+                            <img
+                              src={logoNk}
+                              alt="Logo"
+                              style={{ height: '45px', objectFit: 'contain' }}
+                            />
+                            {editingTheme?.decorations?.logoOrnamentUrl ? (
+                              <img
+                                src={editingTheme.decorations.logoOrnamentUrl}
+                                alt="Ornament"
+                                className="position-absolute"
+                                style={{
+                                  width: editingTheme?.decorations?.logoOrnamentSize || '36px',
+                                  height: editingTheme?.decorations?.logoOrnamentSize || '36px',
+                                  objectFit: 'contain',
+                                  top: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'top',
+                                  )
+                                    ? '-8px'
+                                    : 'auto',
+                                  bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'bottom',
+                                  )
+                                    ? '-8px'
+                                    : 'auto',
+                                  left: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'left',
+                                  )
+                                    ? '-8px'
+                                    : 'auto',
+                                  right: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'right',
+                                  )
+                                    ? '-8px'
+                                    : 'auto',
+                                }}
+                              />
+                            ) : (
+                              <span
+                                className="position-absolute fs-5"
+                                style={{
+                                  top: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'top',
+                                  )
+                                    ? '-10px'
+                                    : 'auto',
+                                  bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'bottom',
+                                  )
+                                    ? '-10px'
+                                    : 'auto',
+                                  left: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'left',
+                                  )
+                                    ? '-10px'
+                                    : 'auto',
+                                  right: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                                    'right',
+                                  )
+                                    ? '-10px'
+                                    : 'auto',
+                                }}
+                              >
+                                🌿🍒
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </CCol>
                   </CRow>
+                </div>
+              )}
 
-                  {/* LIVE FOOTER ORNAMENT PREVIEW */}
-                  <div className="pt-2 border-top">
-                    <span className="fw-semibold text-dark text-xs d-block mb-1">
-                      Xem trước trực tiếp Chân trang Footer
-                    </span>
-                    <div
-                      className="p-3 bg-white rounded border position-relative d-flex align-items-center justify-content-between overflow-hidden"
-                      style={{ height: '90px' }}
-                    >
-                      <div className="d-flex align-items-center gap-2">
-                        {editingTheme?.decorations?.footerOrnamentUrl ? (
-                          <img
-                            src={editingTheme.decorations.footerOrnamentUrl}
-                            alt="Footer Left"
-                            style={{
-                              height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                              objectFit: 'contain',
-                            }}
-                          />
-                        ) : (
-                          <span className="fs-3">🎄🎁</span>
-                        )}
-                      </div>
-
-                      <span className="text-muted text-xs fw-semibold">
-                        © 2026 VI TÍNH NGUYÊN KIM - FOOTER PREVIEW
-                      </span>
-
-                      <div className="d-flex align-items-center gap-2">
-                        {editingTheme?.decorations?.footerOrnamentUrl ? (
-                          <img
-                            src={editingTheme.decorations.footerOrnamentUrl}
-                            alt="Footer Right"
-                            style={{
-                              height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                              objectFit: 'contain',
-                            }}
-                          />
-                        ) : (
-                          <span className="fs-3">🔔🎄</span>
-                        )}
-                      </div>
+              {/* TAB 2: FOOTER */}
+              {activeOrnamentTab === 'footer' && (
+                <div>
+                  <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <div>
+                      <h6 className="fw-bold text-info mb-1">
+                        🦶 Cấu hình Trang trí Chân trang Footer
+                      </h6>
+                      <p className="text-muted text-xs mb-0">
+                        Tải ảnh trang trí Chân trang Footer (cây thông, hộp quà, lồng đèn, hoa
+                        mai...) hiển thị ở hai bên lề Footer.
+                      </p>
                     </div>
+                    <CBadge color="info" className="text-white">
+                      Footer Emblem
+                    </CBadge>
                   </div>
-                </CCol>
-              </CRow>
+
+                  <CRow className="g-4 align-items-center">
+                    <CCol md={7}>
+                      {/* Upload Box */}
+                      <div className="p-3 bg-light rounded border text-center mb-3">
+                        <label className="form-label font-semibold text-dark small mb-1">
+                          Tải ảnh trang trí Chân trang Footer từ máy tính
+                        </label>
+                        <CFormInput
+                          type="file"
+                          accept="image/*"
+                          size="sm"
+                          className="mb-1"
+                          onChange={handleFooterOrnamentUpload}
+                        />
+                        <span className="text-muted text-xs">
+                          Khuyên dùng ảnh PNG / WEBP tách nền
+                        </span>
+                      </div>
+
+                      {/* Position & Size */}
+                      <CRow className="g-3">
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark small mb-1">
+                            Vị trí hiển thị trên Footer
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={
+                              editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
+                            }
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  footerOrnamentPosition: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="both-corners">
+                              Hai bên góc lề Footer (Tiêu chuẩn 🎄🎁)
+                            </option>
+                            <option value="left-only">Chỉ góc bên trái Footer</option>
+                            <option value="right-only">Chỉ góc bên phía phải Footer</option>
+                          </CFormSelect>
+                        </CCol>
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark small mb-1">
+                            Kích thước hình trang trí
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  footerOrnamentSize: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="32px">Nhỏ (32px)</option>
+                            <option value="48px">Vừa tiêu chuẩn (48px)</option>
+                            <option value="64px">Lớn (64px)</option>
+                            <option value="80px">Rất lớn (80px)</option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    </CCol>
+
+                    {/* Live Footer Preview Box */}
+                    <CCol md={5}>
+                      <div className="p-3 bg-light rounded border text-center">
+                        <span className="fw-semibold text-dark text-xs d-block mb-2">
+                          Xem trước trực tiếp Chân trang Footer
+                        </span>
+                        <div
+                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
+                          style={{ height: '120px' }}
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            {editingTheme?.decorations?.footerOrnamentUrl ? (
+                              <img
+                                src={editingTheme.decorations.footerOrnamentUrl}
+                                alt="Footer Left"
+                                style={{
+                                  height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                  objectFit: 'contain',
+                                }}
+                              />
+                            ) : (
+                              <span className="fs-3">🎄🎁</span>
+                            )}
+                          </div>
+
+                          <span className="text-muted text-xs fw-semibold">
+                            © 2026 VI TÍNH NGUYÊN KIM
+                          </span>
+
+                          <div className="d-flex align-items-center gap-2">
+                            {editingTheme?.decorations?.footerOrnamentUrl ? (
+                              <img
+                                src={editingTheme.decorations.footerOrnamentUrl}
+                                alt="Footer Right"
+                                style={{
+                                  height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                  objectFit: 'contain',
+                                }}
+                              />
+                            ) : (
+                              <span className="fs-3">🔔🎄</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CCol>
+                  </CRow>
+                </div>
+              )}
             </CCardBody>
           </CCard>
         </CCol>
