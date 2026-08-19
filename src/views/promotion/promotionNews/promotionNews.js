@@ -179,22 +179,8 @@ function PromotionNews() {
               className="rounded border shadow-xs"
             />
           ),
-          startDate: (
-            <span
-              className="badge bg-light text-success border border-success px-2 py-1 text-center"
-              style={{ display: 'inline-block', width: '90px' }}
-            >
-              {formatDate(item?.date_start_promotion, 'Chưa có')}
-            </span>
-          ),
-          expire: (
-            <span
-              className="badge bg-light text-danger border border-danger px-2 py-1 text-center"
-              style={{ display: 'inline-block', width: '90px' }}
-            >
-              {formatDate(item?.date_end_promotion, 'Chưa có')}
-            </span>
-          ),
+          startDate: formatDate(item?.date_start_promotion, 'Chưa có'),
+          expire: formatDate(item?.date_end_promotion, 'Chưa có'),
           info: (
             <div>
               <span className="fw-semibold text-primary d-block small">
