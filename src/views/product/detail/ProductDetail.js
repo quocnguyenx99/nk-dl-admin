@@ -23,7 +23,7 @@ import { getYear, getMonth } from 'date-fns'
 registerLocale('vi', vi)
 
 import CIcon from '@coreui/icons-react'
-import { cilTrash, cilColorBorder } from '@coreui/icons'
+import { cilTrash, cilColorBorder, cilCopy } from '@coreui/icons'
 import ReactPaginate from 'react-paginate'
 import moment from 'moment'
 
@@ -355,7 +355,26 @@ function ProductDetail() {
               >
                 {item?.TenTrenWeb2 ? item?.TenTrenWeb2 : ''}
               </p>
-              <p className="orange-txt">{`#${item?.MaHH ? item?.MaHH : item?.macn}`}</p>
+              <div className="d-flex align-items-center gap-1.5 mt-1">
+                <span className="orange-txt m-0">{`#${item?.MaHH ? item?.MaHH : item?.macn}`}</span>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-light border py-0 px-1.5 d-inline-flex align-items-center justify-content-center text-secondary shadow-2xs ms-1"
+                  style={{ fontSize: '11px', lineHeight: 1 }}
+                  title="Sao chép mã sản phẩm"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    const codeToCopy = item?.MaHH ? item?.MaHH : item?.macn
+                    if (codeToCopy) {
+                      navigator.clipboard.writeText(codeToCopy)
+                      toast.success(`Đã sao chép mã: ${codeToCopy}`)
+                    }
+                  }}
+                >
+                  <CIcon icon={cilCopy} size="sm" className="me-1" />
+                  <span style={{ fontSize: '11px' }}>Copy</span>
+                </button>
+              </div>
             </div>
           ),
           image: (
