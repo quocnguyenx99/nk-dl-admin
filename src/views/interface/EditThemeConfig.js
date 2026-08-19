@@ -612,9 +612,6 @@ function EditThemeConfig() {
               <span>
                 Thẻ 1: Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)
               </span>
-              <CBadge color={editingTheme?.isActive ? 'success' : 'warning'}>
-                {editingTheme?.isActive ? 'Đang áp dụng' : 'Bản nháp'}
-              </CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
               <CRow className="g-2 mb-2">
@@ -716,7 +713,6 @@ function EditThemeConfig() {
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
               <span>Thẻ 2: Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
-              <CBadge color="secondary">Hero Assets</CBadge>
             </CCardHeader>
             <CCardBody className="p-3 d-flex flex-column justify-content-between">
               <div>
@@ -798,15 +794,12 @@ function EditThemeConfig() {
               {/* TAB 1: LOGO HEADER */}
               {activeOrnamentTab === 'header_logo' && (
                 <div>
-                  <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                    <div>
-                      <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
-                      <p className="text-muted text-xs mb-0">
-                        Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...)
-                        hiển thị trên Header website.
-                      </p>
-                    </div>
-                    <CBadge color="primary">Header Logo</CBadge>
+                  <div className="mb-3 border-bottom pb-2">
+                    <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
+                    <p className="text-muted text-xs mb-0">
+                      Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển
+                      thị trên Header website.
+                    </p>
                   </div>
 
                   <CRow className="g-4 align-items-center">
@@ -856,16 +849,11 @@ function EditThemeConfig() {
               {/* TAB 2: FOOTER */}
               {activeOrnamentTab === 'footer' && (
                 <div>
-                  <div className="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                    <div>
-                      <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
-                      <p className="text-muted text-xs mb-0">
-                        Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
-                      </p>
-                    </div>
-                    <CBadge color="info" className="text-white">
-                      Footer Emblem
-                    </CBadge>
+                  <div className="mb-3 border-bottom pb-2">
+                    <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
+                    <p className="text-muted text-xs mb-0">
+                      Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
+                    </p>
                   </div>
 
                   <CRow className="g-4 align-items-center">
@@ -1004,7 +992,6 @@ function EditThemeConfig() {
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
               <span>Thẻ 4: Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
-              <CBadge color="success">Patterns</CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
               <div className="mb-3">
@@ -1125,10 +1112,7 @@ function EditThemeConfig() {
         <CCol md={12}>
           <CCard className="shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 6: Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
-              <CBadge color="warning" className="text-dark">
-                Theme Colors
-              </CBadge>
+              <span>Thẻ 5: Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
             </CCardHeader>
             <CCardBody className="p-3">
               <CRow className="g-3">
