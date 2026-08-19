@@ -372,19 +372,35 @@ function ProductDetail() {
           ),
           marketPrice: `${Number(item.price_old).toLocaleString('vi-VN')}đ`,
           status: (
-            <>
-              <span>
-                {item.stock > 0 ? (item.stock === 1 ? 'Còn hàng' : 'Ngừng kinh doanh') : 'Hết hàng'}
-              </span>
-              <p
-                style={{
-                  color: item.Hienthi === 'Y' ? '#28a745' : '#dc3545',
-                  fontWeight: 'bold',
-                }}
+            <div className="d-flex flex-column align-items-center justify-content-center gap-1 text-center">
+              <span
+                className={`badge px-2 py-1 ${
+                  item.stock === 1
+                    ? 'bg-success bg-opacity-10 text-success border border-success border-opacity-25'
+                    : item.stock === 2
+                      ? 'bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25'
+                      : 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'
+                }`}
+                style={{ fontSize: '11px', fontWeight: 600 }}
               >
-                {item.Hienthi === 'Y' ? 'Hiển thị' : 'Ẩn'}
-              </p>
-            </>
+                {item.stock > 0 ? (item.stock === 1 ? 'Còn hàng' : 'Ngừng KD') : 'Hết hàng'}
+              </span>
+              {item.Hienthi === 'Y' || item.status === 1 || item.status === '1' ? (
+                <span
+                  className="badge bg-success text-white px-2 py-1"
+                  style={{ fontSize: '11px', fontWeight: 700 }}
+                >
+                  Hiển thị
+                </span>
+              ) : (
+                <span
+                  className="badge bg-danger text-white px-2 py-1"
+                  style={{ fontSize: '11px', fontWeight: 700 }}
+                >
+                  Đang ẩn
+                </span>
+              )}
+            </div>
           ),
           create_at: (
             <>
@@ -600,12 +616,8 @@ function ProductDetail() {
                             onChange={(e) => setSelectedStatus(e.target.value)}
                             options={[
                               { label: 'Chọn trạng thái', value: '' },
-                              ...(status && status.length > 0
-                                ? status.map((status) => ({
-                                    label: status.name,
-                                    value: status.status_id,
-                                  }))
-                                : []),
+                              { label: 'Hiển thị', value: '1' },
+                              { label: 'Đang ẩn', value: '0' },
                             ]}
                           />
                         </div>
