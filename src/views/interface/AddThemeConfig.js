@@ -369,6 +369,26 @@ function AddThemeConfig() {
     }
   }
 
+  const handleLogoOrnamentUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setNewTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            logoOrnamentUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh phụ kiện trang trí Logo thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh phụ kiện Logo: ' + err.message)
+    }
+  }
+
   const handleSave = async () => {
     if (!newTheme.name) {
       toast.error('Vui lòng nhập tên chiến dịch giao diện!')
@@ -388,9 +408,12 @@ function AddThemeConfig() {
           description: newTheme.description,
           image: newTheme.image,
           colors: newTheme.colors,
-          decorations: newTheme.decorations || {
-            particles: newTheme.background?.preset || newTheme.code || 'none',
-            ornaments: newTheme.background?.preset || newTheme.code || 'none',
+          decorations: {
+            particles: newTheme?.background?.preset || newTheme?.code || 'none',
+            ornaments: newTheme?.background?.preset || newTheme?.code || 'none',
+            logoOrnamentUrl: newTheme?.decorations?.logoOrnamentUrl || '',
+            logoOrnamentPosition: newTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
+            logoOrnamentSize: newTheme?.decorations?.logoOrnamentSize || '36px',
           },
           background: newTheme.background || {
             preset: newTheme.decorations?.particles || 'none',
@@ -486,9 +509,10 @@ function AddThemeConfig() {
         </CCol>
       </CRow>
 
-      {/* Banners & Assets Card */}
-      <CRow className="mb-4">
-        <CCol md={12}>
+      {/* SECOND ROW: Banners & Logo Ornament */}
+      <CRow className="g-4 mb-4">
+        {/* Card 2: Banners & Assets */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Banner & Hình ảnh Giao diện (Banners & Assets)
@@ -531,6 +555,148 @@ function AddThemeConfig() {
                     </div>
                   </div>
                 )}
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Card 3: Header Logo Ornament */}
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Phụ kiện Trang trí Logo Header</span>
+              <CBadge color="primary">Logo Emblem</CBadge>
+            </CCardHeader>
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Tải ảnh phụ kiện trang trí (lá thông giáng sinh, nón Noel, cành mai...) để gắn
+                  trực tiếp lên Logo website.
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải ảnh phụ kiện trang trí Logo
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-1"
+                    onChange={handleLogoOrnamentUpload}
+                  />
+                  <span className="text-muted text-xs">Khuyên dùng ảnh PNG / WEBP tách nền</span>
+                </div>
+
+                {/* Position & Size */}
+                <CRow className="g-2 mb-3">
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Vị trí gắn hình trên Logo
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={newTheme?.decorations?.logoOrnamentPosition || 'bottom-left'}
+                      onChange={(e) =>
+                        setNewTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            logoOrnamentPosition: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="bottom-left">Góc dưới trái (Giáng Sinh 🌿🍒)</option>
+                      <option value="top-left">Góc trên trái</option>
+                      <option value="top-right">Góc trên phải</option>
+                      <option value="bottom-right">Góc dưới phải</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Kích thước hình phụ kiện
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={newTheme?.decorations?.logoOrnamentSize || '36px'}
+                      onChange={(e) =>
+                        setNewTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            logoOrnamentSize: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="24px">Nhỏ (24px)</option>
+                      <option value="36px">Vừa tiêu chuẩn (36px)</option>
+                      <option value="48px">Lớn (48px)</option>
+                      <option value="64px">Rất lớn (64px)</option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </div>
+
+              {/* LIVE LOGO ORNAMENT PREVIEW */}
+              <div className="pt-2 border-top">
+                <span className="fw-semibold text-dark text-xs d-block mb-1">
+                  Xem trước trực tiếp Logo kèm Phụ kiện
+                </span>
+                <div
+                  className="p-3 bg-light rounded border text-center position-relative d-flex align-items-center justify-content-center"
+                  style={{ height: '90px' }}
+                >
+                  <div className="position-relative d-inline-block p-2 bg-white rounded border shadow-xs">
+                    <img src={logoNk} alt="Logo" style={{ height: '42px', objectFit: 'contain' }} />
+                    {newTheme?.decorations?.logoOrnamentUrl ? (
+                      <img
+                        src={newTheme.decorations.logoOrnamentUrl}
+                        alt="Ornament"
+                        className="position-absolute"
+                        style={{
+                          width: newTheme?.decorations?.logoOrnamentSize || '36px',
+                          height: newTheme?.decorations?.logoOrnamentSize || '36px',
+                          objectFit: 'contain',
+                          top: newTheme?.decorations?.logoOrnamentPosition?.includes('top')
+                            ? '-8px'
+                            : 'auto',
+                          bottom: newTheme?.decorations?.logoOrnamentPosition?.includes('bottom')
+                            ? '-8px'
+                            : 'auto',
+                          left: newTheme?.decorations?.logoOrnamentPosition?.includes('left')
+                            ? '-8px'
+                            : 'auto',
+                          right: newTheme?.decorations?.logoOrnamentPosition?.includes('right')
+                            ? '-8px'
+                            : 'auto',
+                        }}
+                      />
+                    ) : (
+                      <span
+                        className="position-absolute fs-5"
+                        style={{
+                          top: newTheme?.decorations?.logoOrnamentPosition?.includes('top')
+                            ? '-10px'
+                            : 'auto',
+                          bottom: newTheme?.decorations?.logoOrnamentPosition?.includes('bottom')
+                            ? '-10px'
+                            : 'auto',
+                          left: newTheme?.decorations?.logoOrnamentPosition?.includes('left')
+                            ? '-10px'
+                            : 'auto',
+                          right: newTheme?.decorations?.logoOrnamentPosition?.includes('right')
+                            ? '-10px'
+                            : 'auto',
+                        }}
+                      >
+                        🌿🍒
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </CCardBody>
           </CCard>

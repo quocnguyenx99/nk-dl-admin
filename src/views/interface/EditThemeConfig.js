@@ -447,6 +447,26 @@ function EditThemeConfig() {
     }
   }
 
+  const handleLogoOrnamentUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setEditingTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            logoOrnamentUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh phụ kiện trang trí Logo thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh phụ kiện Logo: ' + err.message)
+    }
+  }
+
   const handleSave = async () => {
     if (!editingTheme?.name) {
       toast.error('Vui lòng nhập tên chiến dịch giao diện!')
@@ -467,9 +487,12 @@ function EditThemeConfig() {
           description: editingTheme.description,
           image: editingTheme.image,
           colors: editingTheme.colors,
-          decorations: editingTheme.decorations || {
-            particles: editingTheme.background?.preset || editingTheme.code || 'none',
-            ornaments: editingTheme.background?.preset || editingTheme.code || 'none',
+          decorations: {
+            particles: editingTheme?.background?.preset || editingTheme?.code || 'none',
+            ornaments: editingTheme?.background?.preset || editingTheme?.code || 'none',
+            logoOrnamentUrl: editingTheme?.decorations?.logoOrnamentUrl || '',
+            logoOrnamentPosition: editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
+            logoOrnamentSize: editingTheme?.decorations?.logoOrnamentSize || '36px',
           },
           background: editingTheme.background || {
             preset: editingTheme.decorations?.particles || 'none',
@@ -582,9 +605,10 @@ function EditThemeConfig() {
         </CCol>
       </CRow>
 
-      {/* Banners & Assets Card */}
-      <CRow className="mb-4">
-        <CCol md={12}>
+      {/* SECOND ROW: Banners & Logo Ornament */}
+      <CRow className="g-4 mb-4">
+        {/* Card 2: Banners & Assets */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Banner & Hình ảnh Giao diện (Banners & Assets)
@@ -627,6 +651,152 @@ function EditThemeConfig() {
                     </div>
                   </div>
                 )}
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Card 3: Header Logo Ornament */}
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Phụ kiện Trang trí Logo Header</span>
+              <CBadge color="primary">Logo Emblem</CBadge>
+            </CCardHeader>
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Tải ảnh phụ kiện trang trí (lá thông giáng sinh, nón Noel, cành mai...) để gắn
+                  trực tiếp lên Logo website.
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải ảnh phụ kiện trang trí Logo
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-1"
+                    onChange={handleLogoOrnamentUpload}
+                  />
+                  <span className="text-muted text-xs">Khuyên dùng ảnh PNG / WEBP tách nền</span>
+                </div>
+
+                {/* Position & Size */}
+                <CRow className="g-2 mb-3">
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Vị trí gắn hình trên Logo
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left'}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            logoOrnamentPosition: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="bottom-left">Góc dưới trái (Giáng Sinh 🌿🍒)</option>
+                      <option value="top-left">Góc trên trái</option>
+                      <option value="top-right">Góc trên phải</option>
+                      <option value="bottom-right">Góc dưới phải</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol md={6}>
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Kích thước hình phụ kiện
+                    </label>
+                    <CFormSelect
+                      size="sm"
+                      value={editingTheme?.decorations?.logoOrnamentSize || '36px'}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({
+                          ...prev,
+                          decorations: {
+                            ...(prev?.decorations || {}),
+                            logoOrnamentSize: e.target.value,
+                          },
+                        }))
+                      }
+                    >
+                      <option value="24px">Nhỏ (24px)</option>
+                      <option value="36px">Vừa tiêu chuẩn (36px)</option>
+                      <option value="48px">Lớn (48px)</option>
+                      <option value="64px">Rất lớn (64px)</option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </div>
+
+              {/* LIVE LOGO ORNAMENT PREVIEW */}
+              <div className="pt-2 border-top">
+                <span className="fw-semibold text-dark text-xs d-block mb-1">
+                  Xem trước trực tiếp Logo kèm Phụ kiện
+                </span>
+                <div
+                  className="p-3 bg-light rounded border text-center position-relative d-flex align-items-center justify-content-center"
+                  style={{ height: '90px' }}
+                >
+                  <div className="position-relative d-inline-block p-2 bg-white rounded border shadow-xs">
+                    <img src={logoNk} alt="Logo" style={{ height: '42px', objectFit: 'contain' }} />
+                    {editingTheme?.decorations?.logoOrnamentUrl ? (
+                      <img
+                        src={editingTheme.decorations.logoOrnamentUrl}
+                        alt="Ornament"
+                        className="position-absolute"
+                        style={{
+                          width: editingTheme?.decorations?.logoOrnamentSize || '36px',
+                          height: editingTheme?.decorations?.logoOrnamentSize || '36px',
+                          objectFit: 'contain',
+                          top: editingTheme?.decorations?.logoOrnamentPosition?.includes('top')
+                            ? '-8px'
+                            : 'auto',
+                          bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                            'bottom',
+                          )
+                            ? '-8px'
+                            : 'auto',
+                          left: editingTheme?.decorations?.logoOrnamentPosition?.includes('left')
+                            ? '-8px'
+                            : 'auto',
+                          right: editingTheme?.decorations?.logoOrnamentPosition?.includes('right')
+                            ? '-8px'
+                            : 'auto',
+                        }}
+                      />
+                    ) : (
+                      <span
+                        className="position-absolute fs-5"
+                        style={{
+                          top: editingTheme?.decorations?.logoOrnamentPosition?.includes('top')
+                            ? '-10px'
+                            : 'auto',
+                          bottom: editingTheme?.decorations?.logoOrnamentPosition?.includes(
+                            'bottom',
+                          )
+                            ? '-10px'
+                            : 'auto',
+                          left: editingTheme?.decorations?.logoOrnamentPosition?.includes('left')
+                            ? '-10px'
+                            : 'auto',
+                          right: editingTheme?.decorations?.logoOrnamentPosition?.includes('right')
+                            ? '-10px'
+                            : 'auto',
+                        }}
+                      >
+                        🌿🍒
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </CCardBody>
           </CCard>
@@ -882,465 +1052,6 @@ function EditThemeConfig() {
           </CCard>
         </CCol>
       </CRow>
-
-      {/* MULTI-PAGE INTERACTIVE LIVE PREVIEW CANVAS */}
-      <CCard className="mb-4 shadow-sm border">
-        <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-          <div className="d-flex align-items-center gap-2">
-            <span className="fw-bold text-dark fs-6">
-              Xem trước thực tế sự thay đổi trên từng trang (Live Multi-Page Preview)
-            </span>
-            <span
-              className="badge rounded-pill px-2.5 py-1"
-              style={{
-                backgroundColor: `${editingTheme?.colors?.primary || '#2356c4'}15`,
-                color: editingTheme?.colors?.primary || '#2356c4',
-                fontSize: '11px',
-              }}
-            >
-              Cập nhật trực tiếp
-            </span>
-          </div>
-
-          {/* Navigation Tabs */}
-          <CNav variant="pills" className="small">
-            <CNavItem>
-              <CNavLink
-                active={activePreviewTab === 'home'}
-                className="cursor-pointer fw-semibold py-1 px-3"
-                onClick={() => setActivePreviewTab('home')}
-              >
-                🏠 Trang chủ
-              </CNavLink>
-            </CNavItem>
-            <CNavItem>
-              <CNavLink
-                active={activePreviewTab === 'product_detail'}
-                className="cursor-pointer fw-semibold py-1 px-3"
-                onClick={() => setActivePreviewTab('product_detail')}
-              >
-                💻 Chi tiết sản phẩm
-              </CNavLink>
-            </CNavItem>
-            <CNavItem>
-              <CNavLink
-                active={activePreviewTab === 'checkout'}
-                className="cursor-pointer fw-semibold py-1 px-3"
-                onClick={() => setActivePreviewTab('checkout')}
-              >
-                🛒 Trang thanh toán
-              </CNavLink>
-            </CNavItem>
-            <CNavItem>
-              <CNavLink
-                active={activePreviewTab === 'header_footer'}
-                className="cursor-pointer fw-semibold py-1 px-3"
-                onClick={() => setActivePreviewTab('header_footer')}
-              >
-                📌 Header Logo & Footer
-              </CNavLink>
-            </CNavItem>
-          </CNav>
-        </CCardHeader>
-
-        <CCardBody className="p-0 position-relative overflow-hidden bg-light">
-          {/* TAB 1: HOME PAGE PREVIEW */}
-          {activePreviewTab === 'home' && (
-            <div
-              className="p-4 position-relative"
-              style={{
-                backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                color: editingTheme?.colors?.text || '#222222',
-                minHeight: '380px',
-              }}
-            >
-              <ThemeBackgroundWatermarkLayer
-                background={{ ...bgConfig, opacity: localOpacity }}
-                themeCode={editingTheme?.code}
-              />
-
-              {/* Utility Top Bar */}
-              <div
-                className="py-1.5 px-3 rounded-top d-flex justify-content-end align-items-center gap-3 text-white small shadow-xs"
-                style={{ backgroundColor: editingTheme?.colors?.secondary || '#ffb716' }}
-              >
-                <span>Hotline: 1900 6739</span>
-                <span>Tin khuyến mãi</span>
-                <span>Tuyển dụng</span>
-              </div>
-
-              {/* Main Store Header with Logo & Seasonal Decoration */}
-              <div className="bg-white p-3 border-bottom d-flex align-items-center justify-content-between gap-3 shadow-xs">
-                <div className="position-relative d-inline-block">
-                  {/* Seasonal Emblem on Logo */}
-                  {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-8px', left: '-12px', fontSize: '20px', zIndex: 2 }}
-                    >
-                      🌿🍒
-                    </span>
-                  )}
-                  {(festiveTheme === 'trungthu' || festiveTheme === 'mooncakes') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-10px', left: '-10px', fontSize: '18px', zIndex: 2 }}
-                    >
-                      🏮
-                    </span>
-                  )}
-                  {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-12px', left: '-14px', fontSize: '18px', zIndex: 2 }}
-                    >
-                      ✈️
-                    </span>
-                  )}
-                  {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-8px', left: '-10px', fontSize: '18px', zIndex: 2 }}
-                    >
-                      🌼
-                    </span>
-                  )}
-                  <img src={logoNk} alt="Logo" style={{ height: '42px', objectFit: 'contain' }} />
-                </div>
-                <div className="flex-grow-1 mx-3">
-                  <input
-                    type="text"
-                    className="form-control form-control-sm rounded-pill"
-                    placeholder="Tìm kiếm sản phẩm tin học, laptop..."
-                    readOnly
-                  />
-                </div>
-                <button
-                  className="btn btn-sm text-white fw-bold px-3"
-                  style={{
-                    backgroundColor: editingTheme?.colors?.primary || '#2356c4',
-                    borderRadius: '20px',
-                  }}
-                >
-                  Giỏ hàng (0)
-                </button>
-              </div>
-
-              {/* Hero Banner Preview */}
-              <div className="my-3 rounded overflow-hidden border shadow-xs position-relative bg-white">
-                <CImage
-                  src={editingTheme?.image}
-                  className="w-100"
-                  style={{ height: '160px', objectFit: 'cover' }}
-                />
-              </div>
-
-              {/* Product Grid Sample */}
-              <CRow className="g-2">
-                {[1, 2, 3, 4].map((n) => (
-                  <CCol key={n} md={3}>
-                    <div className="p-2 bg-white rounded border shadow-xs text-center">
-                      <div className="bg-light rounded p-2 mb-2" style={{ height: '80px' }}>
-                        💻
-                      </div>
-                      <div className="fw-semibold text-truncate small">Laptop ASUS ZenBook {n}</div>
-                      <div
-                        className="fw-bold small"
-                        style={{ color: editingTheme?.colors?.accent || '#dc2626' }}
-                      >
-                        24.990.000 đ
-                      </div>
-                    </div>
-                  </CCol>
-                ))}
-              </CRow>
-            </div>
-          )}
-
-          {/* TAB 2: PRODUCT DETAIL PAGE PREVIEW */}
-          {activePreviewTab === 'product_detail' && (
-            <div
-              className="p-4 position-relative"
-              style={{
-                backgroundColor: editingTheme?.colors?.background || '#ffffff',
-                color: editingTheme?.colors?.text || '#222222',
-                minHeight: '380px',
-              }}
-            >
-              <ThemeBackgroundWatermarkLayer
-                background={{ ...bgConfig, opacity: localOpacity }}
-                themeCode={editingTheme?.code}
-              />
-
-              {/* Breadcrumb */}
-              <div className="text-muted text-xs mb-3">
-                Trang chủ &gt; Laptop &gt; Laptop ASUS &gt; Zenbook &gt; ASUS Zenbook 14 OLED
-              </div>
-
-              <CRow className="g-4 align-items-center">
-                {/* Product Photo Box with Seasonal Motif */}
-                <CCol md={6}>
-                  <div
-                    className="p-3 rounded-3 border bg-white position-relative overflow-hidden text-center shadow-xs"
-                    style={{
-                      borderColor: editingTheme?.colors?.primary || '#3b82f6',
-                      borderWidth: '2px',
-                    }}
-                  >
-                    {/* Seasonal Motif Header Badge (Back To School 2025 style) */}
-                    {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
-                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
-                        <span
-                          className="badge bg-warning text-dark fw-bold px-2.5 py-1 rounded shadow-xs"
-                          style={{ fontSize: '11px' }}
-                        >
-                          BACK TO SCHOOL 2025 ✏️
-                        </span>
-                      </div>
-                    )}
-                    {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
-                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
-                        <span
-                          className="badge bg-danger text-white fw-bold px-2.5 py-1 rounded shadow-xs"
-                          style={{ fontSize: '11px' }}
-                        >
-                          NOEL XMAS 2026 ❄️
-                        </span>
-                      </div>
-                    )}
-                    {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
-                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
-                        <span
-                          className="badge bg-danger text-warning fw-bold px-2.5 py-1 rounded shadow-xs"
-                          style={{ fontSize: '11px' }}
-                        >
-                          TẾT NGUYÊN ĐÁN 🌼
-                        </span>
-                      </div>
-                    )}
-
-                    <img
-                      src="https://media.vitinhnguyenkim.vn/uploads/products/2026-08/20260806_054030_fEuFoFdtmY.png"
-                      alt="ASUS Zenbook 14 OLED"
-                      style={{ maxHeight: '200px', objectFit: 'contain' }}
-                    />
-                  </div>
-                </CCol>
-
-                {/* Specs & Buy Buttons */}
-                <CCol md={6}>
-                  <h5 className="fw-bold text-dark mb-2">
-                    ASUS Zenbook 14 OLED UX3405MA (Intel Core Ultra 7)
-                  </h5>
-                  <div
-                    className="fs-4 fw-bold mb-3"
-                    style={{ color: editingTheme?.colors?.accent || '#dc2626' }}
-                  >
-                    33.990.000 đ
-                  </div>
-                  <p className="text-muted text-xs mb-3">
-                    Màn hình OLED 120Hz 3K sắc nét, pin dùng cả ngày, chuẩn Intel Evo siêu mỏng nhẹ.
-                  </p>
-
-                  <div className="d-flex gap-2">
-                    <button
-                      className="btn text-white fw-bold px-4 py-2 flex-grow-1"
-                      style={{ backgroundColor: editingTheme?.colors?.primary || '#2356c4' }}
-                    >
-                      MUA NGAY GIAO TẬN NƠI
-                    </button>
-                    <button className="btn btn-outline-secondary px-3 py-2">
-                      <CIcon icon={cilSave} />
-                    </button>
-                  </div>
-                </CCol>
-              </CRow>
-            </div>
-          )}
-
-          {/* TAB 3: CHECKOUT PAGE PREVIEW */}
-          {activePreviewTab === 'checkout' && (
-            <div
-              className="p-4 position-relative bg-white"
-              style={{
-                backgroundColor: editingTheme?.colors?.background || '#ffffff',
-                color: editingTheme?.colors?.text || '#222222',
-                minHeight: '380px',
-              }}
-            >
-              <ThemeBackgroundWatermarkLayer
-                background={{ ...bgConfig, opacity: localOpacity }}
-                themeCode={editingTheme?.code}
-              />
-
-              {/* Checkout Progress Steps */}
-              <div className="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
-                <div className="d-flex align-items-center gap-2">
-                  <div
-                    className="rounded-circle text-white fw-bold d-flex align-items-center justify-content-center"
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      backgroundColor: editingTheme?.colors?.primary || '#2356c4',
-                    }}
-                  >
-                    1
-                  </div>
-                  <span className="fw-bold text-primary small">Thông tin giao hàng</span>
-                </div>
-                <div className="flex-grow-1 border-top mx-3 border-primary"></div>
-                <div className="d-flex align-items-center gap-2 text-muted opacity-75">
-                  <div
-                    className="rounded-circle border d-flex align-items-center justify-content-center"
-                    style={{ width: '28px', height: '28px' }}
-                  >
-                    2
-                  </div>
-                  <span className="small">Phương thức thanh toán</span>
-                </div>
-              </div>
-
-              <CRow className="g-4">
-                <CCol md={7}>
-                  <h5 className="fw-bold text-dark mb-3">Thanh toán &amp; Nhận hàng ✏️</h5>
-                  <div className="p-3 bg-light rounded border mb-2">
-                    <label className="form-label small fw-semibold">Họ tên người nhận</label>
-                    <input
-                      type="text"
-                      className="form-control form-control-sm mb-2"
-                      defaultValue="Nguyễn Văn A"
-                      readOnly
-                    />
-                    <label className="form-label small fw-semibold">Số điện thoại</label>
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
-                      defaultValue="0908 123 456"
-                      readOnly
-                    />
-                  </div>
-                </CCol>
-
-                {/* Order Summary Card (Notebook Spiral Style for Back to School) */}
-                <CCol md={5}>
-                  <div
-                    className="p-3 bg-white border rounded shadow-xs position-relative"
-                    style={{
-                      borderColor: editingTheme?.colors?.primary || '#bfdbfe',
-                      borderLeft: '4px solid ' + (editingTheme?.colors?.primary || '#2356c4'),
-                    }}
-                  >
-                    <h6 className="fw-bold text-dark mb-3 d-flex justify-content-between">
-                      <span>Thông tin đơn hàng</span>
-                      <span className="text-primary">✦</span>
-                    </h6>
-
-                    <div className="d-flex justify-content-between text-muted small mb-2">
-                      <span>Tạm tính:</span>
-                      <span className="fw-semibold text-dark">63.100.000 đ</span>
-                    </div>
-                    <div className="d-flex justify-content-between text-muted small mb-2">
-                      <span>Phí vận chuyển:</span>
-                      <span className="text-success fw-semibold">Miễn phí</span>
-                    </div>
-
-                    <hr className="my-2" />
-
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className="fw-bold text-dark">Thành tiền:</span>
-                      <span
-                        className="fw-bold fs-5"
-                        style={{ color: editingTheme?.colors?.primary || '#2356c4' }}
-                      >
-                        63.100.000 đ
-                      </span>
-                    </div>
-
-                    <button
-                      className="btn w-100 fw-bold py-2 shadow-xs d-flex align-items-center justify-content-center gap-2"
-                      style={{
-                        backgroundColor: editingTheme?.colors?.secondary || '#ffb716',
-                        color: '#1e293b',
-                      }}
-                    >
-                      <span>ĐẶT HÀNG NGAY</span>
-                      <span>✈️</span>
-                    </button>
-                  </div>
-                </CCol>
-              </CRow>
-            </div>
-          )}
-
-          {/* TAB 4: HEADER LOGO & FOOTER FESTIVE ORNAMENTS PREVIEW */}
-          {activePreviewTab === 'header_footer' && (
-            <div className="p-4 bg-white">
-              <h6 className="fw-bold text-dark mb-3 border-bottom pb-2">
-                1. Mẫu Trang Trí Logo Header (Góc trái trên cùng)
-              </h6>
-              <div className="p-4 bg-light rounded border mb-4 d-flex align-items-center justify-content-center">
-                <div className="position-relative d-inline-block p-3 bg-white rounded border shadow-xs">
-                  {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-12px', left: '-12px', fontSize: '26px' }}
-                    >
-                      🌿🍒
-                    </span>
-                  )}
-                  {(festiveTheme === 'trungthu' || festiveTheme === 'mooncakes') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-14px', left: '-12px', fontSize: '24px' }}
-                    >
-                      🏮
-                    </span>
-                  )}
-                  {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-14px', left: '-14px', fontSize: '24px' }}
-                    >
-                      ✈️
-                    </span>
-                  )}
-                  {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
-                    <span
-                      className="position-absolute"
-                      style={{ top: '-12px', left: '-12px', fontSize: '24px' }}
-                    >
-                      🌼
-                    </span>
-                  )}
-                  <img
-                    src={logoNk}
-                    alt="Logo Preview"
-                    style={{ height: '55px', objectFit: 'contain' }}
-                  />
-                </div>
-              </div>
-
-              <h6 className="fw-bold text-dark mb-3 border-bottom pb-2">
-                2. Mẫu Trang Trí Chân Trang Footer (Hai bên lề &amp; Giữa)
-              </h6>
-              <div className="p-3 bg-white border rounded shadow-xs">
-                <div className="d-flex justify-content-between align-items-center px-2 py-3 border-bottom">
-                  <span className="text-muted small">CÔNG TY TNHH VI TÍNH NGUYÊN KIM</span>
-                  <span className="text-muted small">Hotline: 1900 6739</span>
-                  <span className="text-muted small">© 2026 Vi Tính Nguyên Kim</span>
-                </div>
-                <div className="d-flex align-items-center justify-content-between pt-2">
-                  <span className="fs-5">🎁</span>
-                  <div className="d-flex gap-3 align-items-center text-muted small">
-                    <span>🔴</span> <span>⭐</span> <span>🔔</span> <span>🎄</span>
-                  </div>
-                  <span className="fs-5">🎁</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </CCardBody>
-      </CCard>
 
       {/* Footer Action Bar */}
       <div className="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
