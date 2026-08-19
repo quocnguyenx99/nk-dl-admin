@@ -589,10 +589,10 @@ function EditThemeConfig() {
         </CCol>
       </CRow>
 
-      {/* MIDDLE ROW: 3 CARDS (Pages & Layouts, Page Sections, Banners & Assets) */}
+      {/* MIDDLE ROW: 2 CARDS (Pages & Layouts, Banners & Assets) */}
       <CRow className="g-4 mb-4">
-        {/* Card 4: Pages & Layouts */}
-        <CCol md={4}>
+        {/* Card 3: Pages & Layouts */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Trang & Cấu trúc Bố cục (Pages & Layouts)
@@ -648,56 +648,8 @@ function EditThemeConfig() {
           </CCard>
         </CCol>
 
-        {/* Card 5: Page Sections (Home) */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Sắp xếp khối trang chủ (Home Sections)</span>
-              <span className="badge bg-light text-secondary border font-normal">Sắp xếp</span>
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-2">
-                  Bật/tắt hiển thị các khối nội dung trang chủ
-                </p>
-                <div className="d-flex flex-column gap-1.5">
-                  {homeSections.map((sec, idx) => (
-                    <div
-                      key={sec.id}
-                      className="p-2 border rounded bg-light d-flex align-items-center justify-content-between"
-                    >
-                      <div className="d-flex align-items-center gap-2">
-                        <span className="text-muted cursor-grab">⠿</span>
-                        <span className="fw-semibold text-dark text-xs">{sec.name}</span>
-                      </div>
-                      <CFormSwitch
-                        checked={sec.enabled}
-                        onChange={(e) => {
-                          const next = [...homeSections]
-                          next[idx].enabled = e.target.checked
-                          setHomeSections(next)
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-3 border-top mt-3">
-                <CButton
-                  color="light"
-                  className="border w-100 text-secondary fw-semibold py-1.5"
-                  onClick={() => toast.info('Thêm khối mới thành công!')}
-                >
-                  + Thêm khối nội dung mới
-                </CButton>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 6: Banners & Assets */}
-        <CCol md={4}>
+        {/* Card 4: Banners & Assets */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Banner & Hình ảnh Giao diện (Banners & Assets)
