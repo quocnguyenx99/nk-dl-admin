@@ -635,6 +635,61 @@ function AddThemeConfig() {
                 </div>
               )}
 
+              {/* OPACITY SLIDER */}
+              <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <label className="form-label font-semibold text-dark small mb-0">
+                    Độ đậm nhạt hoa văn (Opacity)
+                  </label>
+                  <span className="text-muted text-xs font-monospace">
+                    {Math.round((localOpacity || 0.15) * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  className="form-range"
+                  min="0.05"
+                  max="0.8"
+                  step="0.05"
+                  value={localOpacity || 0.15}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value)
+                    setLocalOpacity(val)
+                    setNewTheme((prev) => ({
+                      ...prev,
+                      background: {
+                        ...(prev?.background || {}),
+                        opacity: val,
+                      },
+                    }))
+                  }}
+                />
+              </div>
+
+              {/* COVERAGE MODE SELECT */}
+              <div className="mb-3">
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Chế độ áp dụng hoa văn
+                </label>
+                <CFormSelect
+                  size="sm"
+                  value={newTheme?.background?.mode || 'pattern'}
+                  onChange={(e) =>
+                    setNewTheme((prev) => ({
+                      ...prev,
+                      background: {
+                        ...(prev?.background || {}),
+                        mode: e.target.value,
+                      },
+                    }))
+                  }
+                >
+                  <option value="pattern">Áp dụng lặp lại toàn trang (Full Page)</option>
+                  <option value="banner_only">Chỉ áp dụng khu vực Banner chính</option>
+                  <option value="header_footer">Áp dụng khu vực Header &amp; Footer</option>
+                </CFormSelect>
+              </div>
+
               {/* LIVE WATERMARK PREVIEW */}
               <div>
                 <span className="fw-semibold text-dark text-xs d-block mb-1">
