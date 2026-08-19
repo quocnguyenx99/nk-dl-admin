@@ -199,23 +199,15 @@ function ProductOutOfSync() {
             />
           ),
           title: <div className="fw-semibold text-dark">{item?.TenHH || 'Chưa cập nhật tên'}</div>,
-          macn: (
-            <div>
-              <span className="badge bg-light text-primary border border-primary px-2 py-1 fs-6">
-                {item?.MaHH}
-              </span>
-            </div>
-          ),
+          macn: <span className="fw-semibold text-primary">{item?.MaHH}</span>,
           type: (
-            <div>
-              <CBadge color={item?.type === 'skip' ? 'warning' : 'info'} className="px-2 py-1 fs-6">
-                {item?.type === 'skip'
-                  ? 'Điều chỉnh giá'
-                  : item?.type === 'adjustment'
-                    ? 'So sánh giá'
-                    : item?.type || 'Điều chỉnh giá'}
-              </CBadge>
-            </div>
+            <span className="fw-semibold text-dark">
+              {item?.type === 'skip'
+                ? 'Điều chỉnh giá'
+                : item?.type === 'adjustment'
+                  ? 'So sánh giá'
+                  : item?.type || 'Điều chỉnh giá'}
+            </span>
           ),
 
           price: (
