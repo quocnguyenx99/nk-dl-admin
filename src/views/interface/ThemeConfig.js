@@ -2082,82 +2082,15 @@ const ThemeConfig = () => {
           </div>
 
           <div
-            className="rounded-3 border overflow-hidden position-relative p-3"
+            className="rounded-3 border overflow-hidden position-relative"
             style={{
               backgroundColor: currentTheme.colors?.background || '#f7f7f7',
-              minHeight: '140px',
+              height: '160px',
               boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
             }}
           >
             {/* Background Watermark Pattern / Custom Wallpaper Layer */}
             <ThemeBackgroundWatermarkLayer background={bgConfig} themeCode={currentTheme.code} />
-
-            {/* Mock website UI content on top of background */}
-            <div className="position-relative" style={{ zIndex: 1 }}>
-              <div className="d-flex align-items-center justify-content-between bg-white bg-opacity-90 backdrop-blur rounded-2 p-2 px-3 border shadow-xs mb-2.5">
-                <div className="d-flex align-items-center gap-2">
-                  <span className="fw-bold text-primary" style={{ fontSize: '12px' }}>
-                    NGUYÊN KIM
-                  </span>
-                  <span className="badge bg-light text-secondary" style={{ fontSize: '9px' }}>
-                    Demo Giao Diện Website
-                  </span>
-                </div>
-                <div className="d-flex align-items-center gap-2">
-                  <span
-                    className="badge rounded-pill text-white px-2 py-0.5"
-                    style={{
-                      backgroundColor: currentTheme.colors?.accent || '#b00010',
-                      fontSize: '10px',
-                    }}
-                  >
-                    🔥 Khuyến mãi sốc
-                  </span>
-                </div>
-              </div>
-
-              <div className="row g-2">
-                <div className="col-8">
-                  <div className="bg-white rounded-2 p-2 border shadow-xs h-100 d-flex align-items-center gap-2">
-                    <div
-                      className="rounded bg-light d-flex align-items-center justify-content-center flex-shrink-0"
-                      style={{ width: '40px', height: '40px', fontSize: '18px' }}
-                    >
-                      💻
-                    </div>
-                    <div className="overflow-hidden">
-                      <div
-                        className="fw-bold text-dark text-truncate"
-                        style={{ fontSize: '11.5px' }}
-                      >
-                        Màn hình & Laptop Gaming
-                      </div>
-                      <div
-                        className="text-danger fw-bold font-monospace"
-                        style={{ fontSize: '11px' }}
-                      >
-                        19.990.000₫
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="bg-white rounded-2 p-2 border shadow-xs h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                    <button
-                      type="button"
-                      className="btn btn-sm text-white fw-bold w-100 py-1"
-                      style={{
-                        backgroundColor: currentTheme.colors?.primary || '#2356c4',
-                        fontSize: '10.5px',
-                        borderRadius: '5px',
-                      }}
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
