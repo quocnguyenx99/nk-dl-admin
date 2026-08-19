@@ -226,7 +226,14 @@ function ProductOutOfSync() {
 
           info: (
             <div className="text-secondary small">
-              {item?.created_at ? moment.unix(item.created_at).format('DD-MM-YYYY HH:mm') : '---'}
+              {(() => {
+                if (!item?.created_at) return 'Không có ngày tạo'
+                let m = moment(item.created_at)
+                if (!m.isValid() && !isNaN(item.created_at)) {
+                  m = moment.unix(Number(item.created_at))
+                }
+                return m.isValid() ? m.format('DD-MM-YYYY HH:mm') : 'Không có ngày tạo'
+              })()}
             </div>
           ),
           actions: (
