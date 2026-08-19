@@ -1,15 +1,6 @@
 import { cilColorBorder, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import {
-  CButton,
-  CCol,
-  CContainer,
-  CFormCheck,
-  CFormSelect,
-  CImage,
-  CRow,
-  CTable,
-} from '@coreui/react'
+import { CButton, CCol, CFormCheck, CFormSelect, CImage, CRow, CTable } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { axiosClient, imageBaseUrl } from '../../../axiosConfig'
@@ -19,13 +10,10 @@ import DeletedModal from '../../../components/deletedModal/DeletedModal'
 import { toast } from 'react-toastify'
 import Loading from '../../../components/loading/Loading'
 
-// import './css/news.scss'
-
 function Advertise() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  // Lấy giá trị `page` từ URL hoặc mặc định là 1
   const pageFromUrl = parseInt(searchParams.get('page')) || 1
   const [pageNumber, setPageNumber] = useState(pageFromUrl)
 
@@ -33,32 +21,23 @@ function Advertise() {
     setSearchParams({ page: pageNumber })
   }, [pageNumber, setSearchParams])
 
-  // check permission state
   const [isPermissionCheck, setIsPermissionCheck] = useState(true)
-
   const [dataAdvertise, setDataAdvertise] = useState([])
-
   const [dataAdvertisePos, setDataAdvertisePos] = useState([])
   const [selectedPosition, setSelectedPosition] = useState('')
 
-  // loading button
   const [isLoading, setIsLoading] = useState(false)
-
-  // show deleted Modal
   const [visible, setVisible] = useState(false)
   const [deletedId, setDeletedId] = useState(null)
 
-  // checkbox selected
   const [isAllCheckbox, setIsAllCheckbox] = useState(false)
   const [selectedCheckbox, setSelectedCheckbox] = useState([])
-
   const [isCollapse, setIsCollapse] = useState(false)
 
   const handleToggleCollapse = () => {
     setIsCollapse((prevState) => !prevState)
   }
 
-  // search input
   const [dataSearch, setDataSearch] = useState('')
 
   const handleAddNewClick = () => {
@@ -69,7 +48,6 @@ function Advertise() {
     navigate(`/advertise/edit?id=${id}`)
   }
 
-  // search Data
   const handleSearch = (keyword) => {
     fetchDataAdvertise(keyword)
   }
@@ -81,7 +59,7 @@ function Advertise() {
         setDataAdvertisePos(response.data.list)
       }
     } catch (error) {
-      console.error('Fetch data news is error', error)
+      console.error('Fetch data ad-pos is error', error)
     }
   }
 
@@ -89,22 +67,22 @@ function Advertise() {
     fetchDataAdvertisePos()
   }, [])
 
-  const fetchDataAdvertise = async (dataSearch = '') => {
+  const fetchDataAdvertise = async (dataSearchKey = '') => {
     try {
       setIsLoading(true)
       const response = await axiosClient.get(
-        `admin/advertise?data=${dataSearch}&page=${pageNumber}&pos=${selectedPosition}`,
+        `admin/advertise?data=${dataSearchKey}&page=${pageNumber}&pos=${selectedPosition}`,
       )
 
       if (response.data.status === true) {
         setDataAdvertise(response.data.list)
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         setIsPermissionCheck(false)
       }
     } catch (error) {
-      console.error('Fetch promotion news data is error', error)
+      console.error('Fetch advertise list error', error)
     } finally {
       setIsLoading(false)
     }
@@ -114,14 +92,12 @@ function Advertise() {
     fetchDataAdvertise()
   }, [pageNumber, selectedPosition])
 
-  // pagination data
   const handlePageChange = ({ selected }) => {
     const newPage = selected + 1
     setPageNumber(newPage)
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // delete row
   const handleDelete = async () => {
     setVisible(true)
     try {
@@ -129,9 +105,10 @@ function Advertise() {
       if (response.data.status === true) {
         setVisible(false)
         fetchDataAdvertise()
+        toast.success('Xóa quảng cáo thành công!')
       }
 
-      if (response.data.status === false && response.data.mess == 'no permission') {
+      if (response.data.status === false && response.data.mess === 'no permission') {
         toast.warn('Bạn không có quyền thực hiện tác vụ này!')
       }
     } catch (error) {
@@ -161,7 +138,7 @@ function Advertise() {
           id: (
             <CFormCheck
               key={item?.id}
-              aria-label="Default select example"
+              aria-label="Select item"
               defaultChecked={item?.id}
               id={`flexCheckDefault_${item?.id}`}
               value={item?.id}
@@ -178,25 +155,54 @@ function Advertise() {
             />
           ),
           image: (
-            <CImage
-              // className="border"
-              src={`${imageBaseUrl}${item.picture}`}
-              alt={`Ảnh tin advertise ${item?.id}`}
-              width={200}
-              loading="lazy"
-            />
-          ),
-          url: (
-            <div style={{ width: 250 }} className="cate-color">
-              {item?.link}
+            <div
+              className="d-flex justify-content-center align-items-center bg-light rounded p-1"
+              style={{ maxWidth: '160px', minHeight: '60px' }}
+            >
+              <CImage
+                style={{ maxWidth: '100%', maxHeight: '60px', objectFit: 'contain' }}
+                src={`${imageBaseUrl}${item.picture}`}
+                alt={`Banner ${item?.id}`}
+                loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null
+                  e.target.src = `${imageBaseUrl}no-images.jpg`
+                }}
+              />
             </div>
           ),
-          dimension: <div>{`${item.width}x${item.height}`}</div>,
+          url: (
+            <div style={{ maxWidth: '280px' }}>
+              {item?.link ? (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary fw-semibold text-truncate d-block"
+                  style={{ fontSize: '13px' }}
+                  title={item.link}
+                >
+                  {item.link}
+                </a>
+              ) : (
+                <span className="text-muted small">Không có liên kết</span>
+              )}
+            </div>
+          ),
+          dimension: (
+            <span
+              className="badge bg-light text-dark border px-2 py-1"
+              style={{ fontSize: '11px' }}
+            >
+              {`${item.width || 0} x ${item.height || 0} px`}
+            </span>
+          ),
           actions: (
-            <div>
+            <div className="d-flex justify-content-center">
               <button
                 onClick={() => handleEditClick(item.id)}
                 className="button-action mr-2 bg-info"
+                title="Sửa quảng cáo"
               >
                 <CIcon icon={cilColorBorder} className="text-white" />
               </button>
@@ -206,6 +212,7 @@ function Advertise() {
                   setDeletedId(item.id)
                 }}
                 className="button-action bg-danger"
+                title="Xóa quảng cáo"
               >
                 <CIcon icon={cilTrash} className="text-white" />
               </button>
@@ -219,92 +226,102 @@ function Advertise() {
     {
       key: 'id',
       label: (
-        <>
-          <CFormCheck
-            aria-label="Select all"
-            checked={isAllCheckbox}
-            onChange={(e) => {
-              const isChecked = e.target.checked
-              setIsAllCheckbox(isChecked)
-              if (isChecked) {
-                const allIds = dataAdvertise?.data.map((item) => item.id) || []
-                setSelectedCheckbox(allIds)
-              } else {
-                setSelectedCheckbox([])
-              }
-            }}
-          />
-        </>
+        <CFormCheck
+          aria-label="Select all"
+          checked={isAllCheckbox}
+          onChange={(e) => {
+            const isChecked = e.target.checked
+            setIsAllCheckbox(isChecked)
+            if (isChecked) {
+              const allIds = dataAdvertise?.data?.map((item) => item.id) || []
+              setSelectedCheckbox(allIds)
+            } else {
+              setSelectedCheckbox([])
+            }
+          }}
+        />
       ),
-      _props: { scope: 'col' },
+      _props: { scope: 'col', className: 'text-center' },
     },
-
     {
       key: 'image',
-      label: 'Hình ảnh',
+      label: 'Hình ảnh Banner',
       _props: { scope: 'col' },
     },
     {
       key: 'url',
-      label: 'Liên kết',
+      label: 'Đường dẫn liên kết',
       _props: { scope: 'col' },
     },
     {
       key: 'dimension',
-      label: 'Kích thước',
+      label: 'Kích thước (WxH)',
       _props: { scope: 'col' },
     },
     {
       key: 'actions',
       label: 'Tác vụ',
-      _props: { scope: 'col' },
+      _props: { scope: 'col', className: 'text-center' },
     },
   ]
 
+  const totalItems = dataAdvertise?.total || 0
+  const perPage = dataAdvertise?.per_page || 10
+  const totalPages = Math.ceil(totalItems / perPage) || 1
+  const startItem = totalItems === 0 ? 0 : (pageNumber - 1) * perPage + 1
+  const endItem = Math.min(pageNumber * perPage, totalItems)
+
   return (
-    <div>
+    <div className="pb-4">
       {!isPermissionCheck ? (
-        <h5>
-          <div>Bạn không đủ quyền để thao tác trên danh mục quản trị này.</div>
-          <div className="mt-4">
-            Vui lòng quay lại trang chủ <Link to={'/dashboard'}>(Nhấn vào để quay lại)</Link>
-          </div>
-        </h5>
+        <div className="card shadow-sm p-4 text-center">
+          <h5 className="text-danger fw-bold mb-2">
+            Bạn không đủ quyền để thao tác trên danh mục quản trị này.
+          </h5>
+          <p className="text-muted">
+            Vui lòng quay lại{' '}
+            <Link to={'/dashboard'} className="fw-bold text-primary">
+              Bảng điều khiển
+            </Link>
+          </p>
+        </div>
       ) : (
         <>
           <DeletedModal visible={visible} setVisible={setVisible} onDelete={handleDelete} />
 
-          <CRow className="mb-3">
-            <CCol>
-              <h2>QUẢN LÝ ADVERTISE</h2>
-            </CCol>
-            <CCol md={6}>
-              <div className="d-flex justify-content-end">
-                <CButton
-                  onClick={handleAddNewClick}
-                  color="primary"
-                  type="submit"
-                  size="sm"
-                  className="button-add"
-                >
-                  Thêm mới
+          {/* PAGE HEADER */}
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+            <div>
+              <h3 className="fw-bold text-uppercase text-dark m-0">QUẢN LÝ ADVERTISE / BANNER</h3>
+              <p className="text-muted text-xs m-0 mt-1">
+                Quản lý các banner quảng cáo, liên kết chuyển hướng và vị trí hiển thị
+              </p>
+            </div>
+            <div className="d-flex flex-wrap gap-2">
+              <CButton
+                onClick={handleAddNewClick}
+                color="primary"
+                size="sm"
+                className="fw-bold px-3 shadow-xs"
+              >
+                + Thêm mới banner
+              </CButton>
+              <Link to={'/advertise/category'}>
+                <CButton color="light" size="sm" className="border fw-semibold shadow-xs">
+                  Quản lý vị trí
                 </CButton>
-                <Link to={'/advertise'}>
-                  <CButton color="primary" type="submit" size="sm">
-                    Danh sách
-                  </CButton>
-                </Link>
-              </div>
-            </CCol>
-          </CRow>
+              </Link>
+            </div>
+          </div>
 
-          <CRow>
-            <CCol>
+          {/* PRESERVED FILTER TABLE */}
+          <CRow className="mb-4">
+            <CCol col={12}>
               <table className="filter-table">
                 <thead>
                   <tr>
                     <th colSpan="2">
-                      <div className="d-flex justify-content-between">
+                      <div className="d-flex justify-content-between align-items-center">
                         <span>Bộ lọc tìm kiếm</span>
                         <span className="toggle-pointer" onClick={handleToggleCollapse}>
                           {isCollapse ? '▼' : '▲'}
@@ -317,14 +334,14 @@ function Advertise() {
                   <tbody>
                     <tr>
                       <td>Tổng cộng</td>
-                      <td className="total-count">{dataAdvertise?.total}</td>
+                      <td className="total-count">{dataAdvertise?.total || 0}</td>
                     </tr>
                     <tr>
                       <td>Lọc theo vị trí</td>
                       <td>
                         <CFormSelect
                           className="component-size w-50"
-                          aria-label="Chọn yêu cầu lọc"
+                          aria-label="Chọn vị trí lọc"
                           options={[
                             { label: 'Chọn vị trí', value: '' },
                             ...(dataAdvertisePos && dataAdvertisePos.length > 0
@@ -360,44 +377,75 @@ function Advertise() {
                 )}
               </table>
             </CCol>
-
-            <CCol md={12} className="mt-3">
-              <CButton onClick={handleDeleteSelectedCheckbox} color="primary" size="sm">
-                Xóa vĩnh viễn
-              </CButton>
-            </CCol>
-
-            <CCol>
-              {isLoading ? (
-                <Loading />
-              ) : (
-                <CTable hover className="mt-3 border" columns={columns} items={items} />
-              )}
-            </CCol>
-
-            <div className="d-flex justify-content-end">
-              <ReactPaginate
-                pageCount={Math.ceil(dataAdvertise?.total / dataAdvertise?.per_page)}
-                pageRangeDisplayed={3}
-                marginPagesDisplayed={1}
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                breakLabel="..."
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                onPageChange={handlePageChange}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
-                previousLabel={'<<'}
-                nextLabel={'>>'}
-                forcePage={pageNumber - 1} // Đảm bảo pagination hiển thị đúng trang hiện tại
-              />
-            </div>
           </CRow>
+
+          {/* BATCH ACTION BAR */}
+          {selectedCheckbox.length > 0 && (
+            <div className="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 d-flex justify-content-between align-items-center p-2.5 px-3 rounded-3 mb-3">
+              <div className="d-flex align-items-center gap-2">
+                <span className="fw-bold text-primary">
+                  Đã chọn {selectedCheckbox.length} quảng cáo
+                </span>
+              </div>
+              <CButton
+                color="danger"
+                size="sm"
+                className="fw-semibold text-white shadow-xs"
+                onClick={handleDeleteSelectedCheckbox}
+              >
+                Xóa {selectedCheckbox.length} mục đã chọn
+              </CButton>
+            </div>
+          )}
+
+          {/* DATA TABLE CARD */}
+          <div className="card border-0 shadow-sm rounded-3 overflow-hidden bg-white mb-4">
+            {isLoading ? (
+              <div className="p-5 text-center">
+                <Loading />
+              </div>
+            ) : items.length === 0 ? (
+              <div className="p-5 text-center text-muted">
+                <h6 className="fw-bold text-dark">Chưa có banner quảng cáo nào</h6>
+                <p className="small text-muted mb-0">
+                  Nhấn nút &quot;+ Thêm mới banner&quot; ở góc trên để tạo banner quảng cáo đầu
+                  tiên.
+                </p>
+              </div>
+            ) : (
+              <CTable hover className="align-middle mb-0" columns={columns} items={items} />
+            )}
+
+            {/* PAGINATION FOOTER */}
+            {totalItems > 0 && (
+              <div className="card-footer bg-white border-top d-flex flex-wrap justify-content-between align-items-center gap-3 p-3">
+                <div className="text-muted small">
+                  Hiển thị <strong>{startItem}</strong> - <strong>{endItem}</strong> trên tổng số{' '}
+                  <strong>{totalItems}</strong> quảng cáo
+                </div>
+                <ReactPaginate
+                  pageCount={totalPages}
+                  pageRangeDisplayed={3}
+                  marginPagesDisplayed={1}
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousClassName="page-item"
+                  previousLinkClassName="page-link"
+                  nextClassName="page-item"
+                  nextLinkClassName="page-link"
+                  breakLabel="..."
+                  breakClassName="page-item"
+                  breakLinkClassName="page-link"
+                  onPageChange={handlePageChange}
+                  containerClassName={'pagination mb-0'}
+                  activeClassName={'active'}
+                  previousLabel={'<<'}
+                  nextLabel={'>>'}
+                  forcePage={pageNumber - 1}
+                />
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>
