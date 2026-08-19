@@ -603,11 +603,11 @@ function EditThemeConfig() {
         </div>
       </div>
 
-      {/* ROW 1: Campaign Overview & Schedule */}
-      <CRow className="mb-4">
+      {/* ROW 1: General Info & Interface Images */}
+      <CRow className="g-4 mb-4">
         {/* Thẻ 1: Thông tin chung & Lập lịch chiến dịch */}
-        <CCol md={12}>
-          <CCard className="shadow-xs border">
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
               <span>
                 Thẻ 1: Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)
@@ -617,115 +617,146 @@ function EditThemeConfig() {
               </CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
-              <CRow className="g-3 align-items-center">
-                <CCol md={2}>
-                  <div
-                    className="rounded border overflow-hidden bg-light mx-auto"
-                    style={{ width: '110px', height: '110px' }}
-                  >
-                    <CImage
-                      src={editingTheme?.image}
-                      className="w-100 h-100"
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </div>
+              <CRow className="g-2 mb-2">
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tên chiến dịch *
+                  </label>
+                  <CFormInput
+                    size="sm"
+                    value={editingTheme?.name || ''}
+                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
+                  />
                 </CCol>
-                <CCol md={10}>
-                  <CRow className="g-2 mb-2">
-                    <CCol md={4}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Tên chiến dịch *
-                      </label>
-                      <CFormInput
-                        size="sm"
-                        value={editingTheme?.name || ''}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({ ...prev, name: e.target.value }))
-                        }
-                      />
-                    </CCol>
-                    <CCol md={4}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Mã Code (Slug)
-                      </label>
-                      <CFormInput
-                        size="sm"
-                        value={editingTheme?.code || ''}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({ ...prev, code: e.target.value }))
-                        }
-                      />
-                    </CCol>
-                    <CCol md={4}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Phân loại chiến dịch
-                      </label>
-                      <CFormInput
-                        size="sm"
-                        value={editingTheme?.tag || 'festive'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))
-                        }
-                      />
-                    </CCol>
-                  </CRow>
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Mã Code (Slug)
+                  </label>
+                  <CFormInput
+                    size="sm"
+                    value={editingTheme?.code || ''}
+                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
+                  />
+                </CCol>
+              </CRow>
 
-                  <CRow className="g-2 mb-2">
-                    <CCol md={4}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Ngày bắt đầu
-                      </label>
-                      <CFormInput
-                        type="date"
-                        size="sm"
-                        value={formatDateInput(editingTheme?.startDate)}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
-                        }
-                      />
-                    </CCol>
-                    <CCol md={4}>
-                      <label className="form-label font-semibold text-dark small mb-1">
-                        Ngày kết thúc
-                      </label>
-                      <CFormInput
-                        type="date"
-                        size="sm"
-                        value={formatDateInput(editingTheme?.endDate)}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
-                        }
-                      />
-                    </CCol>
-                    <CCol md={4} className="d-flex align-items-end">
-                      <div className="p-2 border rounded bg-light w-100">
-                        <CFormCheck
-                          type="switch"
-                          id="isActiveSwitch"
-                          label="Kích hoạt áp dụng ngay"
-                          checked={editingTheme?.isActive}
-                          onChange={(e) =>
-                            setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
-                          }
-                        />
-                      </div>
-                    </CCol>
-                  </CRow>
-
-                  <div>
-                    <label className="form-label font-semibold text-dark small mb-1">
-                      Mô tả chi tiết chiến dịch
-                    </label>
-                    <CFormInput
-                      size="sm"
-                      value={editingTheme?.description || ''}
+              <CRow className="g-2 mb-2">
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Phân loại chiến dịch
+                  </label>
+                  <CFormInput
+                    size="sm"
+                    value={editingTheme?.tag || 'festive'}
+                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))}
+                  />
+                </CCol>
+                <CCol md={6} className="d-flex align-items-end">
+                  <div className="p-2 border rounded bg-light w-100">
+                    <CFormCheck
+                      type="switch"
+                      id="isActiveSwitch"
+                      label="Kích hoạt áp dụng ngay"
+                      checked={editingTheme?.isActive}
                       onChange={(e) =>
-                        setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                        setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
                       }
                     />
                   </div>
                 </CCol>
               </CRow>
+
+              <CRow className="g-2 mb-2">
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Ngày bắt đầu
+                  </label>
+                  <CFormInput
+                    type="date"
+                    size="sm"
+                    value={formatDateInput(editingTheme?.startDate)}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
+                    }
+                  />
+                </CCol>
+                <CCol md={6}>
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Ngày kết thúc
+                  </label>
+                  <CFormInput
+                    type="date"
+                    size="sm"
+                    value={formatDateInput(editingTheme?.endDate)}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
+                    }
+                  />
+                </CCol>
+              </CRow>
+
+              <div>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Mô tả chi tiết chiến dịch
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.description || ''}
+                  onChange={(e) =>
+                    setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                />
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Thẻ 2: Banner & Hero Assets */}
+        <CCol md={6}>
+          <CCard className="h-100 shadow-xs border">
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
+              <span>Thẻ 2: Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
+              <CBadge color="secondary">Hero Assets</CBadge>
+            </CCardHeader>
+            <CCardBody className="p-3 d-flex flex-column justify-content-between">
+              <div>
+                <p className="text-muted text-xs mb-2">
+                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
+                </p>
+
+                {/* Upload Box */}
+                <div className="p-3 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Tải banner / ảnh đại diện mới từ máy tính
+                  </label>
+                  <CFormInput
+                    type="file"
+                    accept="image/*"
+                    size="sm"
+                    className="mb-2"
+                    onChange={handleFileChange}
+                  />
+                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
+                </div>
+
+                {editingTheme?.image && (
+                  <div>
+                    <span className="form-label font-semibold text-dark small d-block mb-1">
+                      Ảnh đại diện chiến dịch
+                    </span>
+                    <div
+                      className="rounded border overflow-hidden bg-light mb-3"
+                      style={{ height: '120px' }}
+                    >
+                      <CImage
+                        src={editingTheme.image}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'cover' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </CCardBody>
           </CCard>
         </CCol>
@@ -1104,63 +1135,13 @@ function EditThemeConfig() {
         </CCol>
       </CRow>
 
-      {/* ROW 3: Banners & Watermarks */}
+      {/* ROW 3: Watermarks & Color Tokens */}
       <CRow className="g-4 mb-4">
-        {/* Thẻ 4: Banner & Hero Assets */}
+        {/* Thẻ 4: Background & Watermarks */}
         <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 4: Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
-              <CBadge color="secondary">Hero Assets</CBadge>
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-2">
-                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
-                </p>
-
-                {/* Upload Box */}
-                <div className="p-3 bg-light rounded border text-center mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tải banner mới từ máy tính
-                  </label>
-                  <CFormInput
-                    type="file"
-                    accept="image/*"
-                    size="sm"
-                    className="mb-2"
-                    onChange={handleFileChange}
-                  />
-                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
-                </div>
-
-                {editingTheme?.image && (
-                  <div>
-                    <span className="form-label font-semibold text-dark small d-block mb-1">
-                      Ảnh đại diện chiến dịch
-                    </span>
-                    <div
-                      className="rounded border overflow-hidden bg-light mb-3"
-                      style={{ height: '140px' }}
-                    >
-                      <CImage
-                        src={editingTheme.image}
-                        className="w-100 h-100"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Thẻ 5: Background & Watermarks */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 5: Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
+              <span>Thẻ 4: Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
               <CBadge color="success">Patterns</CBadge>
             </CCardHeader>
             <CCardBody className="p-3">
