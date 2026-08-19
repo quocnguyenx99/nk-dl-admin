@@ -445,11 +445,11 @@ function AddThemeConfig() {
         </div>
       </div>
 
-      {/* TOP ROW: 2 CARDS DASHBOARD (Theme Overview, Quick Actions) */}
-      <CRow className="g-4 mb-4">
+      {/* TOP ROW: Theme Overview Card */}
+      <CRow className="mb-4">
         {/* Card 1: Theme Overview */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
+        <CCol md={12}>
+          <CCard className="shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Tổng quan chiến dịch (Theme Overview)
             </CCardHeader>
@@ -481,34 +481,6 @@ function AddThemeConfig() {
                   </div>
                 </div>
               </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 2: Quick Actions */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              Thao tác nhanh (Quick Actions)
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column gap-2 justify-content-center">
-              <CButton
-                color="light"
-                className="border text-dark text-start py-2 px-3 fw-semibold d-flex align-items-center gap-2"
-                onClick={() => toast.info('Xem trước hoa văn hiển thị trực tiếp ở khối bên dưới!')}
-              >
-                <span>👁️ Xem trước giao diện thực tế</span>
-              </CButton>
-
-              <CButton
-                color="primary"
-                className="text-white py-2.5 px-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
-                disabled={isSaving}
-                onClick={handleSave}
-              >
-                <CIcon icon={cilSave} />
-                <span>{isSaving ? 'Đang lưu...' : 'Lưu Chiến Dịch Mới'}</span>
-              </CButton>
             </CCardBody>
           </CCard>
         </CCol>
