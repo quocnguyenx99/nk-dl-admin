@@ -10,6 +10,9 @@ import {
   CFormSelect,
   CFormSwitch,
   CImage,
+  CNav,
+  CNavItem,
+  CNavLink,
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -17,6 +20,7 @@ import { cilArrowLeft, cilSave } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
+import logoNk from '../../assets/brand/logo_nk.png'
 
 // Preset Background Patterns & Wallpapers
 const PRESET_BACKGROUNDS = [
@@ -120,7 +124,7 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
     return null
   }
 
-  const uniqueId = `add-dash-pattern-${presetKey}`
+  const uniqueId = `add-live-pattern-${presetKey}`
 
   return (
     <div
@@ -137,6 +141,52 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
               </text>
               <text x="130" y="55" fontSize="22" fill="#b45309">
                 🏮
+              </text>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill={`url(#${uniqueId})`} />
+        </svg>
+      )}
+
+      {(presetKey === 'backtoschool' || presetKey === 'truonghoc') && (
+        <svg className="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id={uniqueId} width="160" height="160" patternUnits="userSpaceOnUse">
+              <line
+                x1="0"
+                y1="40"
+                x2="160"
+                y2="40"
+                stroke="#bfdbfe"
+                strokeWidth="0.8"
+                opacity="0.6"
+              />
+              <line
+                x1="0"
+                y1="80"
+                x2="160"
+                y2="80"
+                stroke="#bfdbfe"
+                strokeWidth="0.8"
+                opacity="0.6"
+              />
+              <line
+                x1="0"
+                y1="120"
+                x2="160"
+                y2="120"
+                stroke="#bfdbfe"
+                strokeWidth="0.8"
+                opacity="0.6"
+              />
+              <text x="20" y="30" fontSize="14" fill="#3b82f6" opacity="0.5">
+                ✈
+              </text>
+              <text x="100" y="70" fontSize="14" fill="#3b82f6" opacity="0.5">
+                ✦
+              </text>
+              <text x="60" y="110" fontSize="14" fill="#3b82f6" opacity="0.5">
+                ✏
               </text>
             </pattern>
           </defs>
@@ -168,6 +218,7 @@ function AddThemeConfig() {
   const navigate = useNavigate()
   const [isSaving, setIsSaving] = useState(false)
   const [localOpacity, setLocalOpacity] = useState(0.15)
+  const [activePreviewTab, setActivePreviewTab] = useState('home')
 
   const [newTheme, setNewTheme] = useState({
     name: '',
@@ -214,19 +265,6 @@ function AddThemeConfig() {
       enabled: true,
       layout: 'Checkout - Tiêu chuẩn',
     },
-  ])
-
-  // Home Page Sections List
-  const [homeSections, setHomeSections] = useState([
-    { id: 'topbar', name: 'Thanh Utility Topbar & Hotline', enabled: true },
-    { id: 'header', name: 'Header chính & Logo Nguyên Kim', enabled: true },
-    { id: 'hero', name: 'Banner Hero Slider chính', enabled: true },
-    { id: 'promo_blocks', name: 'Khối Banner khuyến mãi siêu hot', enabled: true },
-    { id: 'featured_products', name: 'Khối Sản phẩm nổi bật', enabled: true },
-    { id: 'campaign_banner', name: 'Banner sự kiện chiến dịch', enabled: true },
-    { id: 'featured_categories', name: 'Danh mục sản phẩm nổi bật', enabled: true },
-    { id: 'footer_services', name: 'Cam kết dịch vụ & Khối dịch vụ', enabled: true },
-    { id: 'footer', name: 'Chân trang Footer', enabled: true },
   ])
 
   const compressImageBeforeUpload = (file, maxWidth = 1600, quality = 0.85) => {
@@ -382,6 +420,7 @@ function AddThemeConfig() {
 
   const currentPreset = newTheme?.background?.preset || 'none'
   const bgConfig = newTheme?.background || { preset: 'none', opacity: 0.15, mode: 'pattern' }
+  const festiveTheme = newTheme?.decorations?.particles || newTheme?.code || 'none'
 
   return (
     <div className="pb-5">
@@ -390,8 +429,8 @@ function AddThemeConfig() {
         <div>
           <h4 className="fw-bold text-dark mb-1 text-uppercase">THÊM MỚI CHIẾN DỊCH GIAO DIỆN</h4>
           <p className="text-muted small mb-0">
-            Tạo chiến dịch giao diện mới với màu sắc, họa tiết, bố cục trang & thời gian áp dụng
-            riêng
+            Tạo chiến dịch mới và xem trước trực tiếp cấu hình trên từng trang (Header, Sản phẩm,
+            Thanh toán, Footer)
           </p>
         </div>
         <div className="d-flex align-items-center gap-2">
@@ -458,7 +497,7 @@ function AddThemeConfig() {
                 className="border text-dark text-start py-2 px-3 fw-semibold d-flex align-items-center gap-2"
                 onClick={() => toast.info('Xem trước hoa văn hiển thị trực tiếp ở khối bên dưới!')}
               >
-                <span>👁️ Xem trước giao diện</span>
+                <span>👁️ Xem trước giao diện thực tế</span>
               </CButton>
 
               <CButton
@@ -474,6 +513,465 @@ function AddThemeConfig() {
           </CCard>
         </CCol>
       </CRow>
+
+      {/* MULTI-PAGE INTERACTIVE LIVE PREVIEW CANVAS */}
+      <CCard className="mb-4 shadow-sm border">
+        <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div className="d-flex align-items-center gap-2">
+            <span className="fw-bold text-dark fs-6">
+              Xem trước thực tế sự thay đổi trên từng trang (Live Multi-Page Preview)
+            </span>
+            <span
+              className="badge rounded-pill px-2.5 py-1"
+              style={{
+                backgroundColor: `${newTheme?.colors?.primary || '#2356c4'}15`,
+                color: newTheme?.colors?.primary || '#2356c4',
+                fontSize: '11px',
+              }}
+            >
+              Cập nhật trực tiếp
+            </span>
+          </div>
+
+          {/* Navigation Tabs */}
+          <CNav variant="pills" className="small">
+            <CNavItem>
+              <CNavLink
+                active={activePreviewTab === 'home'}
+                className="cursor-pointer fw-semibold py-1 px-3"
+                onClick={() => setActivePreviewTab('home')}
+              >
+                🏠 Trang chủ
+              </CNavLink>
+            </CNavItem>
+            <CNavItem>
+              <CNavLink
+                active={activePreviewTab === 'product_detail'}
+                className="cursor-pointer fw-semibold py-1 px-3"
+                onClick={() => setActivePreviewTab('product_detail')}
+              >
+                💻 Chi tiết sản phẩm
+              </CNavLink>
+            </CNavItem>
+            <CNavItem>
+              <CNavLink
+                active={activePreviewTab === 'checkout'}
+                className="cursor-pointer fw-semibold py-1 px-3"
+                onClick={() => setActivePreviewTab('checkout')}
+              >
+                🛒 Trang thanh toán
+              </CNavLink>
+            </CNavItem>
+            <CNavItem>
+              <CNavLink
+                active={activePreviewTab === 'header_footer'}
+                className="cursor-pointer fw-semibold py-1 px-3"
+                onClick={() => setActivePreviewTab('header_footer')}
+              >
+                📌 Header Logo & Footer
+              </CNavLink>
+            </CNavItem>
+          </CNav>
+        </CCardHeader>
+
+        <CCardBody className="p-0 position-relative overflow-hidden bg-light">
+          {/* TAB 1: HOME PAGE PREVIEW */}
+          {activePreviewTab === 'home' && (
+            <div
+              className="p-4 position-relative"
+              style={{
+                backgroundColor: newTheme?.colors?.background || '#f7f7f7',
+                color: newTheme?.colors?.text || '#222222',
+                minHeight: '380px',
+              }}
+            >
+              <ThemeBackgroundWatermarkLayer
+                background={{ ...bgConfig, opacity: localOpacity }}
+                themeCode={newTheme?.code}
+              />
+
+              {/* Utility Top Bar */}
+              <div
+                className="py-1.5 px-3 rounded-top d-flex justify-content-end align-items-center gap-3 text-white small shadow-xs"
+                style={{ backgroundColor: newTheme?.colors?.secondary || '#ffb716' }}
+              >
+                <span>Hotline: 1900 6739</span>
+                <span>Tin khuyến mãi</span>
+                <span>Tuyển dụng</span>
+              </div>
+
+              {/* Main Store Header with Logo & Seasonal Decoration */}
+              <div className="bg-white p-3 border-bottom d-flex align-items-center justify-content-between gap-3 shadow-xs">
+                <div className="position-relative d-inline-block">
+                  {/* Seasonal Emblem on Logo */}
+                  {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-8px', left: '-12px', fontSize: '20px', zIndex: 2 }}
+                    >
+                      🌿🍒
+                    </span>
+                  )}
+                  {(festiveTheme === 'trungthu' || festiveTheme === 'mooncakes') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-10px', left: '-10px', fontSize: '18px', zIndex: 2 }}
+                    >
+                      🏮
+                    </span>
+                  )}
+                  {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-12px', left: '-14px', fontSize: '18px', zIndex: 2 }}
+                    >
+                      ✈️
+                    </span>
+                  )}
+                  {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-8px', left: '-10px', fontSize: '18px', zIndex: 2 }}
+                    >
+                      🌼
+                    </span>
+                  )}
+                  <img src={logoNk} alt="Logo" style={{ height: '42px', objectFit: 'contain' }} />
+                </div>
+                <div className="flex-grow-1 mx-3">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm rounded-pill"
+                    placeholder="Tìm kiếm sản phẩm tin học, laptop..."
+                    readOnly
+                  />
+                </div>
+                <button
+                  className="btn btn-sm text-white fw-bold px-3"
+                  style={{
+                    backgroundColor: newTheme?.colors?.primary || '#2356c4',
+                    borderRadius: '20px',
+                  }}
+                >
+                  Giỏ hàng (0)
+                </button>
+              </div>
+
+              {/* Hero Banner Preview */}
+              <div className="my-3 rounded overflow-hidden border shadow-xs position-relative bg-white">
+                <CImage
+                  src={newTheme?.image}
+                  className="w-100"
+                  style={{ height: '160px', objectFit: 'cover' }}
+                />
+              </div>
+
+              {/* Product Grid Sample */}
+              <CRow className="g-2">
+                {[1, 2, 3, 4].map((n) => (
+                  <CCol key={n} md={3}>
+                    <div className="p-2 bg-white rounded border shadow-xs text-center">
+                      <div className="bg-light rounded p-2 mb-2" style={{ height: '80px' }}>
+                        💻
+                      </div>
+                      <div className="fw-semibold text-truncate small">Laptop ASUS ZenBook {n}</div>
+                      <div
+                        className="fw-bold small"
+                        style={{ color: newTheme?.colors?.accent || '#dc2626' }}
+                      >
+                        24.990.000 đ
+                      </div>
+                    </div>
+                  </CCol>
+                ))}
+              </CRow>
+            </div>
+          )}
+
+          {/* TAB 2: PRODUCT DETAIL PAGE PREVIEW */}
+          {activePreviewTab === 'product_detail' && (
+            <div
+              className="p-4 position-relative"
+              style={{
+                backgroundColor: newTheme?.colors?.background || '#ffffff',
+                color: newTheme?.colors?.text || '#222222',
+                minHeight: '380px',
+              }}
+            >
+              <ThemeBackgroundWatermarkLayer
+                background={{ ...bgConfig, opacity: localOpacity }}
+                themeCode={newTheme?.code}
+              />
+
+              {/* Breadcrumb */}
+              <div className="text-muted text-xs mb-3">
+                Trang chủ &gt; Laptop &gt; Laptop ASUS &gt; Zenbook &gt; ASUS Zenbook 14 OLED
+              </div>
+
+              <CRow className="g-4 align-items-center">
+                {/* Product Photo Box with Seasonal Motif */}
+                <CCol md={6}>
+                  <div
+                    className="p-3 rounded-3 border bg-white position-relative overflow-hidden text-center shadow-xs"
+                    style={{
+                      borderColor: newTheme?.colors?.primary || '#3b82f6',
+                      borderWidth: '2px',
+                    }}
+                  >
+                    {/* Seasonal Motif Header Badge (Back To School 2025 style) */}
+                    {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
+                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
+                        <span
+                          className="badge bg-warning text-dark fw-bold px-2.5 py-1 rounded shadow-xs"
+                          style={{ fontSize: '11px' }}
+                        >
+                          BACK TO SCHOOL 2025 ✏️
+                        </span>
+                      </div>
+                    )}
+                    {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
+                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
+                        <span
+                          className="badge bg-danger text-white fw-bold px-2.5 py-1 rounded shadow-xs"
+                          style={{ fontSize: '11px' }}
+                        >
+                          NOEL XMAS 2026 ❄️
+                        </span>
+                      </div>
+                    )}
+                    {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
+                      <div className="position-absolute top-0 start-0 p-2 text-start z-1">
+                        <span
+                          className="badge bg-danger text-warning fw-bold px-2.5 py-1 rounded shadow-xs"
+                          style={{ fontSize: '11px' }}
+                        >
+                          TẾT NGUYÊN ĐÁN 🌼
+                        </span>
+                      </div>
+                    )}
+
+                    <img
+                      src="https://media.vitinhnguyenkim.vn/uploads/products/2026-08/20260806_054030_fEuFoFdtmY.png"
+                      alt="ASUS Zenbook 14 OLED"
+                      style={{ maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                  </div>
+                </CCol>
+
+                {/* Specs & Buy Buttons */}
+                <CCol md={6}>
+                  <h5 className="fw-bold text-dark mb-2">
+                    ASUS Zenbook 14 OLED UX3405MA (Intel Core Ultra 7)
+                  </h5>
+                  <div
+                    className="fs-4 fw-bold mb-3"
+                    style={{ color: newTheme?.colors?.accent || '#dc2626' }}
+                  >
+                    33.990.000 đ
+                  </div>
+                  <p className="text-muted text-xs mb-3">
+                    Màn hình OLED 120Hz 3K sắc nét, pin dùng cả ngày, chuẩn Intel Evo siêu mỏng nhẹ.
+                  </p>
+
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn text-white fw-bold px-4 py-2 flex-grow-1"
+                      style={{ backgroundColor: newTheme?.colors?.primary || '#2356c4' }}
+                    >
+                      MUA NGAY GIAO TẬN NƠI
+                    </button>
+                    <button className="btn btn-outline-secondary px-3 py-2">
+                      <CIcon icon={cilSave} />
+                    </button>
+                  </div>
+                </CCol>
+              </CRow>
+            </div>
+          )}
+
+          {/* TAB 3: CHECKOUT PAGE PREVIEW */}
+          {activePreviewTab === 'checkout' && (
+            <div
+              className="p-4 position-relative bg-white"
+              style={{
+                backgroundColor: newTheme?.colors?.background || '#ffffff',
+                color: newTheme?.colors?.text || '#222222',
+                minHeight: '380px',
+              }}
+            >
+              <ThemeBackgroundWatermarkLayer
+                background={{ ...bgConfig, opacity: localOpacity }}
+                themeCode={newTheme?.code}
+              />
+
+              {/* Checkout Progress Steps */}
+              <div className="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                <div className="d-flex align-items-center gap-2">
+                  <div
+                    className="rounded-circle text-white fw-bold d-flex align-items-center justify-content-center"
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      backgroundColor: newTheme?.colors?.primary || '#2356c4',
+                    }}
+                  >
+                    1
+                  </div>
+                  <span className="fw-bold text-primary small">Thông tin giao hàng</span>
+                </div>
+                <div className="flex-grow-1 border-top mx-3 border-primary"></div>
+                <div className="d-flex align-items-center gap-2 text-muted opacity-75">
+                  <div
+                    className="rounded-circle border d-flex align-items-center justify-content-center"
+                    style={{ width: '28px', height: '28px' }}
+                  >
+                    2
+                  </div>
+                  <span className="small">Phương thức thanh toán</span>
+                </div>
+              </div>
+
+              <CRow className="g-4">
+                <CCol md={7}>
+                  <h5 className="fw-bold text-dark mb-3">Thanh toán &amp; Nhận hàng ✏️</h5>
+                  <div className="p-3 bg-light rounded border mb-2">
+                    <label className="form-label small fw-semibold">Họ tên người nhận</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm mb-2"
+                      defaultValue="Nguyễn Văn A"
+                      readOnly
+                    />
+                    <label className="form-label small fw-semibold">Số điện thoại</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      defaultValue="0908 123 456"
+                      readOnly
+                    />
+                  </div>
+                </CCol>
+
+                {/* Order Summary Card (Notebook Spiral Style for Back to School) */}
+                <CCol md={5}>
+                  <div
+                    className="p-3 bg-white border rounded shadow-xs position-relative"
+                    style={{
+                      borderColor: newTheme?.colors?.primary || '#bfdbfe',
+                      borderLeft: '4px solid ' + (newTheme?.colors?.primary || '#2356c4'),
+                    }}
+                  >
+                    <h6 className="fw-bold text-dark mb-3 d-flex justify-content-between">
+                      <span>Thông tin đơn hàng</span>
+                      <span className="text-primary">✦</span>
+                    </h6>
+
+                    <div className="d-flex justify-content-between text-muted small mb-2">
+                      <span>Tạm tính:</span>
+                      <span className="fw-semibold text-dark">63.100.000 đ</span>
+                    </div>
+                    <div className="d-flex justify-content-between text-muted small mb-2">
+                      <span>Phí vận chuyển:</span>
+                      <span className="text-success fw-semibold">Miễn phí</span>
+                    </div>
+
+                    <hr className="my-2" />
+
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <span className="fw-bold text-dark">Thành tiền:</span>
+                      <span
+                        className="fw-bold fs-5"
+                        style={{ color: newTheme?.colors?.primary || '#2356c4' }}
+                      >
+                        63.100.000 đ
+                      </span>
+                    </div>
+
+                    <button
+                      className="btn w-100 fw-bold py-2 shadow-xs d-flex align-items-center justify-content-center gap-2"
+                      style={{
+                        backgroundColor: newTheme?.colors?.secondary || '#ffb716',
+                        color: '#1e293b',
+                      }}
+                    >
+                      <span>ĐẶT HÀNG NGAY</span>
+                      <span>✈️</span>
+                    </button>
+                  </div>
+                </CCol>
+              </CRow>
+            </div>
+          )}
+
+          {/* TAB 4: HEADER LOGO & FOOTER FESTIVE ORNAMENTS PREVIEW */}
+          {activePreviewTab === 'header_footer' && (
+            <div className="p-4 bg-white">
+              <h6 className="fw-bold text-dark mb-3 border-bottom pb-2">
+                1. Mẫu Trang Trí Logo Header (Góc trái trên cùng)
+              </h6>
+              <div className="p-4 bg-light rounded border mb-4 d-flex align-items-center justify-content-center">
+                <div className="position-relative d-inline-block p-3 bg-white rounded border shadow-xs">
+                  {(festiveTheme === 'noel' || festiveTheme === 'noel_snow') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-12px', left: '-12px', fontSize: '26px' }}
+                    >
+                      🌿🍒
+                    </span>
+                  )}
+                  {(festiveTheme === 'trungthu' || festiveTheme === 'mooncakes') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-14px', left: '-12px', fontSize: '24px' }}
+                    >
+                      🏮
+                    </span>
+                  )}
+                  {(festiveTheme === 'backtoschool' || festiveTheme === 'truonghoc') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-14px', left: '-14px', fontSize: '24px' }}
+                    >
+                      ✈️
+                    </span>
+                  )}
+                  {(festiveTheme === 'tet' || festiveTheme === 'tet_blossoms') && (
+                    <span
+                      className="position-absolute"
+                      style={{ top: '-12px', left: '-12px', fontSize: '24px' }}
+                    >
+                      🌼
+                    </span>
+                  )}
+                  <img
+                    src={logoNk}
+                    alt="Logo Preview"
+                    style={{ height: '55px', objectFit: 'contain' }}
+                  />
+                </div>
+              </div>
+
+              <h6 className="fw-bold text-dark mb-3 border-bottom pb-2">
+                2. Mẫu Trang Trí Chân Trang Footer (Hai bên lề &amp; Giữa)
+              </h6>
+              <div className="p-3 bg-white border rounded shadow-xs">
+                <div className="d-flex justify-content-between align-items-center px-2 py-3 border-bottom">
+                  <span className="text-muted small">CÔNG TY TNHH VI TÍNH NGUYÊN KIM</span>
+                  <span className="text-muted small">Hotline: 1900 6739</span>
+                  <span className="text-muted small">© 2026 Vi Tính Nguyên Kim</span>
+                </div>
+                <div className="d-flex align-items-center justify-content-between pt-2">
+                  <span className="fs-5">🎁</span>
+                  <div className="d-flex gap-3 align-items-center text-muted small">
+                    <span>🔴</span> <span>⭐</span> <span>🔔</span> <span>🎄</span>
+                  </div>
+                  <span className="fs-5">🎁</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </CCardBody>
+      </CCard>
 
       {/* MIDDLE ROW: 2 CARDS (Pages & Layouts, Banners & Assets) */}
       <CRow className="g-4 mb-4">
@@ -600,7 +1098,7 @@ function AddThemeConfig() {
 
       {/* BOTTOM ROW: 3 CARDS (Colors, Effects & Background, Schedule) */}
       <CRow className="g-4 mb-4">
-        {/* Card 7: Colors (Design Tokens) */}
+        {/* Card 5: Colors (Design Tokens) */}
         <CCol md={4}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
@@ -655,7 +1153,7 @@ function AddThemeConfig() {
           </CCard>
         </CCol>
 
-        {/* Card 8: Effects & Background Patterns */}
+        {/* Card 6: Effects & Background Patterns */}
         <CCol md={4}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
@@ -747,7 +1245,7 @@ function AddThemeConfig() {
           </CCard>
         </CCol>
 
-        {/* Card 9: Schedule & Form Information */}
+        {/* Card 7: Schedule & Form Information */}
         <CCol md={4}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
