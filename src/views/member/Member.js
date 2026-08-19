@@ -140,34 +140,24 @@ function Member() {
             />
           ),
           username: (
-            <div className="d-flex align-items-center gap-2">
-              <div
-                className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
-                style={{ width: '36px', height: '36px', fontSize: '13px' }}
-              >
-                <CIcon icon={cilUser} />
-              </div>
-              <div>
-                <div
-                  className="fw-bold text-dark cursor-pointer"
-                  style={{ fontSize: '13.5px' }}
-                  onClick={() => handleEditClick(customer?.id)}
-                >
-                  {customer?.username || '—'}
-                </div>
-              </div>
-            </div>
+            <span
+              className="fw-bold text-dark cursor-pointer"
+              style={{ fontSize: '13.5px' }}
+              onClick={() => handleEditClick(customer?.id)}
+            >
+              {customer?.username || '—'}
+            </span>
           ),
           customerInfo: (
             <div className="d-flex flex-column gap-1" style={{ maxWidth: '300px' }}>
-              <div className="fw-bold text-primary" style={{ fontSize: '13.5px' }}>
+              <div className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
                 {customer?.full_name || 'Chưa cập nhật tên'}
               </div>
-              <div className="d-flex flex-wrap align-items-center gap-2">
+              <div className="d-flex flex-wrap align-items-center gap-1.5">
                 {customer?.member_code && (
                   <span
-                    className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-0.5"
-                    style={{ fontSize: '11px' }}
+                    className="badge bg-light text-dark border px-2 py-0.5"
+                    style={{ fontSize: '11px', fontWeight: 600 }}
                   >
                     Mã KH: {customer.member_code}
                   </span>
@@ -182,7 +172,7 @@ function Member() {
                 )}
               </div>
               {customer?.company_name && (
-                <div className="text-muted small text-truncate" title={customer.company_name}>
+                <div className="text-secondary small text-truncate" title={customer.company_name}>
                   Công ty: {customer.company_name}
                 </div>
               )}
@@ -211,15 +201,15 @@ function Member() {
             <div className="text-center">
               {customer?.status === 1 ? (
                 <span
-                  className="badge bg-success text-white px-2.5 py-1"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
+                  className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1"
+                  style={{ fontSize: '11px', fontWeight: 600 }}
                 >
                   Đã duyệt
                 </span>
               ) : (
                 <span
-                  className="badge bg-warning text-dark px-2.5 py-1"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
+                  className="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1"
+                  style={{ fontSize: '11px', fontWeight: 600 }}
                 >
                   Chưa duyệt
                 </span>
@@ -306,7 +296,7 @@ function Member() {
                 <tbody>
                   <tr>
                     <td>Tổng cộng</td>
-                    <td className="total-count">{countMember || 0} thành viên</td>
+                    <td className="fw-bold text-dark">{countMember || 0} thành viên</td>
                   </tr>
                   <tr>
                     <td>Tìm kiếm</td>
