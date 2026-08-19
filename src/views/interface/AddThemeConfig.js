@@ -406,10 +406,10 @@ function AddThemeConfig() {
         </div>
       </div>
 
-      {/* TOP ROW: 3 CARDS DASHBOARD (Theme Overview, Status & Stepper, Quick Actions) */}
+      {/* TOP ROW: 2 CARDS DASHBOARD (Theme Overview, Quick Actions) */}
       <CRow className="g-4 mb-4">
         {/* Card 1: Theme Overview */}
-        <CCol md={4}>
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Tổng quan chiến dịch (Theme Overview)
@@ -446,55 +446,8 @@ function AddThemeConfig() {
           </CCard>
         </CCol>
 
-        {/* Card 2: Status & Stepper Process */}
-        <CCol md={4}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex justify-content-between align-items-center">
-              <span>Trạng thái & Tiến trình</span>
-              <CBadge color="secondary">Draft Mode</CBadge>
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <p className="text-muted text-xs mb-3">
-                Chiến dịch mới tạo ở chế độ bản nháp (Draft) và sẵn sàng xuất bản khi lưu.
-              </p>
-
-              {/* Horizontal Stepper */}
-              <div className="d-flex align-items-center justify-content-between text-center px-1 my-2">
-                {[
-                  { title: 'Thiết kế', done: true },
-                  { title: 'Nội dung', done: true },
-                  { title: 'Hiệu ứng', done: true },
-                  { title: 'Lập lịch', done: false },
-                  { title: 'Phát hành', done: false },
-                ].map((step, idx) => (
-                  <div
-                    key={idx}
-                    className="d-flex flex-column align-items-center position-relative"
-                  >
-                    <div
-                      className={`rounded-circle d-flex align-items-center justify-content-center text-white fw-bold mb-1 ${
-                        step.done ? 'bg-primary' : 'bg-light text-muted border'
-                      }`}
-                      style={{ width: '26px', height: '26px', fontSize: '11px' }}
-                    >
-                      {step.done ? '✓' : idx + 1}
-                    </div>
-                    <span
-                      className={`text-xs ${step.done ? 'fw-semibold text-dark' : 'text-muted'}`}
-                      style={{ fontSize: '10.5px' }}
-                    >
-                      {step.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="text-muted text-xs text-center mt-2">Đang tạo mới...</div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        {/* Card 3: Quick Actions */}
-        <CCol md={4}>
+        {/* Card 2: Quick Actions */}
+        <CCol md={6}>
           <CCard className="h-100 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
               Thao tác nhanh (Quick Actions)
