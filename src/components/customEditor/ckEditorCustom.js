@@ -3,12 +3,18 @@ import { CKEditor } from 'ckeditor4-react'
 
 function CKedtiorCustom({ data, onChangeData }) {
   const editorInstance = useRef(null)
+  const dataRef = useRef(data)
 
   useEffect(() => {
-    if (editorInstance.current && editorInstance.current.getData() !== data) {
-      editorInstance.current.setData(data)
+    dataRef.current = data
+    if (editorInstance.current) {
+      const currentData = editorInstance.current.getData()
+      if (data !== undefined && data !== null && currentData !== data) {
+        editorInstance.current.setData(data)
+      }
     }
   }, [data])
+
   return (
     <CKEditor
       config={{
@@ -25,13 +31,15 @@ function CKedtiorCustom({ data, onChangeData }) {
       initData={data}
       onChange={(event) => {
         const newData = event.editor.getData()
-        if (newData !== data) {
+        if (newData !== dataRef.current) {
           onChangeData(newData)
         }
       }}
       onInstanceReady={(event) => {
         editorInstance.current = event.editor
-        event.editor.setData(data)
+        if (dataRef.current) {
+          event.editor.setData(dataRef.current)
+        }
       }}
     />
   )

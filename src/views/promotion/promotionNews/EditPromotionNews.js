@@ -67,15 +67,17 @@ function EditPromotionNews() {
       const data = response.data.promotion
       if (data && response.data.status === true) {
         let startD = new Date()
-        if (data?.date_start_promotion && Number(data.date_start_promotion) > 0) {
+        if (data?.date_start_promotion && Number(data.date_start_promotion) > 31536000) {
           const num = Number(data.date_start_promotion)
-          startD = num < 10000000000 ? new Date(num * 1000) : new Date(num)
+          const d = num < 10000000000 ? new Date(num * 1000) : new Date(num)
+          if (d.getFullYear() >= 1980) startD = d
         }
 
         let endD = new Date()
-        if (data?.date_end_promotion && Number(data.date_end_promotion) > 0) {
+        if (data?.date_end_promotion && Number(data.date_end_promotion) > 31536000) {
           const num = Number(data.date_end_promotion)
-          endD = num < 10000000000 ? new Date(num * 1000) : new Date(num)
+          const d = num < 10000000000 ? new Date(num * 1000) : new Date(num)
+          if (d.getFullYear() >= 1980) endD = d
         }
 
         setValues({
