@@ -1825,6 +1825,16 @@ const ThemeConfig = () => {
     }
 
     const currentPreset = bgConfig.preset || 'none'
+    const [localOpacity, setLocalOpacity] = useState(
+      bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15,
+    )
+    const opacityDebounceTimerRef = useRef(null)
+
+    useEffect(() => {
+      if (bgConfig.opacity !== undefined && Math.abs(bgConfig.opacity - localOpacity) > 0.001) {
+        setLocalOpacity(bgConfig.opacity)
+      }
+    }, [bgConfig.opacity, currentTheme.id])
 
     const handleSelectPreset = (key) => {
       setTargetTheme({
@@ -1842,13 +1852,22 @@ const ThemeConfig = () => {
     }
 
     const handleBgOpacityChange = (val) => {
-      setTargetTheme({
-        ...currentTheme,
-        background: {
-          ...bgConfig,
-          opacity: parseFloat(val),
-        },
-      })
+      const numVal = parseFloat(val)
+      setLocalOpacity(numVal)
+
+      if (opacityDebounceTimerRef.current) {
+        clearTimeout(opacityDebounceTimerRef.current)
+      }
+
+      opacityDebounceTimerRef.current = setTimeout(() => {
+        setTargetTheme((prev) => ({
+          ...prev,
+          background: {
+            ...(prev.background || bgConfig),
+            opacity: numVal,
+          },
+        }))
+      }, 150)
     }
 
     const handleBgModeChange = (mode) => {
@@ -2004,7 +2023,7 @@ const ThemeConfig = () => {
                 <label className="form-label fw-bold text-dark text-xs mb-1 d-flex justify-content-between">
                   <span>Độ mờ hoa văn nền (Opacity):</span>
                   <span className="text-primary font-monospace">
-                    {Math.round((bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15) * 100)}%
+                    {Math.round(localOpacity * 100)}%
                   </span>
                 </label>
                 <input
@@ -2013,7 +2032,7 @@ const ThemeConfig = () => {
                   min="0.05"
                   max="0.6"
                   step="0.01"
-                  value={bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15}
+                  value={localOpacity}
                   onChange={(e) => handleBgOpacityChange(e.target.value)}
                 />
                 <div
@@ -2077,7 +2096,7 @@ const ThemeConfig = () => {
             </span>
             <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 text-xs">
               Mẫu: {PRESET_BACKGROUNDS.find((p) => p.key === currentPreset)?.name || 'Tùy chỉnh'} (
-              {Math.round((bgConfig.opacity !== undefined ? bgConfig.opacity : 0.15) * 100)}%)
+              {Math.round(localOpacity * 100)}%)
             </span>
           </div>
 
@@ -2090,7 +2109,10 @@ const ThemeConfig = () => {
             }}
           >
             {/* Background Watermark Pattern / Custom Wallpaper Layer */}
-            <ThemeBackgroundWatermarkLayer background={bgConfig} themeCode={currentTheme.code} />
+            <ThemeBackgroundWatermarkLayer
+              background={{ ...bgConfig, opacity: localOpacity }}
+              themeCode={currentTheme.code}
+            />
           </div>
         </div>
       </div>
