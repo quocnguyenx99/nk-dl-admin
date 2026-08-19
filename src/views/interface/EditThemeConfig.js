@@ -557,7 +557,7 @@ function EditThemeConfig() {
           {/* Card 1: General Info */}
           <CCard className="mb-4 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              📘 Thông tin chung chiến dịch
+              Thông tin chung chiến dịch
             </CCardHeader>
             <CCardBody className="p-4">
               <CRow className="mb-3">
@@ -631,8 +631,8 @@ function EditThemeConfig() {
 
           {/* Card 2: Color Palette */}
           <CCard className="mb-4 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center gap-2">
-              <CIcon icon={cilColorPalette} className="text-primary" /> Màu tổng thể chiến dịch
+            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+              Màu tổng thể chiến dịch
             </CCardHeader>
             <CCardBody className="p-4">
               <CRow className="g-3">
@@ -905,7 +905,7 @@ function EditThemeConfig() {
               <div className="mt-3">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span className="fw-bold text-dark text-xs">
-                    👁️ Xem trước trực tiếp hoa văn nền (Live Preview):
+                    Xem trước trực tiếp hoa văn nền (Live Preview):
                   </span>
                   <CBadge color="primary" className="bg-opacity-10 text-primary border text-xs">
                     Mẫu:{' '}
@@ -937,7 +937,7 @@ function EditThemeConfig() {
           {/* Card 4: Festive Kit */}
           <CCard className="mb-4 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              🎨 Bộ nhận diện lễ hội theo mùa
+              Bộ nhận diện lễ hội theo mùa
             </CCardHeader>
             <CCardBody className="p-3">
               <label className="form-label font-semibold text-dark small mb-2">
@@ -958,14 +958,14 @@ function EditThemeConfig() {
                   }))
                 }}
               >
-                <option value="none">🚫 Không gắn phụ kiện lễ hội (Tiêu chuẩn)</option>
-                <option value="trungthu">🏮 Tết Trung Thu (Lồng đèn, Trăng sao)</option>
-                <option value="noel">❄️ Giáng Sinh / Noel (Lá thông, Bông tuyết, Chuông)</option>
-                <option value="tet">🌼 Tết Nguyên Đán (Cành mai, Lì xì, Thỏi vàng)</option>
-                <option value="women_day">🌸 Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng)</option>
-                <option value="backtoschool">✈️ Mùa Tựu Trường (Máy bay giấy, Nón cử nhân)</option>
-                <option value="blackfriday">⚡ Siêu Sale Black Friday (Tia sét Neon)</option>
-                <option value="halloween">🎃 Lễ Hội Halloween (Bí ngô)</option>
+                <option value="none">Không gắn phụ kiện lễ hội (Tiêu chuẩn)</option>
+                <option value="trungthu">Tết Trung Thu (Lồng đèn, Trăng sao)</option>
+                <option value="noel">Giáng Sinh / Noel (Lá thông, Bông tuyết, Chuông)</option>
+                <option value="tet">Tết Nguyên Đán (Cành mai, Lì xì, Thỏi vàng)</option>
+                <option value="women_day">Quốc tế Phụ nữ 8/3 & 20/10 (Hoa hồng)</option>
+                <option value="backtoschool">Mùa Tựu Trường (Máy bay giấy, Nón cử nhân)</option>
+                <option value="blackfriday">Siêu Sale Black Friday (Tia sét Neon)</option>
+                <option value="halloween">Lễ Hội Halloween (Bí ngô)</option>
               </CFormSelect>
             </CCardBody>
           </CCard>
@@ -973,7 +973,7 @@ function EditThemeConfig() {
           {/* Card 5: Cover Image */}
           <CCard className="mb-4 shadow-xs border">
             <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-              🖼️ Ảnh đại diện giao diện xem trước
+              Ảnh đại diện giao diện xem trước
             </CCardHeader>
             <CCardBody className="p-3">
               <label className="form-label font-semibold text-dark small mb-2">
