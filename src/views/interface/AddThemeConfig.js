@@ -752,11 +752,14 @@ function AddThemeConfig() {
                   {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
                   {activeOrnamentTab === 'product_image' && (
                     <div>
-                      <CRow className="g-4 align-items-center">
-                        <CCol md={7}>
-                          {/* Upload Box */}
-                          <div className="p-3 bg-light rounded border text-center mb-3">
-                            <label className="form-label font-semibold text-dark mb-2 d-block">
+                      {/* Controls row */}
+                      <CRow className="g-3 mb-4">
+                        <CCol md={6}>
+                          <div className="p-3 bg-light rounded border">
+                            <label
+                              className="form-label fw-bold text-dark mb-1 d-block"
+                              style={{ fontSize: '13.5px' }}
+                            >
                               Tải ảnh Khung viền trang trí sản phẩm
                             </label>
                             <CFormInput
@@ -767,13 +770,14 @@ function AddThemeConfig() {
                               onChange={handleProductOrnamentUpload}
                             />
                             <span className="text-muted text-xs d-block">
-                              Khuyên dùng ảnh PNG / WEBP nền trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
+                              Khuyên dùng ảnh PNG / WEBP trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
                               1200x1200px)
                             </span>
                           </div>
+                        </CCol>
 
-                          {/* Scope of application */}
-                          <div className="mb-2">
+                        <CCol md={6}>
+                          <div className="p-3 bg-light rounded border h-100">
                             <label className="form-label font-semibold text-dark text-xs mb-1">
                               Phạm vi áp dụng khung viền
                             </label>
@@ -804,19 +808,25 @@ function AddThemeConfig() {
                             </span>
                           </div>
                         </CCol>
+                      </CRow>
 
-                        {/* Live Product Image Preview Box */}
-                        <CCol md={5}>
-                          <div className="p-3 bg-light rounded border text-center">
-                            <span className="fw-semibold text-dark text-xs d-block mb-2">
-                              Xem trước trực tiếp trên ảnh sản phẩm
-                            </span>
+                      {/* Realistic Product Detail Page Mockup */}
+                      <div className="border rounded bg-white p-3 shadow-xs position-relative">
+                        {/* Breadcrumbs */}
+                        <div className="text-muted mb-3" style={{ fontSize: '12px' }}>
+                          <span>Trang chủ</span> <span className="mx-1">/</span>
+                          <span>Laptop</span> <span className="mx-1">/</span>
+                          <span>Laptop Dell</span> <span className="mx-1">/</span>
+                          <span className="text-dark fw-semibold">Laptop Dell Max</span>
+                        </div>
 
-                            {/* Product Detail Gallery Mockup */}
+                        <CRow className="g-4 align-items-start">
+                          {/* Left: Product Gallery */}
+                          <CCol md={5}>
                             <div
-                              className="p-2.5 bg-white rounded border shadow-xs mx-auto position-relative"
-                              style={{ maxWidth: '280px', cursor: 'pointer' }}
-                              title="Nhấp vào để phóng to xem ảnh sản phẩm & khung viền"
+                              className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center cursor-pointer shadow-xs"
+                              style={{ aspectRatio: '1 / 1' }}
+                              title="Nhấp vào để phóng to xem chi tiết"
                               onClick={() =>
                                 setPreviewModal({
                                   visible: true,
@@ -826,93 +836,202 @@ function AddThemeConfig() {
                                 })
                               }
                             >
-                              {/* Main Product Frame */}
-                              <div
-                                className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center"
-                                style={{ aspectRatio: '1 / 1' }}
+                              {/* Navigation Arrows */}
+                              <span
+                                className="position-absolute start-0 top-50 translate-middle-y text-muted ps-2 fw-bold user-select-none"
+                                style={{ fontSize: '20px', opacity: 0.5, zIndex: 5 }}
                               >
-                                {/* Prev / Next Indicator */}
-                                <span
-                                  className="position-absolute start-0 top-50 translate-middle-y text-muted ps-1 fw-bold user-select-none"
-                                  style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
-                                >
-                                  ‹
-                                </span>
-                                <span
-                                  className="position-absolute end-0 top-50 translate-middle-y text-muted pe-1 fw-bold user-select-none"
-                                  style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
-                                >
-                                  ›
-                                </span>
+                                ‹
+                              </span>
+                              <span
+                                className="position-absolute end-0 top-50 translate-middle-y text-muted pe-2 fw-bold user-select-none"
+                                style={{ fontSize: '20px', opacity: 0.5, zIndex: 5 }}
+                              >
+                                ›
+                              </span>
 
-                                {/* Sample Laptop Product */}
+                              {/* Main Laptop Image */}
+                              <img
+                                src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80"
+                                alt="Dell Laptop Main"
+                                className="w-100 h-100"
+                                style={{ objectFit: 'contain', padding: '10px' }}
+                              />
+
+                              {/* Overlay Frame */}
+                              {newTheme?.decorations?.productOrnamentUrl ? (
                                 <img
-                                  src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80"
-                                  alt="Sample Laptop Product"
-                                  className="w-100 h-100"
-                                  style={{ objectFit: 'contain', padding: '8px' }}
+                                  src={newTheme.decorations.productOrnamentUrl}
+                                  alt="Product Ornament Overlay"
+                                  className="position-absolute pointer-events-none"
+                                  style={getProductOrnamentStyle()}
                                 />
+                              ) : (
+                                <div
+                                  className="position-absolute bottom-0 start-0 p-1 m-1.5 bg-dark bg-opacity-75 text-white rounded pointer-events-none"
+                                  style={{ fontSize: '9px' }}
+                                >
+                                  [Chưa có khung]
+                                </div>
+                              )}
+                            </div>
 
-                                {/* Overlay Frame */}
-                                {newTheme?.decorations?.productOrnamentUrl ? (
+                            {/* Thumbnails Row */}
+                            <div className="d-flex align-items-center justify-content-start gap-1.5 mt-2 overflow-auto">
+                              {[
+                                'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=150&q=80',
+                              ].map((thumb, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`position-relative rounded border overflow-hidden p-0.5 ${
+                                    idx === 0 ? 'border-primary border-2' : 'border-light-subtle'
+                                  }`}
+                                  style={{
+                                    width: '46px',
+                                    height: '46px',
+                                    backgroundColor: '#fff',
+                                    flexShrink: 0,
+                                  }}
+                                >
                                   <img
-                                    src={newTheme.decorations.productOrnamentUrl}
-                                    alt="Product Ornament Overlay"
-                                    className="position-absolute pointer-events-none"
-                                    style={getProductOrnamentStyle()}
+                                    src={thumb}
+                                    alt={`Thumb ${idx}`}
+                                    className="w-100 h-100"
+                                    style={{ objectFit: 'contain' }}
                                   />
-                                ) : (
-                                  <div
-                                    className="position-absolute bottom-0 start-0 p-1 m-1.5 bg-dark bg-opacity-75 text-white rounded pointer-events-none"
-                                    style={{ fontSize: '9px' }}
-                                  >
-                                    [Chưa có khung]
-                                  </div>
-                                )}
-                              </div>
+                                  {newTheme?.decorations?.productOrnamentUrl &&
+                                    newTheme?.decorations?.productOrnamentApplyTo === 'all' && (
+                                      <img
+                                        src={newTheme.decorations.productOrnamentUrl}
+                                        alt="Frame Thumb"
+                                        className="position-absolute pointer-events-none"
+                                        style={getProductOrnamentStyle()}
+                                      />
+                                    )}
+                                </div>
+                              ))}
+                            </div>
+                          </CCol>
 
-                              {/* Thumbnail list underneath */}
-                              <div className="d-flex align-items-center justify-content-center gap-1 mt-2">
-                                {[
-                                  'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80',
-                                  'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80',
-                                  'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80',
-                                  'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=150&q=80',
-                                  'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=150&q=80',
-                                ].map((thumb, idx) => (
-                                  <div
-                                    key={idx}
-                                    className={`position-relative rounded border overflow-hidden p-0.5 ${
-                                      idx === 0 ? 'border-primary border-2' : 'border-light-subtle'
-                                    }`}
-                                    style={{
-                                      width: '40px',
-                                      height: '40px',
-                                      backgroundColor: '#fff',
-                                    }}
-                                  >
-                                    <img
-                                      src={thumb}
-                                      alt={`Thumb ${idx}`}
-                                      className="w-100 h-100"
-                                      style={{ objectFit: 'contain' }}
-                                    />
-                                    {newTheme?.decorations?.productOrnamentUrl &&
-                                      newTheme?.decorations?.productOrnamentApplyTo === 'all' && (
-                                        <img
-                                          src={newTheme.decorations.productOrnamentUrl}
-                                          alt="Frame Thumb"
-                                          className="position-absolute pointer-events-none"
-                                          style={getProductOrnamentStyle()}
-                                        />
-                                      )}
-                                  </div>
-                                ))}
+                          {/* Right: Realistic Product Info */}
+                          <CCol md={7}>
+                            <h5 className="fw-bold text-dark mb-1" style={{ fontSize: '16px' }}>
+                              NB DELL PRO MAX 16 MC16250
+                            </h5>
+                            <p
+                              className="text-secondary small mb-2"
+                              style={{ fontSize: '11px', lineHeight: '1.4' }}
+                            >
+                              ULTRA 7 265H VPRO / 16 INCH FHD+ 300NIT / 32GB DDR5 (2X16) / 512GB SSD
+                              / RTX PRO 500 6GB GDDR7 / WI-FI 6E / 96WH / 130W USB-C / WIN11 HOME /
+                              36M PRO+KYHD
+                            </p>
+
+                            <div
+                              className="d-flex flex-wrap align-items-center gap-2 text-muted small mb-2"
+                              style={{ fontSize: '11.5px' }}
+                            >
+                              <span>
+                                Mã sản phẩm:{' '}
+                                <span className="text-primary fw-semibold">
+                                  NBDE_MC16250_U732G512
+                                </span>
+                              </span>
+                              <span>|</span>
+                              <span>
+                                Thương hiệu: <span className="text-primary fw-semibold">Dell</span>
+                              </span>
+                              <span>|</span>
+                              <span>
+                                Tình trạng: <span className="text-success fw-bold">Còn hàng</span>
+                              </span>
+                            </div>
+
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                              <span className="text-warning" style={{ fontSize: '13px' }}>
+                                ★★★★★
+                              </span>
+                              <span className="text-muted small">5</span>
+                              <span className="text-muted ms-2 cursor-pointer" title="Yêu thích">
+                                ♡
+                              </span>
+                              <span className="text-muted ms-1 cursor-pointer" title="Chia sẻ">
+                                🔗
+                              </span>
+                            </div>
+
+                            <div className="d-flex align-items-baseline gap-2 mb-1">
+                              <span className="text-danger fw-bold fs-5">90.200.000 đ</span>
+                              <small className="text-muted" style={{ fontSize: '11.5px' }}>
+                                (Đã bao gồm VAT)
+                              </small>
+                            </div>
+
+                            <div
+                              className="text-success small fw-semibold mb-3 d-flex align-items-center gap-1"
+                              style={{ fontSize: '12px' }}
+                            >
+                              <span>✔</span> Sẵn sàng giao ngay
+                            </div>
+
+                            {/* Quantity & Action Buttons */}
+                            <div className="d-flex align-items-center gap-2 mb-3">
+                              <span
+                                className="text-dark small fw-semibold me-1"
+                                style={{ fontSize: '12px' }}
+                              >
+                                Số lượng:
+                              </span>
+                              <div className="btn-group border rounded" style={{ height: '30px' }}>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-light py-0 px-2 fw-bold"
+                                >
+                                  -
+                                </button>
+                                <span className="px-3 d-flex align-items-center bg-white small fw-bold">
+                                  1
+                                </span>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-light py-0 px-2 fw-bold"
+                                >
+                                  +
+                                </button>
                               </div>
                             </div>
-                          </div>
-                        </CCol>
-                      </CRow>
+
+                            <div className="d-flex align-items-center gap-2">
+                              <button
+                                type="button"
+                                className="btn btn-warning fw-bold text-dark flex-grow-1 py-2 px-3 shadow-xs"
+                                style={{
+                                  fontSize: '12.5px',
+                                  backgroundColor: '#eab308',
+                                  borderColor: '#eab308',
+                                }}
+                              >
+                                🛒 Thêm vào giỏ
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-primary fw-bold text-white flex-grow-1 py-2 px-3 shadow-xs"
+                                style={{
+                                  fontSize: '12.5px',
+                                  backgroundColor: '#2563eb',
+                                  borderColor: '#2563eb',
+                                }}
+                              >
+                                ⚡ Mua ngay
+                              </button>
+                            </div>
+                          </CCol>
+                        </CRow>
+                      </div>
                     </div>
                   )}
 
