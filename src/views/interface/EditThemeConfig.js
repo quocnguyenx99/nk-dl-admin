@@ -637,12 +637,9 @@ function EditThemeConfig() {
       {/* Header Bar */}
       <div className="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
         <div>
-          <h4 className="fw-bold text-dark mb-1 text-uppercase">
+          <h4 className="fw-bold text-dark mb-0 text-uppercase">
             CHỈNH SỬA CHIẾN DỊCH GIAO DIỆN: {editingTheme?.name}
           </h4>
-          <p className="text-muted small mb-0">
-            Cấu hình trực quan từng vị trí trên từng trang (Header, Sản phẩm, Thanh toán, Footer)
-          </p>
         </div>
         <div className="d-flex align-items-center gap-2">
           <CButton
