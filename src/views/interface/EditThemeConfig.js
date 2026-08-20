@@ -902,49 +902,24 @@ function EditThemeConfig() {
                 </label>
                 <div className="d-flex flex-column gap-2">
                   {[
-                    {
-                      key: 'product_image',
-                      title: 'Hình ảnh sản phẩm',
-                      desc: 'Khung viền 4 cạnh 1:1',
-                      icon: '🖼️',
-                    },
-                    {
-                      key: 'header_logo',
-                      title: 'Logo Header',
-                      desc: 'Logo sự kiện thay thế',
-                      icon: '🏷️',
-                    },
-                    {
-                      key: 'footer',
-                      title: 'Chân trang Footer',
-                      desc: 'Trang trí 2 góc lề',
-                      icon: '🏮',
-                    },
+                    { key: 'product_image', title: 'Hình ảnh sản phẩm' },
+                    { key: 'header_logo', title: 'Logo Header' },
+                    { key: 'footer', title: 'Chân trang Footer' },
                   ].map((subTab) => {
                     const isActive = activeOrnamentTab === subTab.key
                     return (
                       <button
                         key={subTab.key}
                         type="button"
-                        className={`btn text-start p-2.5 rounded border d-flex align-items-center gap-2.5 transition-all ${
+                        className={`btn text-start py-2.5 px-3 rounded border transition-all ${
                           isActive
-                            ? 'btn-primary text-white shadow-sm border-primary'
-                            : 'btn-light text-dark bg-white border-light-subtle'
+                            ? 'btn-primary text-white shadow-sm border-primary fw-bold'
+                            : 'btn-light text-dark bg-white border-light-subtle fw-semibold'
                         }`}
+                        style={{ fontSize: '13.5px' }}
                         onClick={() => setActiveOrnamentTab(subTab.key)}
                       >
-                        <span style={{ fontSize: '18px' }}>{subTab.icon}</span>
-                        <div className="flex-grow-1">
-                          <span className="fw-bold d-block" style={{ fontSize: '13.5px' }}>
-                            {subTab.title}
-                          </span>
-                          <small
-                            className={isActive ? 'text-white-50' : 'text-muted'}
-                            style={{ fontSize: '11.5px' }}
-                          >
-                            {subTab.desc}
-                          </small>
-                        </div>
+                        {subTab.title}
                       </button>
                     )
                   })}
