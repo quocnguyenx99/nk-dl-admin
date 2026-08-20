@@ -885,18 +885,12 @@ function EditThemeConfig() {
             <h5 className="fw-bold text-dark mb-0">
               {'Cấu hình Trang trí (Hình ảnh sản phẩm, Logo & Chân trang)'}
             </h5>
-            <small className="text-muted">
-              Tùy biến Khung viền sản phẩm, Logo sự kiện và hình trang trí Footer
-            </small>
           </CCardHeader>
 
           <CCardBody className="p-4">
             <CRow className="g-4">
               {/* Cột trái: Danh mục các mục trang trí */}
               <CCol md={3} className="border-end pe-md-3">
-                <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '13.5px' }}>
-                  Danh mục trang trí
-                </label>
                 <div className="d-flex flex-column gap-2">
                   {[
                     { key: 'product_image', title: 'Hình ảnh sản phẩm' },
