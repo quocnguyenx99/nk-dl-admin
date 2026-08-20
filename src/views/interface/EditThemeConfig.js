@@ -489,6 +489,26 @@ function EditThemeConfig() {
     }
   }
 
+  const handleProductOrnamentUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setEditingTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            productOrnamentUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh trang trí sản phẩm thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh trang trí sản phẩm: ' + err.message)
+    }
+  }
+
   const handleFooterOrnamentUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -532,6 +552,12 @@ function EditThemeConfig() {
           decorations: {
             particles: editingTheme?.background?.preset || editingTheme?.code || 'none',
             ornaments: editingTheme?.background?.preset || editingTheme?.code || 'none',
+            productOrnamentUrl: editingTheme?.decorations?.productOrnamentUrl || '',
+            productOrnamentPosition:
+              editingTheme?.decorations?.productOrnamentPosition || 'bottom-left',
+            productOrnamentSize: editingTheme?.decorations?.productOrnamentSize || '30%',
+            productOrnamentApplyTo:
+              editingTheme?.decorations?.productOrnamentApplyTo || 'main_only',
             logoUrl: editingTheme?.decorations?.logoUrl || '',
             logoOrnamentUrl: editingTheme?.decorations?.logoOrnamentUrl || '',
             logoOrnamentPosition: editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
@@ -631,7 +657,7 @@ function EditThemeConfig() {
               className="cursor-pointer fw-bold py-2 px-3"
               onClick={() => setActiveMainTab('logo')}
             >
-              3. Cấu hình logo
+              3. Trang trí
             </CNavLink>
           </CNavItem>
           <CNavItem>
@@ -682,34 +708,78 @@ function EditThemeConfig() {
 
               <CCol md={6}>
                 <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                  Mã Code (Slug) <span className="text-danger">*</span>
+                  Mã chiến dịch
                 </label>
                 <CFormInput
-                  placeholder="Ví dụ: trungthu, noel, tet..."
+                  placeholder="ví dụ: trung_thu_2026, tet_2027..."
                   value={editingTheme?.code || ''}
                   onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
                 />
                 <small className="text-muted d-block mt-1">
-                  Mã định danh duy nhất (viết liền không dấu)
+                  Định danh hệ thống (viết liền không dấu)
                 </small>
               </CCol>
-            </CRow>
 
-            <CRow className="g-4 mb-3">
               <CCol md={6}>
                 <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                  Phân loại chiến dịch
+                  Tag chiến dịch
                 </label>
                 <CFormInput
-                  placeholder="Ví dụ: festive, sale, event..."
-                  value={editingTheme?.tag || 'festive'}
+                  placeholder="ví dụ: 🥮 Lễ Hội Trung Thu, 🎄 Giáng Sinh Ấm Áp..."
+                  value={editingTheme?.tag || ''}
                   onChange={(e) => setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))}
                 />
                 <small className="text-muted d-block mt-1">
-                  Nhóm chủ đề phân loại chiến dịch giao diện
+                  Nhãn hiển thị nổi bật trên banner/sự kiện
                 </small>
               </CCol>
 
+              <CCol md={6}>
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Thời gian áp dụng
+                </label>
+                <CRow className="g-2">
+                  <CCol xs={6}>
+                    <CFormInput
+                      type="date"
+                      value={editingTheme?.startDate || ''}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
+                      }
+                    />
+                    <small className="text-muted d-block mt-1">Bắt đầu</small>
+                  </CCol>
+                  <CCol xs={6}>
+                    <CFormInput
+                      type="date"
+                      value={editingTheme?.endDate || ''}
+                      onChange={(e) =>
+                        setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
+                      }
+                    />
+                    <small className="text-muted d-block mt-1">Kết thúc</small>
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+
+            <div className="mb-3">
+              <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                Mô tả chiến dịch
+              </label>
+              <CFormInput
+                placeholder="Nhập mô tả ngắn gọn về sự kiện/chiến dịch này..."
+                value={editingTheme?.description || ''}
+                onChange={(e) =>
+                  setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                }
+              />
+              <small className="text-muted d-block mt-1">
+                Ghi chú nội dung chiến dịch dành cho ban quản trị
+              </small>
+            </div>
+
+            <CRow className="g-4 mb-3">
               <CCol md={6}>
                 <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
                   Trạng thái kích hoạt
@@ -733,56 +803,6 @@ function EditThemeConfig() {
                 </div>
               </CCol>
             </CRow>
-
-            <CRow className="g-4 mb-3">
-              <CCol md={6}>
-                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                  Ngày bắt đầu chiến dịch
-                </label>
-                <CFormInput
-                  type="date"
-                  value={formatDateInput(editingTheme?.startDate)}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
-                  }
-                />
-                <small className="text-muted d-block mt-1">
-                  Thời điểm tự động kích hoạt chiến dịch
-                </small>
-              </CCol>
-
-              <CCol md={6}>
-                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                  Ngày kết thúc chiến dịch
-                </label>
-                <CFormInput
-                  type="date"
-                  value={formatDateInput(editingTheme?.endDate)}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
-                  }
-                />
-                <small className="text-muted d-block mt-1">
-                  {'Thời điểm tự động kết thúc áp dụng'}
-                </small>
-              </CCol>
-            </CRow>
-
-            <div className="mb-2">
-              <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                Mô tả chi tiết chiến dịch
-              </label>
-              <CFormInput
-                placeholder="Nhập ghi chú hoặc mô tả về chiến dịch này..."
-                value={editingTheme?.description || ''}
-                onChange={(e) =>
-                  setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
-                }
-              />
-              <small className="text-muted d-block mt-1">
-                Ghi chú nội dung chiến dịch dành cho ban quản trị
-              </small>
-            </div>
           </CCardBody>
         </CCard>
       )}
@@ -846,21 +866,30 @@ function EditThemeConfig() {
         </CCard>
       )}
 
-      {/* TAB 3: CẤU HÌNH LOGO */}
+      {/* TAB 3: TRANG TRÍ (SẢN PHẨM, LOGO & FOOTER) */}
       {activeMainTab === 'logo' && (
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
               <h5 className="fw-bold text-dark mb-0">
-                {'Cấu hình Logo Header & Chân trang Footer'}
+                {'Cấu hình Trang trí (Hình ảnh sản phẩm, Logo & Chân trang)'}
               </h5>
               <small className="text-muted">
-                Tùy biến Logo sự kiện và hình trang trí các góc chân trang
+                Tùy biến Khung / Huy hiệu đè ảnh sản phẩm, Logo sự kiện và hình trang trí Footer
               </small>
             </div>
 
-            {/* SUB TABS FOR HEADER & FOOTER */}
+            {/* SUB TABS FOR PRODUCT, HEADER & FOOTER */}
             <CNav variant="pills" className="small">
+              <CNavItem>
+                <CNavLink
+                  active={activeOrnamentTab === 'product_image'}
+                  className="cursor-pointer fw-bold py-1.5 px-3"
+                  onClick={() => setActiveOrnamentTab('product_image')}
+                >
+                  Hình ảnh sản phẩm
+                </CNavLink>
+              </CNavItem>
               <CNavItem>
                 <CNavLink
                   active={activeOrnamentTab === 'header_logo'}
@@ -883,6 +912,221 @@ function EditThemeConfig() {
           </CCardHeader>
 
           <CCardBody className="p-4">
+            {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
+            {activeOrnamentTab === 'product_image' && (
+              <div>
+                <div className="mb-3 border-bottom pb-2">
+                  <h6 className="fw-bold text-success mb-1">
+                    Cấu hình Khung &amp; Huy hiệu đè ảnh sản phẩm (Shopee Style)
+                  </h6>
+                  <p className="text-muted text-xs mb-0">
+                    Tải ảnh khung viền chiến dịch hoặc huy hiệu (Badge / Watermark / Logo ngành hàng
+                    như Shopee Home, Hàng chính hãng...) đè lên ảnh chi tiết sản phẩm.
+                  </p>
+                </div>
+
+                <CRow className="g-4 align-items-center">
+                  <CCol md={7}>
+                    {/* Upload Box */}
+                    <div className="p-3 bg-light rounded border text-center mb-3">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '14px' }}
+                      >
+                        Tải ảnh Khung / Huy hiệu trang trí sản phẩm
+                      </label>
+                      <CFormInput
+                        type="file"
+                        accept="image/png,image/webp,image/svg+xml"
+                        className="mb-1"
+                        onChange={handleProductOrnamentUpload}
+                      />
+                      <small className="text-muted d-block">
+                        Khuyên dùng ảnh PNG / WEBP nền trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
+                        1200x1200px)
+                      </small>
+                    </div>
+
+                    {/* Options */}
+                    <CRow className="g-3">
+                      <CCol md={6}>
+                        <label
+                          className="form-label fw-bold text-dark mb-1"
+                          style={{ fontSize: '13.5px' }}
+                        >
+                          Vị trí hiển thị trên ảnh
+                        </label>
+                        <CFormSelect
+                          value={
+                            editingTheme?.decorations?.productOrnamentPosition || 'bottom-left'
+                          }
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                productOrnamentPosition: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="bottom-left">
+                            Góc dưới bên trái (Tiêu chuẩn Shopee Home)
+                          </option>
+                          <option value="bottom-right">Góc dưới bên phải</option>
+                          <option value="top-left">Góc trên bên trái</option>
+                          <option value="top-right">Góc trên bên phải</option>
+                          <option value="full">Toàn bộ khung viền 4 cạnh (Frame 1:1)</option>
+                        </CFormSelect>
+                      </CCol>
+
+                      <CCol md={6}>
+                        <label
+                          className="form-label fw-bold text-dark mb-1"
+                          style={{ fontSize: '13.5px' }}
+                        >
+                          Kích thước huy hiệu
+                        </label>
+                        <CFormSelect
+                          value={editingTheme?.decorations?.productOrnamentSize || '30%'}
+                          disabled={editingTheme?.decorations?.productOrnamentPosition === 'full'}
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                productOrnamentSize: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="22%">Nhỏ (22%)</option>
+                          <option value="30%">Vừa tiêu chuẩn (30%)</option>
+                          <option value="38%">Lớn (38%)</option>
+                          <option value="45%">Rất lớn (45%)</option>
+                        </CFormSelect>
+                      </CCol>
+
+                      <CCol md={12}>
+                        <label
+                          className="form-label fw-bold text-dark mb-1"
+                          style={{ fontSize: '13.5px' }}
+                        >
+                          Phạm vi áp dụng trên sản phẩm
+                        </label>
+                        <CFormSelect
+                          value={editingTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                productOrnamentApplyTo: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="main_only">
+                            Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
+                          </option>
+                          <option value="all">
+                            Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
+                          </option>
+                        </CFormSelect>
+                      </CCol>
+                    </CRow>
+                  </CCol>
+
+                  {/* Live Product Image Preview Box */}
+                  <CCol md={5}>
+                    <div className="p-3 bg-light rounded border text-center">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '13.5px' }}
+                      >
+                        Xem trước trực tiếp trên ảnh sản phẩm
+                      </label>
+                      <div
+                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto"
+                        style={{ maxWidth: '240px', height: '240px' }}
+                      >
+                        <div
+                          className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                          style={{ aspectRatio: '1 / 1' }}
+                        >
+                          {/* Sample product background */}
+                          <img
+                            src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
+                            alt="Sample Product"
+                            className="w-100 h-100"
+                            style={{ objectFit: 'cover' }}
+                          />
+
+                          {/* Overlay Frame/Badge */}
+                          {editingTheme?.decorations?.productOrnamentUrl ? (
+                            <img
+                              src={editingTheme.decorations.productOrnamentUrl}
+                              alt="Product Ornament Overlay"
+                              className="position-absolute pointer-events-none"
+                              style={
+                                editingTheme?.decorations?.productOrnamentPosition === 'full'
+                                  ? {
+                                      inset: 0,
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'contain',
+                                    }
+                                  : {
+                                      bottom:
+                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
+                                          'bottom',
+                                        ) || !editingTheme?.decorations?.productOrnamentPosition
+                                          ? '6px'
+                                          : 'auto',
+                                      top: editingTheme?.decorations?.productOrnamentPosition?.includes(
+                                        'top',
+                                      )
+                                        ? '6px'
+                                        : 'auto',
+                                      left:
+                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
+                                          'left',
+                                        ) || !editingTheme?.decorations?.productOrnamentPosition
+                                          ? '6px'
+                                          : 'auto',
+                                      right:
+                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
+                                          'right',
+                                        )
+                                          ? '6px'
+                                          : 'auto',
+                                      maxWidth:
+                                        editingTheme?.decorations?.productOrnamentSize || '30%',
+                                      maxHeight:
+                                        editingTheme?.decorations?.productOrnamentSize || '30%',
+                                      objectFit: 'contain',
+                                    }
+                              }
+                            />
+                          ) : (
+                            <div
+                              className="position-absolute bottom-0 start-0 p-1.5 m-2 bg-dark bg-opacity-75 text-white rounded text-xs pointer-events-none"
+                              style={{ fontSize: '10px' }}
+                            >
+                              [Chưa chọn ảnh huy hiệu/khung]
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <small className="text-muted d-block mt-2">
+                        Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
+                      </small>
+                    </div>
+                  </CCol>
+                </CRow>
+              </div>
+            )}
+
             {/* SUB-TAB 1: LOGO HEADER */}
             {activeOrnamentTab === 'header_logo' && (
               <div>

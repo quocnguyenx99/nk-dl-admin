@@ -411,6 +411,26 @@ function AddThemeConfig() {
     }
   }
 
+  const handleProductOrnamentUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const uploadedUrl = await uploadFileToServer(file)
+      if (uploadedUrl) {
+        setNewTheme((prev) => ({
+          ...prev,
+          decorations: {
+            ...(prev?.decorations || {}),
+            productOrnamentUrl: uploadedUrl,
+          },
+        }))
+        toast.success('Đã tải ảnh trang trí sản phẩm thành công!')
+      }
+    } catch (err) {
+      toast.error('Lỗi upload ảnh trang trí sản phẩm: ' + err.message)
+    }
+  }
+
   const handleFooterOrnamentUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -453,6 +473,11 @@ function AddThemeConfig() {
           decorations: {
             particles: newTheme?.background?.preset || newTheme?.code || 'none',
             ornaments: newTheme?.background?.preset || newTheme?.code || 'none',
+            productOrnamentUrl: newTheme?.decorations?.productOrnamentUrl || '',
+            productOrnamentPosition:
+              newTheme?.decorations?.productOrnamentPosition || 'bottom-left',
+            productOrnamentSize: newTheme?.decorations?.productOrnamentSize || '30%',
+            productOrnamentApplyTo: newTheme?.decorations?.productOrnamentApplyTo || 'main_only',
             logoUrl: newTheme?.decorations?.logoUrl || '',
             logoOrnamentUrl: newTheme?.decorations?.logoOrnamentUrl || '',
             logoOrnamentPosition: newTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
@@ -661,11 +686,20 @@ function AddThemeConfig() {
           <CCard className="shadow-xs border">
             <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
               <span className="fw-bold text-dark fs-6">
-                Thẻ 3: Cấu hình Logo Header &amp; Chân trang Footer
+                Thẻ 3: Cấu hình Trang trí (Hình ảnh sản phẩm, Logo &amp; Chân trang)
               </span>
 
-              {/* TOP NAV BUTTONS / TABS TO SWITCH BETWEEN HEADER & FOOTER */}
+              {/* TOP NAV BUTTONS / TABS TO SWITCH BETWEEN PRODUCT, HEADER & FOOTER */}
               <CNav variant="pills" className="small">
+                <CNavItem>
+                  <CNavLink
+                    active={activeOrnamentTab === 'product_image'}
+                    className="cursor-pointer fw-bold py-1.5 px-3"
+                    onClick={() => setActiveOrnamentTab('product_image')}
+                  >
+                    Hình ảnh sản phẩm
+                  </CNavLink>
+                </CNavItem>
                 <CNavItem>
                   <CNavLink
                     active={activeOrnamentTab === 'header_logo'}
@@ -688,6 +722,208 @@ function AddThemeConfig() {
             </CCardHeader>
 
             <CCardBody className="p-4">
+              {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
+              {activeOrnamentTab === 'product_image' && (
+                <div>
+                  <div className="mb-3 border-bottom pb-2">
+                    <h6 className="fw-bold text-success mb-1">
+                      Cấu hình Khung &amp; Huy hiệu đè ảnh sản phẩm (Shopee Style)
+                    </h6>
+                    <p className="text-muted text-xs mb-0">
+                      Tải ảnh khung viền chiến dịch hoặc huy hiệu (Badge / Watermark / Logo ngành
+                      hàng như Shopee Home, Hàng chính hãng...) đè lên ảnh chi tiết sản phẩm.
+                    </p>
+                  </div>
+
+                  <CRow className="g-4 align-items-center">
+                    <CCol md={7}>
+                      {/* Upload Box */}
+                      <div className="p-3 bg-light rounded border text-center mb-3">
+                        <label className="form-label font-semibold text-dark mb-2 d-block">
+                          Tải ảnh Khung / Huy hiệu trang trí sản phẩm
+                        </label>
+                        <CFormInput
+                          type="file"
+                          accept="image/png,image/webp,image/svg+xml"
+                          size="sm"
+                          className="mb-1"
+                          onChange={handleProductOrnamentUpload}
+                        />
+                        <span className="text-muted text-xs d-block">
+                          Khuyên dùng ảnh PNG / WEBP nền trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
+                          1200x1200px)
+                        </span>
+                      </div>
+
+                      {/* Options */}
+                      <CRow className="g-3">
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark text-xs mb-1">
+                            Vị trí hiển thị trên ảnh
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={newTheme?.decorations?.productOrnamentPosition || 'bottom-left'}
+                            onChange={(e) =>
+                              setNewTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  productOrnamentPosition: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="bottom-left">
+                              Góc dưới bên trái (Tiêu chuẩn Shopee Home)
+                            </option>
+                            <option value="bottom-right">Góc dưới bên phải</option>
+                            <option value="top-left">Góc trên bên trái</option>
+                            <option value="top-right">Góc trên bên phải</option>
+                            <option value="full">Toàn bộ khung viền 4 cạnh (Frame 1:1)</option>
+                          </CFormSelect>
+                        </CCol>
+
+                        <CCol md={6}>
+                          <label className="form-label font-semibold text-dark text-xs mb-1">
+                            Kích thước huy hiệu
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={newTheme?.decorations?.productOrnamentSize || '30%'}
+                            disabled={newTheme?.decorations?.productOrnamentPosition === 'full'}
+                            onChange={(e) =>
+                              setNewTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  productOrnamentSize: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="22%">Nhỏ (22%)</option>
+                            <option value="30%">Vừa tiêu chuẩn (30%)</option>
+                            <option value="38%">Lớn (38%)</option>
+                            <option value="45%">Rất lớn (45%)</option>
+                          </CFormSelect>
+                        </CCol>
+
+                        <CCol md={12}>
+                          <label className="form-label font-semibold text-dark text-xs mb-1">
+                            Phạm vi áp dụng trên sản phẩm
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={newTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
+                            onChange={(e) =>
+                              setNewTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  productOrnamentApplyTo: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="main_only">
+                              Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
+                            </option>
+                            <option value="all">
+                              Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
+                            </option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    </CCol>
+
+                    {/* Live Product Image Preview Box */}
+                    <CCol md={5}>
+                      <div className="p-3 bg-light rounded border text-center">
+                        <span className="fw-semibold text-dark text-xs d-block mb-2">
+                          Xem trước trực tiếp trên ảnh sản phẩm
+                        </span>
+                        <div
+                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto"
+                          style={{ maxWidth: '240px', height: '240px' }}
+                        >
+                          <div
+                            className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                            style={{ aspectRatio: '1 / 1' }}
+                          >
+                            {/* Sample product background */}
+                            <img
+                              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
+                              alt="Sample Product"
+                              className="w-100 h-100"
+                              style={{ objectFit: 'cover' }}
+                            />
+
+                            {/* Overlay Frame/Badge */}
+                            {newTheme?.decorations?.productOrnamentUrl ? (
+                              <img
+                                src={newTheme.decorations.productOrnamentUrl}
+                                alt="Product Ornament Overlay"
+                                className="position-absolute pointer-events-none"
+                                style={
+                                  newTheme?.decorations?.productOrnamentPosition === 'full'
+                                    ? {
+                                        inset: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'contain',
+                                      }
+                                    : {
+                                        bottom:
+                                          newTheme?.decorations?.productOrnamentPosition?.includes(
+                                            'bottom',
+                                          ) || !newTheme?.decorations?.productOrnamentPosition
+                                            ? '6px'
+                                            : 'auto',
+                                        top: newTheme?.decorations?.productOrnamentPosition?.includes(
+                                          'top',
+                                        )
+                                          ? '6px'
+                                          : 'auto',
+                                        left:
+                                          newTheme?.decorations?.productOrnamentPosition?.includes(
+                                            'left',
+                                          ) || !newTheme?.decorations?.productOrnamentPosition
+                                            ? '6px'
+                                            : 'auto',
+                                        right:
+                                          newTheme?.decorations?.productOrnamentPosition?.includes(
+                                            'right',
+                                          )
+                                            ? '6px'
+                                            : 'auto',
+                                        maxWidth:
+                                          newTheme?.decorations?.productOrnamentSize || '30%',
+                                        maxHeight:
+                                          newTheme?.decorations?.productOrnamentSize || '30%',
+                                        objectFit: 'contain',
+                                      }
+                                }
+                              />
+                            ) : (
+                              <div
+                                className="position-absolute bottom-0 start-0 p-1.5 m-2 bg-dark bg-opacity-75 text-white rounded text-xs pointer-events-none"
+                                style={{ fontSize: '10px' }}
+                              >
+                                [Chưa chọn ảnh huy hiệu/khung]
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-muted text-xs d-block mt-2">
+                          Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
+                        </span>
+                      </div>
+                    </CCol>
+                  </CRow>
+                </div>
+              )}
+
               {/* TAB 1: LOGO HEADER */}
               {activeOrnamentTab === 'header_logo' && (
                 <div>
