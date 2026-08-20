@@ -44,6 +44,10 @@ function EditAddressManagement() {
     workTime: '',
     map: '',
     visible: 0,
+    zalo: '',
+    iconZalo: '',
+    messenger: '',
+    messengerIcon: '',
   }
 
   const validationSchema = Yup.object({
@@ -78,6 +82,10 @@ function EditAddressManagement() {
           website: data?.website,
           map: data?.map,
           visible: data?.display,
+          zalo: data?.zalo || '',
+          iconZalo: data?.icon_zalo || '',
+          messenger: data?.messenger || '',
+          messengerIcon: data?.messenger_icon || '',
         })
         setAddressEditor(data?.address)
         setPhoneEditor(data?.phone)
@@ -106,6 +114,10 @@ function EditAddressManagement() {
         work_time: values.workTime,
         map: values.map,
         display: values.visible,
+        zalo: values.zalo,
+        icon_zalo: values.iconZalo,
+        messenger: values.messenger,
+        messenger_icon: values.messengerIcon,
       })
       if (response.data.status === true) {
         toast.success('Chỉnh sửa địa chỉ thành công!')
@@ -204,6 +216,34 @@ function EditAddressManagement() {
                           {({ field }) => <CFormInput {...field} type="text" id="workTime-input" />}
                         </Field>
                         <ErrorMessage name="workTime" component="div" className="text-danger" />
+                      </CCol>
+                      <br />
+
+                      <CCol md={6}>
+                        <label htmlFor="zalo-input">Zalo (Số điện thoại hoặc Link)</label>
+                        <Field name="zalo">
+                          {({ field }) => <CFormInput {...field} type="text" id="zalo-input" placeholder="0933808952" />}
+                        </Field>
+                      </CCol>
+                      <CCol md={6}>
+                        <label htmlFor="iconZalo-input">Icon Zalo (Tùy chọn URL)</label>
+                        <Field name="iconZalo">
+                          {({ field }) => <CFormInput {...field} type="text" id="iconZalo-input" placeholder="https://..." />}
+                        </Field>
+                      </CCol>
+                      <br />
+
+                      <CCol md={6}>
+                        <label htmlFor="messenger-input">Facebook Messenger (Link)</label>
+                        <Field name="messenger">
+                          {({ field }) => <CFormInput {...field} type="text" id="messenger-input" placeholder="https://www.facebook.com/vitinhnguyenkim" />}
+                        </Field>
+                      </CCol>
+                      <CCol md={6}>
+                        <label htmlFor="messengerIcon-input">Icon Messenger (Tùy chọn URL)</label>
+                        <Field name="messengerIcon">
+                          {({ field }) => <CFormInput {...field} type="text" id="messengerIcon-input" placeholder="https://..." />}
+                        </Field>
                       </CCol>
                       <br />
 
