@@ -821,31 +821,6 @@ function EditThemeConfig() {
                 Ghi chú nội dung chiến dịch dành cho ban quản trị
               </small>
             </div>
-
-            <CRow className="g-4 mb-3">
-              <CCol md={6}>
-                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
-                  Trạng thái kích hoạt
-                </label>
-                <div className="p-2.5 border rounded bg-light d-flex align-items-center justify-content-between">
-                  <div>
-                    <span className="fw-semibold text-dark d-block" style={{ fontSize: '13.5px' }}>
-                      Kích hoạt áp dụng ngay
-                    </span>
-                    <small className="text-muted">Áp dụng trực tiếp lên toàn bộ website</small>
-                  </div>
-                  <CFormCheck
-                    type="switch"
-                    id="isActiveSwitch"
-                    style={{ transform: 'scale(1.25)', marginRight: '8px' }}
-                    checked={editingTheme?.isActive}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
-                    }
-                  />
-                </div>
-              </CCol>
-            </CRow>
           </CCardBody>
         </CCard>
       )}
