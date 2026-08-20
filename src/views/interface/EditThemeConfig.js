@@ -964,50 +964,99 @@ function EditThemeConfig() {
                           >
                             Xem trước trực tiếp trên ảnh sản phẩm
                           </label>
+
+                          {/* Product Detail Gallery Mockup */}
                           <div
-                            className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto position-relative"
-                            style={{ maxWidth: '240px', height: '240px', cursor: 'pointer' }}
-                            title="Nhấp vào để phóng to xem ảnh sản phẩm & khung/huy hiệu"
+                            className="p-2.5 bg-white rounded border shadow-xs mx-auto position-relative"
+                            style={{ maxWidth: '280px', cursor: 'pointer' }}
+                            title="Nhấp vào để phóng to xem ảnh sản phẩm & khung viền"
                             onClick={() =>
                               setPreviewModal({
                                 visible: true,
-                                title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung / Huy hiệu',
+                                title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung viền',
                                 type: 'product_ornament',
                                 imageUrl: '',
                               })
                             }
                           >
+                            {/* Main Product Frame */}
                             <div
-                              className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                              className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center"
                               style={{ aspectRatio: '1 / 1' }}
                             >
-                              {/* Sample product background */}
+                              {/* Prev / Next Indicator */}
+                              <span
+                                className="position-absolute start-0 top-50 translate-middle-y text-muted ps-1 fw-bold user-select-none"
+                                style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
+                              >
+                                ‹
+                              </span>
+                              <span
+                                className="position-absolute end-0 top-50 translate-middle-y text-muted pe-1 fw-bold user-select-none"
+                                style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
+                              >
+                                ›
+                              </span>
+
+                              {/* Sample Laptop Product */}
                               <img
-                                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
-                                alt="Sample Product"
+                                src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80"
+                                alt="Sample Laptop Product"
                                 className="w-100 h-100"
-                                style={{ objectFit: 'cover' }}
+                                style={{ objectFit: 'contain', padding: '8px' }}
                               />
 
-                              {/* Overlay Frame/Badge */}
+                              {/* Overlay Frame */}
                               {editingTheme?.decorations?.productOrnamentUrl ? (
                                 <img
                                   src={editingTheme.decorations.productOrnamentUrl}
                                   alt="Product Ornament Overlay"
                                   className="position-absolute pointer-events-none"
-                                  style={getProductOrnamentStyle(
-                                    editingTheme?.decorations?.productOrnamentPosition,
-                                    editingTheme?.decorations?.productOrnamentSize,
-                                  )}
+                                  style={getProductOrnamentStyle()}
                                 />
                               ) : (
                                 <div
-                                  className="position-absolute bottom-0 start-0 p-1.5 m-2 bg-dark bg-opacity-75 text-white rounded text-xs pointer-events-none"
-                                  style={{ fontSize: '10px' }}
+                                  className="position-absolute bottom-0 start-0 p-1 m-1.5 bg-dark bg-opacity-75 text-white rounded pointer-events-none"
+                                  style={{ fontSize: '9px' }}
                                 >
-                                  [Chưa chọn ảnh huy hiệu/khung]
+                                  [Chưa có khung]
                                 </div>
                               )}
+                            </div>
+
+                            {/* Thumbnail list underneath */}
+                            <div className="d-flex align-items-center justify-content-center gap-1 mt-2">
+                              {[
+                                'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=150&q=80',
+                                'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=150&q=80',
+                              ].map((thumb, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`position-relative rounded border overflow-hidden p-0.5 ${
+                                    idx === 0 ? 'border-primary border-2' : 'border-light-subtle'
+                                  }`}
+                                  style={{ width: '40px', height: '40px', backgroundColor: '#fff' }}
+                                >
+                                  <img
+                                    src={thumb}
+                                    alt={`Thumb ${idx}`}
+                                    className="w-100 h-100"
+                                    style={{ objectFit: 'contain' }}
+                                  />
+                                  {editingTheme?.decorations?.productOrnamentUrl &&
+                                    editingTheme?.decorations?.productOrnamentApplyTo === 'all' && (
+                                      <img
+                                        src={editingTheme.decorations.productOrnamentUrl}
+                                        alt="Frame Thumb"
+                                        className="position-absolute pointer-events-none"
+                                        style={getProductOrnamentStyle()}
+                                      />
+                                    )}
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
@@ -1532,38 +1581,82 @@ function EditThemeConfig() {
           {previewModal.type === 'product_ornament' ? (
             <div className="text-center w-100">
               <div
-                className="position-relative mx-auto rounded border shadow bg-white overflow-hidden"
-                style={{ width: '100%', maxWidth: '480px', aspectRatio: '1 / 1' }}
+                className="p-3 bg-white rounded border shadow mx-auto"
+                style={{ width: '100%', maxWidth: '520px' }}
               >
-                <img
-                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
-                  alt="Product Large Mockup"
-                  className="w-100 h-100"
-                  style={{ objectFit: 'cover' }}
-                />
-                {editingTheme?.decorations?.productOrnamentUrl && (
+                {/* Main Product Frame */}
+                <div
+                  className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center"
+                  style={{ aspectRatio: '1 / 1' }}
+                >
+                  {/* Prev / Next Indicator */}
+                  <span
+                    className="position-absolute start-0 top-50 translate-middle-y text-muted ps-2 fw-bold user-select-none"
+                    style={{ fontSize: '24px', opacity: 0.6, zIndex: 5 }}
+                  >
+                    ‹
+                  </span>
+                  <span
+                    className="position-absolute end-0 top-50 translate-middle-y text-muted pe-2 fw-bold user-select-none"
+                    style={{ fontSize: '24px', opacity: 0.6, zIndex: 5 }}
+                  >
+                    ›
+                  </span>
+
+                  {/* Sample Laptop Product */}
                   <img
-                    src={editingTheme.decorations.productOrnamentUrl}
-                    alt="Product Ornament Large Overlay"
-                    className="position-absolute pointer-events-none"
-                    style={getProductOrnamentStyle(
-                      editingTheme?.decorations?.productOrnamentPosition,
-                      editingTheme?.decorations?.productOrnamentSize,
-                    )}
+                    src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80"
+                    alt="Laptop Large Mockup"
+                    className="w-100 h-100"
+                    style={{ objectFit: 'contain', padding: '16px' }}
                   />
-                )}
+
+                  {/* Overlay Frame */}
+                  {editingTheme?.decorations?.productOrnamentUrl && (
+                    <img
+                      src={editingTheme.decorations.productOrnamentUrl}
+                      alt="Product Ornament Large Overlay"
+                      className="position-absolute pointer-events-none"
+                      style={getProductOrnamentStyle()}
+                    />
+                  )}
+                </div>
+
+                {/* Thumbnails row */}
+                <div className="d-flex align-items-center justify-content-center gap-2 mt-3">
+                  {[
+                    'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80',
+                    'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80',
+                    'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80',
+                    'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=150&q=80',
+                    'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=150&q=80',
+                  ].map((thumb, idx) => (
+                    <div
+                      key={idx}
+                      className={`position-relative rounded border overflow-hidden p-1 ${
+                        idx === 0 ? 'border-primary border-2' : 'border-light-subtle'
+                      }`}
+                      style={{ width: '55px', height: '55px', backgroundColor: '#fff' }}
+                    >
+                      <img
+                        src={thumb}
+                        alt={`Thumb ${idx}`}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'contain' }}
+                      />
+                      {editingTheme?.decorations?.productOrnamentUrl &&
+                        editingTheme?.decorations?.productOrnamentApplyTo === 'all' && (
+                          <img
+                            src={editingTheme.decorations.productOrnamentUrl}
+                            alt="Frame Thumb"
+                            className="position-absolute pointer-events-none"
+                            style={getProductOrnamentStyle()}
+                          />
+                        )}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <small className="text-muted d-block mt-3">
-                {`Vị trí: ${
-                  editingTheme?.decorations?.productOrnamentPosition === 'full'
-                    ? 'Khung viền 4 cạnh 1:1'
-                    : editingTheme?.decorations?.productOrnamentPosition || 'Góc dưới bên trái'
-                } | Kích thước: ${
-                  editingTheme?.decorations?.productOrnamentPosition === 'full'
-                    ? '100% (Khung)'
-                    : editingTheme?.decorations?.productOrnamentSize || '35%'
-                }`}
-              </small>
             </div>
           ) : (
             <div className="text-center w-100">
