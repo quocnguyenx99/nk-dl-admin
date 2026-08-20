@@ -10,6 +10,10 @@ import {
   CFormSelect,
   CFormCheck,
   CImage,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
   CNav,
   CNavItem,
   CNavLink,
@@ -282,6 +286,12 @@ function AddThemeConfig() {
   })
 
   const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
+  const [previewModal, setPreviewModal] = useState({
+    visible: false,
+    title: '',
+    type: 'product_ornament',
+    imageUrl: '',
+  })
 
   // Pages & Layout State
   const [pagesLayouts, setPagesLayouts] = useState([
@@ -880,8 +890,17 @@ function AddThemeConfig() {
                           Xem trước trực tiếp trên ảnh sản phẩm
                         </span>
                         <div
-                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto"
-                          style={{ maxWidth: '240px', height: '240px' }}
+                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto position-relative"
+                          style={{ maxWidth: '240px', height: '240px', cursor: 'pointer' }}
+                          title="Nhấp vào để phóng to xem ảnh sản phẩm & khung/huy hiệu"
+                          onClick={() =>
+                            setPreviewModal({
+                              visible: true,
+                              title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung / Huy hiệu',
+                              type: 'product_ornament',
+                              imageUrl: '',
+                            })
+                          }
                         >
                           <div
                             className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
@@ -1311,6 +1330,66 @@ function AddThemeConfig() {
           Hủy / Quay lại
         </CButton>
       </div>
+
+      {/* Image / Mockup Zoom Preview Modal */}
+      <CModal
+        alignment="center"
+        size="lg"
+        visible={previewModal.visible}
+        onClose={() => setPreviewModal((prev) => ({ ...prev, visible: false }))}
+      >
+        <CModalHeader>
+          <CModalTitle className="fw-bold fs-6">{previewModal.title}</CModalTitle>
+        </CModalHeader>
+        <CModalBody className="p-4 d-flex flex-column align-items-center justify-content-center bg-light">
+          {previewModal.type === 'product_ornament' ? (
+            <div className="text-center w-100">
+              <div
+                className="position-relative mx-auto rounded border shadow bg-white overflow-hidden"
+                style={{ width: '100%', maxWidth: '480px', aspectRatio: '1 / 1' }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+                  alt="Product Large Mockup"
+                  className="w-100 h-100"
+                  style={{ objectFit: 'cover' }}
+                />
+                {newTheme?.decorations?.productOrnamentUrl && (
+                  <img
+                    src={newTheme.decorations.productOrnamentUrl}
+                    alt="Product Ornament Large Overlay"
+                    className="position-absolute pointer-events-none"
+                    style={getProductOrnamentStyle(
+                      newTheme?.decorations?.productOrnamentPosition,
+                      newTheme?.decorations?.productOrnamentSize,
+                    )}
+                  />
+                )}
+              </div>
+              <small className="text-muted d-block mt-3">
+                {`Vị trí: ${
+                  newTheme?.decorations?.productOrnamentPosition === 'full'
+                    ? 'Khung viền 4 cạnh 1:1'
+                    : newTheme?.decorations?.productOrnamentPosition || 'Góc dưới bên trái'
+                } | Kích thước: ${
+                  newTheme?.decorations?.productOrnamentPosition === 'full'
+                    ? '100% (Khung)'
+                    : newTheme?.decorations?.productOrnamentSize || '35%'
+                }`}
+              </small>
+            </div>
+          ) : (
+            <div className="text-center w-100">
+              <img
+                src={previewModal.imageUrl}
+                alt="Preview Detail"
+                className="img-fluid rounded border shadow-sm"
+                style={{ maxHeight: '70vh', objectFit: 'contain' }}
+              />
+            </div>
+          )}
+        </CModalBody>
+      </CModal>
     </div>
   )
 }

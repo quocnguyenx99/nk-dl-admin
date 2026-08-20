@@ -10,6 +10,10 @@ import {
   CFormSelect,
   CFormCheck,
   CImage,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
   CNav,
   CNavItem,
   CNavLink,
@@ -297,6 +301,12 @@ function EditThemeConfig() {
   const [activeMainTab, setActiveMainTab] = useState('theme_config')
   const [activePreviewTab, setActivePreviewTab] = useState('home')
   const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
+  const [previewModal, setPreviewModal] = useState({
+    visible: false,
+    title: '',
+    type: 'product_ornament',
+    imageUrl: '',
+  })
 
   // Pages & Layout State
   const [pagesLayouts, setPagesLayouts] = useState([
@@ -878,15 +888,29 @@ function EditThemeConfig() {
                   Ảnh đại diện chiến dịch hiện tại
                 </label>
                 {editingTheme?.image ? (
-                  <div
-                    className="rounded border overflow-hidden bg-white shadow-xs p-2"
-                    style={{ height: '200px' }}
-                  >
-                    <CImage
-                      src={editingTheme.image}
-                      className="w-100 h-100 rounded"
-                      style={{ objectFit: 'contain' }}
-                    />
+                  <div>
+                    <div
+                      className="rounded border overflow-hidden bg-white shadow-xs p-2 position-relative"
+                      style={{ height: '200px', cursor: 'pointer' }}
+                      title="Nhấp để xem phóng to ảnh banner"
+                      onClick={() =>
+                        setPreviewModal({
+                          visible: true,
+                          title: 'Xem trước phóng to Banner chiến dịch',
+                          type: 'image',
+                          imageUrl: editingTheme.image,
+                        })
+                      }
+                    >
+                      <CImage
+                        src={editingTheme.image}
+                        className="w-100 h-100 rounded"
+                        style={{ objectFit: 'contain' }}
+                      />
+                    </div>
+                    <small className="text-primary text-xs d-block mt-1.5 fw-semibold text-center cursor-pointer">
+                      🔍 Nhấp vào ảnh để mở popup xem kích thước lớn
+                    </small>
                   </div>
                 ) : (
                   <div className="p-4 bg-light rounded border text-center text-muted">
@@ -1083,8 +1107,17 @@ function EditThemeConfig() {
                         Xem trước trực tiếp trên ảnh sản phẩm
                       </label>
                       <div
-                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto"
-                        style={{ maxWidth: '240px', height: '240px' }}
+                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto position-relative"
+                        style={{ maxWidth: '240px', height: '240px', cursor: 'pointer' }}
+                        title="Nhấp vào để phóng to xem ảnh sản phẩm & khung/huy hiệu"
+                        onClick={() =>
+                          setPreviewModal({
+                            visible: true,
+                            title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung / Huy hiệu',
+                            type: 'product_ornament',
+                            imageUrl: '',
+                          })
+                        }
                       >
                         <div
                           className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
@@ -1119,6 +1152,9 @@ function EditThemeConfig() {
                           )}
                         </div>
                       </div>
+                      <small className="text-primary text-xs d-block mt-2 fw-semibold cursor-pointer">
+                        🔍 Nhấp vào ảnh để mở popup xem phóng to
+                      </small>
                       <small className="text-muted d-block mt-2">
                         Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
                       </small>
@@ -1643,6 +1679,66 @@ function EditThemeConfig() {
           Hủy / Quay lại
         </CButton>
       </div>
+
+      {/* Image / Mockup Zoom Preview Modal */}
+      <CModal
+        alignment="center"
+        size="lg"
+        visible={previewModal.visible}
+        onClose={() => setPreviewModal((prev) => ({ ...prev, visible: false }))}
+      >
+        <CModalHeader>
+          <CModalTitle className="fw-bold fs-6">{previewModal.title}</CModalTitle>
+        </CModalHeader>
+        <CModalBody className="p-4 d-flex flex-column align-items-center justify-content-center bg-light">
+          {previewModal.type === 'product_ornament' ? (
+            <div className="text-center w-100">
+              <div
+                className="position-relative mx-auto rounded border shadow bg-white overflow-hidden"
+                style={{ width: '100%', maxWidth: '480px', aspectRatio: '1 / 1' }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+                  alt="Product Large Mockup"
+                  className="w-100 h-100"
+                  style={{ objectFit: 'cover' }}
+                />
+                {editingTheme?.decorations?.productOrnamentUrl && (
+                  <img
+                    src={editingTheme.decorations.productOrnamentUrl}
+                    alt="Product Ornament Large Overlay"
+                    className="position-absolute pointer-events-none"
+                    style={getProductOrnamentStyle(
+                      editingTheme?.decorations?.productOrnamentPosition,
+                      editingTheme?.decorations?.productOrnamentSize,
+                    )}
+                  />
+                )}
+              </div>
+              <small className="text-muted d-block mt-3">
+                {`Vị trí: ${
+                  editingTheme?.decorations?.productOrnamentPosition === 'full'
+                    ? 'Khung viền 4 cạnh 1:1'
+                    : editingTheme?.decorations?.productOrnamentPosition || 'Góc dưới bên trái'
+                } | Kích thước: ${
+                  editingTheme?.decorations?.productOrnamentPosition === 'full'
+                    ? '100% (Khung)'
+                    : editingTheme?.decorations?.productOrnamentSize || '35%'
+                }`}
+              </small>
+            </div>
+          ) : (
+            <div className="text-center w-100">
+              <img
+                src={previewModal.imageUrl}
+                alt="Preview Detail"
+                className="img-fluid rounded border shadow-sm"
+                style={{ maxHeight: '70vh', objectFit: 'contain' }}
+              />
+            </div>
+          )}
+        </CModalBody>
+      </CModal>
     </div>
   )
 }
