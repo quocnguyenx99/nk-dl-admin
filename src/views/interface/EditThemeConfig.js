@@ -653,7 +653,7 @@ function EditThemeConfig() {
         </div>
       </div>
 
-      {/* 5 MAIN BIG TABS NAVIGATION */}
+      {/* 4 MAIN BIG TABS NAVIGATION */}
       <div className="mb-4 bg-white p-2 rounded border shadow-xs">
         <CNav variant="pills" className="d-flex flex-wrap gap-2">
           <CNavItem>
@@ -667,20 +667,11 @@ function EditThemeConfig() {
           </CNavItem>
           <CNavItem>
             <CNavLink
-              active={activeMainTab === 'images'}
-              className="cursor-pointer fw-bold py-2 px-3"
-              onClick={() => setActiveMainTab('images')}
-            >
-              2. Hình ảnh
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink
               active={activeMainTab === 'logo'}
               className="cursor-pointer fw-bold py-2 px-3"
               onClick={() => setActiveMainTab('logo')}
             >
-              3. Trang trí
+              2. Cấu hình logo &amp; Trang trí
             </CNavLink>
           </CNavItem>
           <CNavItem>
@@ -689,7 +680,7 @@ function EditThemeConfig() {
               className="cursor-pointer fw-bold py-2 px-3"
               onClick={() => setActiveMainTab('background')}
             >
-              4. Background website
+              3. Background website
             </CNavLink>
           </CNavItem>
           <CNavItem>
@@ -698,13 +689,13 @@ function EditThemeConfig() {
               className="cursor-pointer fw-bold py-2 px-3"
               onClick={() => setActiveMainTab('colors')}
             >
-              5. Bảng màu
+              4. Bảng màu
             </CNavLink>
           </CNavItem>
         </CNav>
       </div>
 
-      {/* TAB 1: CẤU HÌNH THEME */}
+      {/* TAB 1: CẤU HÌNH THEME (Bao gồm thông tin & Banner hình ảnh) */}
       {activeMainTab === 'theme_config' && (
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
@@ -783,7 +774,7 @@ function EditThemeConfig() {
               </CCol>
             </CRow>
 
-            <div className="mb-3">
+            <div className="mb-4">
               <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
                 Mô tả chiến dịch
               </label>
@@ -798,76 +789,67 @@ function EditThemeConfig() {
                 Ghi chú nội dung chiến dịch dành cho ban quản trị
               </small>
             </div>
-          </CCardBody>
-        </CCard>
-      )}
 
-      {/* TAB 2: HÌNH ẢNH */}
-      {activeMainTab === 'images' && (
-        <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-            <div>
-              <h5 className="fw-bold text-dark mb-0">Quản lý banner &amp; hình ảnh chiến dịch</h5>
-            </div>
-          </CCardHeader>
-          <CCardBody className="p-4">
-            <CRow className="g-4">
-              <CCol md={6}>
-                <div className="p-4 bg-light rounded border text-center mb-3">
-                  <label
-                    className="form-label fw-bold text-dark mb-2 d-block"
-                    style={{ fontSize: '14.5px' }}
-                  >
-                    Tải banner / ảnh đại diện mới từ máy tính
-                  </label>
-                  <CFormInput
-                    type="file"
-                    accept="image/*"
-                    className="mb-2"
-                    onChange={handleFileChange}
-                  />
-                  <small className="text-muted d-block">
-                    Hỗ trợ định dạng: JPG, PNG, WEBP (Dung lượng tối đa 5MB)
-                  </small>
-                </div>
-              </CCol>
-
-              <CCol md={6}>
-                <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '14.5px' }}>
-                  Ảnh đại diện chiến dịch hiện tại
-                </label>
-                {editingTheme?.image ? (
-                  <div>
-                    <div
-                      className="rounded border overflow-hidden bg-white shadow-xs p-2 position-relative"
-                      style={{ height: '200px', cursor: 'pointer' }}
-                      title="Nhấp để xem phóng to ảnh banner"
-                      onClick={() =>
-                        setPreviewModal({
-                          visible: true,
-                          title: 'Xem trước phóng to Banner chiến dịch',
-                          type: 'image',
-                          imageUrl: editingTheme.image,
-                        })
-                      }
+            {/* Banner & Hình ảnh chiến dịch */}
+            <div className="pt-3 border-top">
+              <label className="form-label fw-bold text-dark mb-3" style={{ fontSize: '14.5px' }}>
+                Banner &amp; Hình ảnh đại diện chiến dịch
+              </label>
+              <CRow className="g-4 align-items-center">
+                <CCol md={6}>
+                  <div className="p-4 bg-light rounded border text-center">
+                    <label
+                      className="form-label fw-bold text-dark mb-2 d-block"
+                      style={{ fontSize: '14px' }}
                     >
-                      <CImage
-                        src={editingTheme.image}
-                        className="w-100 h-100 rounded"
-                        style={{ objectFit: 'contain' }}
-                      />
-                    </div>
-                    <small className="text-primary text-xs d-block mt-1.5 fw-semibold text-center cursor-pointer">
-                      🔍 Nhấp vào ảnh để mở popup xem kích thước lớn
+                      Tải banner / ảnh đại diện mới từ máy tính
+                    </label>
+                    <CFormInput
+                      type="file"
+                      accept="image/*"
+                      className="mb-2"
+                      onChange={handleFileChange}
+                    />
+                    <small className="text-muted d-block">
+                      Hỗ trợ định dạng: JPG, PNG, WEBP (Dung lượng tối đa 5MB)
                     </small>
                   </div>
-                ) : (
-                  <div className="p-4 bg-light rounded border text-center text-muted">
-                    Chưa có ảnh đại diện nào được tải lên
-                  </div>
-                )}
-              </CCol>
-            </CRow>
+                </CCol>
+
+                <CCol md={6}>
+                  <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '14px' }}>
+                    Ảnh đại diện chiến dịch hiện tại
+                  </label>
+                  {editingTheme?.image ? (
+                    <div>
+                      <div
+                        className="rounded border overflow-hidden bg-white shadow-xs p-2 position-relative"
+                        style={{ height: '180px', cursor: 'pointer' }}
+                        title="Nhấp để xem phóng to ảnh banner"
+                        onClick={() =>
+                          setPreviewModal({
+                            visible: true,
+                            title: 'Xem trước phóng to Banner chiến dịch',
+                            type: 'image',
+                            imageUrl: editingTheme.image,
+                          })
+                        }
+                      >
+                        <CImage
+                          src={editingTheme.image}
+                          className="w-100 h-100 rounded"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-light rounded border text-center text-muted">
+                      Chưa có ảnh đại diện nào được tải lên
+                    </div>
+                  )}
+                </CCol>
+              </CRow>
+            </div>
           </CCardBody>
         </CCard>
       )}
