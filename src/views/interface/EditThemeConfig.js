@@ -851,8 +851,8 @@ function EditThemeConfig() {
                 <div className="mb-3 border-bottom pb-2">
                   <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
                   <p className="text-muted text-xs mb-0">
-                    Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển thị
-                    trên Header website.
+                    Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...)
+                    hiển thị trên Header website.
                   </p>
                 </div>
 
@@ -870,8 +870,8 @@ function EditThemeConfig() {
                         onChange={handleMainLogoUpload}
                       />
                       <span className="text-muted text-xs d-block">
-                        Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo mặc
-                        định trên Header website.
+                        Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế
+                        Logo mặc định trên Header website.
                       </span>
                     </div>
                   </CCol>
@@ -1002,9 +1002,7 @@ function EditThemeConfig() {
                               }}
                             />
                           ) : (
-                            <span className="text-muted text-xs fst-italic">
-                              [Hình trang trí]
-                            </span>
+                            <span className="text-muted text-xs fst-italic">[Hình trang trí]</span>
                           )}
                         </div>
 
@@ -1023,9 +1021,7 @@ function EditThemeConfig() {
                               }}
                             />
                           ) : (
-                            <span className="text-muted text-xs fst-italic">
-                              [Hình trang trí]
-                            </span>
+                            <span className="text-muted text-xs fst-italic">[Hình trang trí]</span>
                           )}
                         </div>
                       </div>
