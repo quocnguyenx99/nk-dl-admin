@@ -884,386 +884,421 @@ function EditThemeConfig() {
       {/* TAB 3: TRANG TRÍ (SẢN PHẨM, LOGO & FOOTER) */}
       {activeMainTab === 'logo' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div>
-              <h5 className="fw-bold text-dark mb-0">
-                {'Cấu hình Trang trí (Hình ảnh sản phẩm, Logo & Chân trang)'}
-              </h5>
-              <small className="text-muted">
-                Tùy biến Khung / Huy hiệu đè ảnh sản phẩm, Logo sự kiện và hình trang trí Footer
-              </small>
-            </div>
-
-            {/* SUB TABS FOR PRODUCT, HEADER & FOOTER */}
-            <CNav variant="pills" className="small">
-              <CNavItem>
-                <CNavLink
-                  active={activeOrnamentTab === 'product_image'}
-                  className="cursor-pointer fw-bold py-1.5 px-3"
-                  onClick={() => setActiveOrnamentTab('product_image')}
-                >
-                  Hình ảnh sản phẩm
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink
-                  active={activeOrnamentTab === 'header_logo'}
-                  className="cursor-pointer fw-bold py-1.5 px-3"
-                  onClick={() => setActiveOrnamentTab('header_logo')}
-                >
-                  Logo Header
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink
-                  active={activeOrnamentTab === 'footer'}
-                  className="cursor-pointer fw-bold py-1.5 px-3"
-                  onClick={() => setActiveOrnamentTab('footer')}
-                >
-                  Chân trang Footer
-                </CNavLink>
-              </CNavItem>
-            </CNav>
+          <CCardHeader className="bg-white py-3 border-bottom">
+            <h5 className="fw-bold text-dark mb-0">
+              {'Cấu hình Trang trí (Hình ảnh sản phẩm, Logo & Chân trang)'}
+            </h5>
+            <small className="text-muted">
+              Tùy biến Khung viền sản phẩm, Logo sự kiện và hình trang trí Footer
+            </small>
           </CCardHeader>
 
           <CCardBody className="p-4">
-            {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
-            {activeOrnamentTab === 'product_image' && (
-              <div>
-                <div className="mb-3 border-bottom pb-2">
-                  <h6 className="fw-bold text-success mb-1">
-                    Cấu hình Khung viền đè ảnh sản phẩm (Khung 4 cạnh 1:1)
-                  </h6>
-                  <p className="text-muted text-xs mb-0">
-                    Tải ảnh khung viền chiến dịch tự động đè phủ toàn bộ 4 cạnh lên ảnh sản phẩm.
-                  </p>
-                </div>
-
-                <CRow className="g-4 align-items-center">
-                  <CCol md={7}>
-                    {/* Upload Box */}
-                    <div className="p-3 bg-light rounded border text-center mb-3">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '14px' }}
-                      >
-                        Tải ảnh Khung viền trang trí sản phẩm
-                      </label>
-                      <CFormInput
-                        type="file"
-                        accept="image/png,image/webp,image/svg+xml"
-                        className="mb-1"
-                        onChange={handleProductOrnamentUpload}
-                      />
-                      <small className="text-muted d-block">
-                        Khuyên dùng ảnh PNG / WEBP nền trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
-                        1200x1200px)
-                      </small>
-                    </div>
-
-                    {/* Scope of application */}
-                    <div className="mb-2">
-                      <label
-                        className="form-label fw-bold text-dark mb-1"
-                        style={{ fontSize: '13.5px' }}
-                      >
-                        Phạm vi áp dụng khung viền
-                      </label>
-                      <CFormSelect
-                        value={editingTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
-                        onChange={(e) =>
-                          setEditingTheme((prev) => ({
-                            ...prev,
-                            decorations: {
-                              ...(prev?.decorations || {}),
-                              productOrnamentPosition: 'full',
-                              productOrnamentSize: '100%',
-                              productOrnamentApplyTo: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        <option value="main_only">
-                          Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
-                        </option>
-                        <option value="all">
-                          Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
-                        </option>
-                      </CFormSelect>
-                      <small className="text-muted d-block mt-1">
-                        Khung viền sẽ tự động áp dụng vừa vặn 4 cạnh lên khung ảnh sản phẩm
-                      </small>
-                    </div>
-                  </CCol>
-
-                  {/* Live Product Image Preview Box */}
-                  <CCol md={5}>
-                    <div className="p-3 bg-light rounded border text-center">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '13.5px' }}
-                      >
-                        Xem trước trực tiếp trên ảnh sản phẩm
-                      </label>
-                      <div
-                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto position-relative"
-                        style={{ maxWidth: '240px', height: '240px', cursor: 'pointer' }}
-                        title="Nhấp vào để phóng to xem ảnh sản phẩm & khung/huy hiệu"
-                        onClick={() =>
-                          setPreviewModal({
-                            visible: true,
-                            title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung / Huy hiệu',
-                            type: 'product_ornament',
-                            imageUrl: '',
-                          })
-                        }
-                      >
-                        <div
-                          className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
-                          style={{ aspectRatio: '1 / 1' }}
-                        >
-                          {/* Sample product background */}
-                          <img
-                            src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
-                            alt="Sample Product"
-                            className="w-100 h-100"
-                            style={{ objectFit: 'cover' }}
-                          />
-
-                          {/* Overlay Frame/Badge */}
-                          {editingTheme?.decorations?.productOrnamentUrl ? (
-                            <img
-                              src={editingTheme.decorations.productOrnamentUrl}
-                              alt="Product Ornament Overlay"
-                              className="position-absolute pointer-events-none"
-                              style={getProductOrnamentStyle(
-                                editingTheme?.decorations?.productOrnamentPosition,
-                                editingTheme?.decorations?.productOrnamentSize,
-                              )}
-                            />
-                          ) : (
-                            <div
-                              className="position-absolute bottom-0 start-0 p-1.5 m-2 bg-dark bg-opacity-75 text-white rounded text-xs pointer-events-none"
-                              style={{ fontSize: '10px' }}
-                            >
-                              [Chưa chọn ảnh huy hiệu/khung]
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <small className="text-primary text-xs d-block mt-2 fw-semibold cursor-pointer">
-                        🔍 Nhấp vào ảnh để mở popup xem phóng to
-                      </small>
-                      <small className="text-muted d-block mt-2">
-                        Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
-                      </small>
-                    </div>
-                  </CCol>
-                </CRow>
-              </div>
-            )}
-
-            {/* SUB-TAB 1: LOGO HEADER */}
-            {activeOrnamentTab === 'header_logo' && (
-              <div>
-                <div className="mb-3 border-bottom pb-2">
-                  <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
-                  <p className="text-muted text-xs mb-0">
+            <CRow className="g-4">
+              {/* Cột trái: Danh mục các mục trang trí */}
+              <CCol md={3} className="border-end pe-md-3">
+                <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '13.5px' }}>
+                  Danh mục trang trí
+                </label>
+                <div className="d-flex flex-column gap-2">
+                  {[
                     {
-                      'Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển thị trên Header website.'
-                    }
-                  </p>
-                </div>
-
-                <CRow className="g-4 align-items-center">
-                  <CCol md={7}>
-                    <div className="p-4 bg-light rounded border text-center">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '14px' }}
+                      key: 'product_image',
+                      title: 'Hình ảnh sản phẩm',
+                      desc: 'Khung viền 4 cạnh 1:1',
+                      icon: '🖼️',
+                    },
+                    {
+                      key: 'header_logo',
+                      title: 'Logo Header',
+                      desc: 'Logo sự kiện thay thế',
+                      icon: '🏷️',
+                    },
+                    {
+                      key: 'footer',
+                      title: 'Chân trang Footer',
+                      desc: 'Trang trí 2 góc lề',
+                      icon: '🏮',
+                    },
+                  ].map((subTab) => {
+                    const isActive = activeOrnamentTab === subTab.key
+                    return (
+                      <button
+                        key={subTab.key}
+                        type="button"
+                        className={`btn text-start p-2.5 rounded border d-flex align-items-center gap-2.5 transition-all ${
+                          isActive
+                            ? 'btn-primary text-white shadow-sm border-primary'
+                            : 'btn-light text-dark bg-white border-light-subtle'
+                        }`}
+                        onClick={() => setActiveOrnamentTab(subTab.key)}
                       >
-                        Tải ảnh Logo chiến dịch mới từ máy tính
-                      </label>
-                      <CFormInput
-                        type="file"
-                        accept="image/*"
-                        className="mb-2"
-                        onChange={handleMainLogoUpload}
-                      />
-                      <small className="text-muted d-block">
-                        {
-                          'Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo mặc định trên Header website.'
-                        }
-                      </small>
-                    </div>
-                  </CCol>
-
-                  {/* Live Logo Preview Box */}
-                  <CCol md={5}>
-                    <div className="p-3 bg-light rounded border text-center">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '13.5px' }}
-                      >
-                        Xem trước trực tiếp Logo Header
-                      </label>
-                      <div
-                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
-                        style={{ height: '140px' }}
-                      >
-                        <div className="p-2 bg-white rounded border">
-                          <img
-                            src={editingTheme?.decorations?.logoUrl || logoNk}
-                            alt="Logo Header"
-                            style={{ height: '55px', objectFit: 'contain' }}
-                          />
+                        <span style={{ fontSize: '18px' }}>{subTab.icon}</span>
+                        <div className="flex-grow-1">
+                          <span className="fw-bold d-block" style={{ fontSize: '13.5px' }}>
+                            {subTab.title}
+                          </span>
+                          <small
+                            className={isActive ? 'text-white-50' : 'text-muted'}
+                            style={{ fontSize: '11.5px' }}
+                          >
+                            {subTab.desc}
+                          </small>
                         </div>
-                      </div>
-                    </div>
-                  </CCol>
-                </CRow>
-              </div>
-            )}
-
-            {/* SUB-TAB 2: FOOTER */}
-            {activeOrnamentTab === 'footer' && (
-              <div>
-                <div className="mb-3 border-bottom pb-2">
-                  <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
-                  <p className="text-muted text-xs mb-0">
-                    Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
-                  </p>
+                      </button>
+                    )
+                  })}
                 </div>
+              </CCol>
 
-                <CRow className="g-4 align-items-center">
-                  <CCol md={7}>
-                    {/* Upload Box */}
-                    <div className="p-3 bg-light rounded border text-center mb-3">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '14px' }}
-                      >
-                        Tải ảnh trang trí Chân trang Footer từ máy tính
-                      </label>
-                      <CFormInput
-                        type="file"
-                        accept="image/*"
-                        className="mb-1"
-                        onChange={handleFooterOrnamentUpload}
-                      />
-                      <small className="text-muted d-block">
-                        Khuyên dùng ảnh PNG / WEBP tách nền
-                      </small>
+              {/* Cột phải: Nội dung chi tiết cấu hình */}
+              <CCol md={9} className="ps-md-3">
+                {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
+                {activeOrnamentTab === 'product_image' && (
+                  <div>
+                    <div className="mb-3 border-bottom pb-2">
+                      <h6 className="fw-bold text-success mb-1">
+                        Cấu hình Khung viền đè ảnh sản phẩm (Khung 4 cạnh 1:1)
+                      </h6>
+                      <p className="text-muted text-xs mb-0">
+                        Tải ảnh khung viền chiến dịch tự động đè phủ toàn bộ 4 cạnh lên ảnh sản
+                        phẩm.
+                      </p>
                     </div>
 
-                    {/* Position & Size */}
-                    <CRow className="g-3">
-                      <CCol md={6}>
-                        <label
-                          className="form-label fw-bold text-dark mb-1"
-                          style={{ fontSize: '13.5px' }}
-                        >
-                          Vị trí hiển thị trên Footer
-                        </label>
-                        <CFormSelect
-                          value={
-                            editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
-                          }
-                          onChange={(e) =>
-                            setEditingTheme((prev) => ({
-                              ...prev,
-                              decorations: {
-                                ...(prev?.decorations || {}),
-                                footerOrnamentPosition: e.target.value,
-                              },
-                            }))
-                          }
-                        >
-                          <option value="both-corners">Hai bên góc lề Footer (Tiêu chuẩn)</option>
-                          <option value="left-only">Chỉ góc bên trái Footer</option>
-                          <option value="right-only">Chỉ góc bên phía phải Footer</option>
-                        </CFormSelect>
+                    <CRow className="g-4 align-items-center">
+                      <CCol md={7}>
+                        {/* Upload Box */}
+                        <div className="p-3 bg-light rounded border text-center mb-3">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '14px' }}
+                          >
+                            Tải ảnh Khung viền trang trí sản phẩm
+                          </label>
+                          <CFormInput
+                            type="file"
+                            accept="image/png,image/webp,image/svg+xml"
+                            className="mb-1"
+                            onChange={handleProductOrnamentUpload}
+                          />
+                          <small className="text-muted d-block">
+                            Khuyên dùng ảnh PNG / WEBP nền trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
+                            1200x1200px)
+                          </small>
+                        </div>
+
+                        {/* Scope of application */}
+                        <div className="mb-2">
+                          <label
+                            className="form-label fw-bold text-dark mb-1"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            Phạm vi áp dụng khung viền
+                          </label>
+                          <CFormSelect
+                            value={editingTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  productOrnamentPosition: 'full',
+                                  productOrnamentSize: '100%',
+                                  productOrnamentApplyTo: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="main_only">
+                              Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
+                            </option>
+                            <option value="all">
+                              Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
+                            </option>
+                          </CFormSelect>
+                          <small className="text-muted d-block mt-1">
+                            Khung viền sẽ tự động áp dụng vừa vặn 4 cạnh lên khung ảnh sản phẩm
+                          </small>
+                        </div>
                       </CCol>
-                      <CCol md={6}>
-                        <label
-                          className="form-label fw-bold text-dark mb-1"
-                          style={{ fontSize: '13.5px' }}
-                        >
-                          Kích thước hình trang trí
-                        </label>
-                        <CFormSelect
-                          value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
-                          onChange={(e) =>
-                            setEditingTheme((prev) => ({
-                              ...prev,
-                              decorations: {
-                                ...(prev?.decorations || {}),
-                                footerOrnamentSize: e.target.value,
-                              },
-                            }))
-                          }
-                        >
-                          <option value="32px">Nhỏ (32px)</option>
-                          <option value="48px">Vừa tiêu chuẩn (48px)</option>
-                          <option value="64px">Lớn (64px)</option>
-                          <option value="80px">Rất lớn (80px)</option>
-                        </CFormSelect>
+
+                      {/* Live Product Image Preview Box */}
+                      <CCol md={5}>
+                        <div className="p-3 bg-light rounded border text-center">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            Xem trước trực tiếp trên ảnh sản phẩm
+                          </label>
+                          <div
+                            className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center overflow-hidden mx-auto position-relative"
+                            style={{ maxWidth: '240px', height: '240px', cursor: 'pointer' }}
+                            title="Nhấp vào để phóng to xem ảnh sản phẩm & khung/huy hiệu"
+                            onClick={() =>
+                              setPreviewModal({
+                                visible: true,
+                                title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung / Huy hiệu',
+                                type: 'product_ornament',
+                                imageUrl: '',
+                              })
+                            }
+                          >
+                            <div
+                              className="position-relative w-100 h-100 rounded border overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                              style={{ aspectRatio: '1 / 1' }}
+                            >
+                              {/* Sample product background */}
+                              <img
+                                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
+                                alt="Sample Product"
+                                className="w-100 h-100"
+                                style={{ objectFit: 'cover' }}
+                              />
+
+                              {/* Overlay Frame/Badge */}
+                              {editingTheme?.decorations?.productOrnamentUrl ? (
+                                <img
+                                  src={editingTheme.decorations.productOrnamentUrl}
+                                  alt="Product Ornament Overlay"
+                                  className="position-absolute pointer-events-none"
+                                  style={getProductOrnamentStyle(
+                                    editingTheme?.decorations?.productOrnamentPosition,
+                                    editingTheme?.decorations?.productOrnamentSize,
+                                  )}
+                                />
+                              ) : (
+                                <div
+                                  className="position-absolute bottom-0 start-0 p-1.5 m-2 bg-dark bg-opacity-75 text-white rounded text-xs pointer-events-none"
+                                  style={{ fontSize: '10px' }}
+                                >
+                                  [Chưa chọn ảnh huy hiệu/khung]
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <small className="text-primary text-xs d-block mt-2 fw-semibold cursor-pointer">
+                            🔍 Nhấp vào ảnh để mở popup xem phóng to
+                          </small>
+                          <small className="text-muted d-block mt-2">
+                            Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
+                          </small>
+                        </div>
                       </CCol>
                     </CRow>
-                  </CCol>
+                  </div>
+                )}
 
-                  {/* Live Footer Preview Box */}
-                  <CCol md={5}>
-                    <div className="p-3 bg-light rounded border text-center">
-                      <label
-                        className="form-label fw-bold text-dark mb-2 d-block"
-                        style={{ fontSize: '13.5px' }}
-                      >
-                        Xem trước trực tiếp Chân trang Footer
-                      </label>
-                      <div
-                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
-                        style={{ height: '140px' }}
-                      >
-                        <div className="d-flex align-items-center gap-2">
-                          {editingTheme?.decorations?.footerOrnamentUrl ? (
-                            <img
-                              src={editingTheme.decorations.footerOrnamentUrl}
-                              alt="Footer Left"
-                              style={{
-                                height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                                objectFit: 'contain',
-                              }}
-                            />
-                          ) : (
-                            <span className="text-muted text-xs fst-italic">[Hình trang trí]</span>
-                          )}
-                        </div>
-
-                        <span className="text-muted text-xs fw-semibold">
-                          © 2026 VI TÍNH NGUYÊN KIM
-                        </span>
-
-                        <div className="d-flex align-items-center gap-2">
-                          {editingTheme?.decorations?.footerOrnamentUrl ? (
-                            <img
-                              src={editingTheme.decorations.footerOrnamentUrl}
-                              alt="Footer Right"
-                              style={{
-                                height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                                objectFit: 'contain',
-                              }}
-                            />
-                          ) : (
-                            <span className="text-muted text-xs fst-italic">[Hình trang trí]</span>
-                          )}
-                        </div>
-                      </div>
+                {/* SUB-TAB 1: LOGO HEADER */}
+                {activeOrnamentTab === 'header_logo' && (
+                  <div>
+                    <div className="mb-3 border-bottom pb-2">
+                      <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
+                      <p className="text-muted text-xs mb-0">
+                        {
+                          'Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển thị trên Header website.'
+                        }
+                      </p>
                     </div>
-                  </CCol>
-                </CRow>
-              </div>
-            )}
+
+                    <CRow className="g-4 align-items-center">
+                      <CCol md={7}>
+                        <div className="p-4 bg-light rounded border text-center">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '14px' }}
+                          >
+                            Tải ảnh Logo chiến dịch mới từ máy tính
+                          </label>
+                          <CFormInput
+                            type="file"
+                            accept="image/*"
+                            className="mb-2"
+                            onChange={handleMainLogoUpload}
+                          />
+                          <small className="text-muted d-block">
+                            {
+                              'Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo mặc định trên Header website.'
+                            }
+                          </small>
+                        </div>
+                      </CCol>
+
+                      {/* Live Logo Preview Box */}
+                      <CCol md={5}>
+                        <div className="p-3 bg-light rounded border text-center">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            Xem trước trực tiếp Logo Header
+                          </label>
+                          <div
+                            className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
+                            style={{ height: '140px' }}
+                          >
+                            <div className="p-2 bg-white rounded border">
+                              <img
+                                src={editingTheme?.decorations?.logoUrl || logoNk}
+                                alt="Logo Header"
+                                style={{ height: '55px', objectFit: 'contain' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CCol>
+                    </CRow>
+                  </div>
+                )}
+
+                {/* SUB-TAB 2: FOOTER */}
+                {activeOrnamentTab === 'footer' && (
+                  <div>
+                    <div className="mb-3 border-bottom pb-2">
+                      <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
+                      <p className="text-muted text-xs mb-0">
+                        Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
+                      </p>
+                    </div>
+
+                    <CRow className="g-4 align-items-center">
+                      <CCol md={7}>
+                        {/* Upload Box */}
+                        <div className="p-3 bg-light rounded border text-center mb-3">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '14px' }}
+                          >
+                            Tải ảnh trang trí Chân trang Footer từ máy tính
+                          </label>
+                          <CFormInput
+                            type="file"
+                            accept="image/*"
+                            className="mb-1"
+                            onChange={handleFooterOrnamentUpload}
+                          />
+                          <small className="text-muted d-block">
+                            Khuyên dùng ảnh PNG / WEBP tách nền
+                          </small>
+                        </div>
+
+                        {/* Position & Size */}
+                        <CRow className="g-3">
+                          <CCol md={6}>
+                            <label
+                              className="form-label fw-bold text-dark mb-1"
+                              style={{ fontSize: '13.5px' }}
+                            >
+                              Vị trí hiển thị trên Footer
+                            </label>
+                            <CFormSelect
+                              value={
+                                editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
+                              }
+                              onChange={(e) =>
+                                setEditingTheme((prev) => ({
+                                  ...prev,
+                                  decorations: {
+                                    ...(prev?.decorations || {}),
+                                    footerOrnamentPosition: e.target.value,
+                                  },
+                                }))
+                              }
+                            >
+                              <option value="both-corners">
+                                Hai bên góc lề Footer (Tiêu chuẩn)
+                              </option>
+                              <option value="left-only">Chỉ góc bên trái Footer</option>
+                              <option value="right-only">Chỉ góc bên phía phải Footer</option>
+                            </CFormSelect>
+                          </CCol>
+                          <CCol md={6}>
+                            <label
+                              className="form-label fw-bold text-dark mb-1"
+                              style={{ fontSize: '13.5px' }}
+                            >
+                              Kích thước hình trang trí
+                            </label>
+                            <CFormSelect
+                              value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
+                              onChange={(e) =>
+                                setEditingTheme((prev) => ({
+                                  ...prev,
+                                  decorations: {
+                                    ...(prev?.decorations || {}),
+                                    footerOrnamentSize: e.target.value,
+                                  },
+                                }))
+                              }
+                            >
+                              <option value="32px">Nhỏ (32px)</option>
+                              <option value="48px">Vừa tiêu chuẩn (48px)</option>
+                              <option value="64px">Lớn (64px)</option>
+                              <option value="80px">Rất lớn (80px)</option>
+                            </CFormSelect>
+                          </CCol>
+                        </CRow>
+                      </CCol>
+
+                      {/* Live Footer Preview Box */}
+                      <CCol md={5}>
+                        <div className="p-3 bg-light rounded border text-center">
+                          <label
+                            className="form-label fw-bold text-dark mb-2 d-block"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            Xem trước trực tiếp Chân trang Footer
+                          </label>
+                          <div
+                            className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
+                            style={{ height: '140px' }}
+                          >
+                            <div className="d-flex align-items-center gap-2">
+                              {editingTheme?.decorations?.footerOrnamentUrl ? (
+                                <img
+                                  src={editingTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Left"
+                                  style={{
+                                    height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                    objectFit: 'contain',
+                                  }}
+                                />
+                              ) : (
+                                <span className="text-muted text-xs fst-italic">
+                                  [Hình trang trí]
+                                </span>
+                              )}
+                            </div>
+
+                            <span className="text-muted text-xs fw-semibold">
+                              © 2026 VI TÍNH NGUYÊN KIM
+                            </span>
+
+                            <div className="d-flex align-items-center gap-2">
+                              {editingTheme?.decorations?.footerOrnamentUrl ? (
+                                <img
+                                  src={editingTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Right"
+                                  style={{
+                                    height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                    objectFit: 'contain',
+                                  }}
+                                />
+                              ) : (
+                                <span className="text-muted text-xs fst-italic">
+                                  [Hình trang trí]
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </CCol>
+                    </CRow>
+                  </div>
+                )}
+              </CCol>
+            </CRow>
           </CCardBody>
         </CCard>
       )}
