@@ -34,6 +34,37 @@ function EditAddressManagement() {
   const [addressEditor, setAddressEditor] = useState('')
   const [phoneEditor, setPhoneEditor] = useState('')
 
+  // Upload Zalo & Messenger icon images
+  const [selectedIconZalo, setSelectedIconZalo] = useState('')
+  const [iconZaloPreview, setIconZaloPreview] = useState('')
+
+  const [selectedMessengerIcon, setSelectedMessengerIcon] = useState('')
+  const [messengerIconPreview, setMessengerIconPreview] = useState('')
+
+  const onIconZaloChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setIconZaloPreview(URL.createObjectURL(file))
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      fileReader.onload = (event) => {
+        setSelectedIconZalo(event.target.result)
+      }
+    }
+  }
+
+  const onMessengerIconChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setMessengerIconPreview(URL.createObjectURL(file))
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      fileReader.onload = (event) => {
+        setSelectedMessengerIcon(event.target.result)
+      }
+    }
+  }
+
   const initialValues = {
     title: '',
     companyName: '',
@@ -89,6 +120,15 @@ function EditAddressManagement() {
         })
         setAddressEditor(data?.address)
         setPhoneEditor(data?.phone)
+
+        if (data?.icon_zalo_url || data?.icon_zalo) {
+          const url = data.icon_zalo_url || (data.icon_zalo.startsWith('http') ? data.icon_zalo : `${imageBaseUrl}/${data.icon_zalo}`)
+          setIconZaloPreview(url)
+        }
+        if (data?.messenger_icon_url || data?.messenger_icon) {
+          const url = data.messenger_icon_url || (data.messenger_icon.startsWith('http') ? data.messenger_icon : `${imageBaseUrl}/${data.messenger_icon}`)
+          setMessengerIconPreview(url)
+        }
       } else {
         console.error('No data found for the given ID.')
       }
@@ -115,9 +155,9 @@ function EditAddressManagement() {
         map: values.map,
         display: values.visible,
         zalo: values.zalo,
-        icon_zalo: values.iconZalo,
+        icon_zalo: selectedIconZalo || values.iconZalo,
         messenger: values.messenger,
-        messenger_icon: values.messengerIcon,
+        messenger_icon: selectedMessengerIcon || values.messengerIcon,
       })
       if (response.data.status === true) {
         toast.success('Chỉnh sửa địa chỉ thành công!')
@@ -233,17 +273,31 @@ function EditAddressManagement() {
                         </Field>
                       </CCol>
                       <CCol md={6}>
-                        <label htmlFor="iconZalo-input">Icon Zalo (Tùy chọn URL)</label>
-                        <Field name="iconZalo">
-                          {({ field }) => (
-                            <CFormInput
-                              {...field}
-                              type="text"
-                              id="iconZalo-input"
-                              placeholder="https://..."
+                        <CFormInput
+                          name="iconZaloFile"
+                          type="file"
+                          id="iconZaloFile"
+                          label="Icon Zalo (Tải lên hình ảnh)"
+                          size="sm"
+                          accept="image/*"
+                          onChange={onIconZaloChange}
+                        />
+                        {iconZaloPreview && (
+                          <div className="mt-2 d-flex align-items-center gap-2">
+                            <CImage
+                              src={iconZaloPreview}
+                              alt="Icon Zalo"
+                              width={44}
+                              height={44}
+                              style={{
+                                objectFit: 'cover',
+                                border: '1px solid #dee2e6',
+                                borderRadius: '50%',
+                              }}
                             />
-                          )}
-                        </Field>
+                            <small className="text-muted">Ảnh icon Zalo hiện tại</small>
+                          </div>
+                        )}
                       </CCol>
                       <br />
 
@@ -261,17 +315,31 @@ function EditAddressManagement() {
                         </Field>
                       </CCol>
                       <CCol md={6}>
-                        <label htmlFor="messengerIcon-input">Icon Messenger (Tùy chọn URL)</label>
-                        <Field name="messengerIcon">
-                          {({ field }) => (
-                            <CFormInput
-                              {...field}
-                              type="text"
-                              id="messengerIcon-input"
-                              placeholder="https://..."
+                        <CFormInput
+                          name="messengerIconFile"
+                          type="file"
+                          id="messengerIconFile"
+                          label="Icon Messenger (Tải lên hình ảnh)"
+                          size="sm"
+                          accept="image/*"
+                          onChange={onMessengerIconChange}
+                        />
+                        {messengerIconPreview && (
+                          <div className="mt-2 d-flex align-items-center gap-2">
+                            <CImage
+                              src={messengerIconPreview}
+                              alt="Icon Messenger"
+                              width={44}
+                              height={44}
+                              style={{
+                                objectFit: 'cover',
+                                border: '1px solid #dee2e6',
+                                borderRadius: '50%',
+                              }}
                             />
-                          )}
-                        </Field>
+                            <small className="text-muted">Ảnh icon Messenger hiện tại</small>
+                          </div>
+                        )}
                       </CCol>
                       <br />
 
