@@ -222,13 +222,27 @@ function EditAddressManagement() {
                       <CCol md={6}>
                         <label htmlFor="zalo-input">Zalo (Số điện thoại hoặc Link)</label>
                         <Field name="zalo">
-                          {({ field }) => <CFormInput {...field} type="text" id="zalo-input" placeholder="0933808952" />}
+                          {({ field }) => (
+                            <CFormInput
+                              {...field}
+                              type="text"
+                              id="zalo-input"
+                              placeholder="0933808952"
+                            />
+                          )}
                         </Field>
                       </CCol>
                       <CCol md={6}>
                         <label htmlFor="iconZalo-input">Icon Zalo (Tùy chọn URL)</label>
                         <Field name="iconZalo">
-                          {({ field }) => <CFormInput {...field} type="text" id="iconZalo-input" placeholder="https://..." />}
+                          {({ field }) => (
+                            <CFormInput
+                              {...field}
+                              type="text"
+                              id="iconZalo-input"
+                              placeholder="https://..."
+                            />
+                          )}
                         </Field>
                       </CCol>
                       <br />
@@ -236,13 +250,27 @@ function EditAddressManagement() {
                       <CCol md={6}>
                         <label htmlFor="messenger-input">Facebook Messenger (Link)</label>
                         <Field name="messenger">
-                          {({ field }) => <CFormInput {...field} type="text" id="messenger-input" placeholder="https://www.facebook.com/vitinhnguyenkim" />}
+                          {({ field }) => (
+                            <CFormInput
+                              {...field}
+                              type="text"
+                              id="messenger-input"
+                              placeholder="https://www.facebook.com/vitinhnguyenkim"
+                            />
+                          )}
                         </Field>
                       </CCol>
                       <CCol md={6}>
                         <label htmlFor="messengerIcon-input">Icon Messenger (Tùy chọn URL)</label>
                         <Field name="messengerIcon">
-                          {({ field }) => <CFormInput {...field} type="text" id="messengerIcon-input" placeholder="https://..." />}
+                          {({ field }) => (
+                            <CFormInput
+                              {...field}
+                              type="text"
+                              id="messengerIcon-input"
+                              placeholder="https://..."
+                            />
+                          )}
                         </Field>
                       </CCol>
                       <br />
