@@ -658,50 +658,73 @@ function EditThemeConfig() {
       {/* TAB 1: CẤU HÌNH THEME */}
       {activeMainTab === 'theme_config' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-            <span>Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)</span>
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Cấu hình thông tin chiến dịch</h5>
+              <small className="text-muted">
+                Thiết lập tên, mã định danh và thời gian áp dụng chiến dịch
+              </small>
+            </div>
           </CCardHeader>
           <CCardBody className="p-4">
-            <CRow className="g-3 mb-3">
+            <CRow className="g-4 mb-3">
               <CCol md={6}>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Tên chiến dịch *
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Tên chiến dịch <span className="text-danger">*</span>
                 </label>
                 <CFormInput
-                  size="sm"
+                  placeholder="Ví dụ: Trung Thu, Giáng Sinh, Tết Nguyên Đán..."
                   value={editingTheme?.name || ''}
                   onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
                 />
+                <small className="text-muted d-block mt-1">Tên hiển thị nội bộ và quản trị</small>
               </CCol>
+
               <CCol md={6}>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Mã Code (Slug)
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Mã Code (Slug) <span className="text-danger">*</span>
                 </label>
                 <CFormInput
-                  size="sm"
+                  placeholder="Ví dụ: trungthu, noel, tet..."
                   value={editingTheme?.code || ''}
                   onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
                 />
+                <small className="text-muted d-block mt-1">
+                  Mã định danh duy nhất (viết liền không dấu)
+                </small>
               </CCol>
             </CRow>
 
-            <CRow className="g-3 mb-3">
+            <CRow className="g-4 mb-3">
               <CCol md={6}>
-                <label className="form-label font-semibold text-dark small mb-1">
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
                   Phân loại chiến dịch
                 </label>
                 <CFormInput
-                  size="sm"
+                  placeholder="Ví dụ: festive, sale, event..."
                   value={editingTheme?.tag || 'festive'}
                   onChange={(e) => setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))}
                 />
+                <small className="text-muted d-block mt-1">
+                  Nhóm chủ đề phân loại chiến dịch giao diện
+                </small>
               </CCol>
-              <CCol md={6} className="d-flex align-items-end">
-                <div className="p-2 border rounded bg-light w-100">
+
+              <CCol md={6}>
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Trạng thái kích hoạt
+                </label>
+                <div className="p-2.5 border rounded bg-light d-flex align-items-center justify-content-between">
+                  <div>
+                    <span className="fw-semibold text-dark d-block" style={{ fontSize: '13.5px' }}>
+                      Kích hoạt áp dụng ngay
+                    </span>
+                    <small className="text-muted">Áp dụng trực tiếp lên toàn bộ website</small>
+                  </div>
                   <CFormCheck
                     type="switch"
                     id="isActiveSwitch"
-                    label="Kích hoạt áp dụng ngay"
+                    style={{ transform: 'scale(1.25)', marginRight: '8px' }}
                     checked={editingTheme?.isActive}
                     onChange={(e) =>
                       setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
@@ -711,46 +734,52 @@ function EditThemeConfig() {
               </CCol>
             </CRow>
 
-            <CRow className="g-3 mb-3">
+            <CRow className="g-4 mb-3">
               <CCol md={6}>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Ngày bắt đầu
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Ngày bắt đầu chiến dịch
                 </label>
                 <CFormInput
                   type="date"
-                  size="sm"
                   value={formatDateInput(editingTheme?.startDate)}
                   onChange={(e) =>
                     setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
                   }
                 />
+                <small className="text-muted d-block mt-1">
+                  Thời điểm tự động kích hoạt chiến dịch
+                </small>
               </CCol>
+
               <CCol md={6}>
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Ngày kết thúc
+                <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
+                  Ngày kết thúc chiến dịch
                 </label>
                 <CFormInput
                   type="date"
-                  size="sm"
                   value={formatDateInput(editingTheme?.endDate)}
                   onChange={(e) =>
                     setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
                   }
                 />
+                <small className="text-muted d-block mt-1">Thời điểm tự động kết thúc áp dụng</small>
               </CCol>
             </CRow>
 
-            <div>
-              <label className="form-label font-semibold text-dark small mb-1">
+            <div className="mb-2">
+              <label className="form-label fw-bold text-dark mb-1.5" style={{ fontSize: '14px' }}>
                 Mô tả chi tiết chiến dịch
               </label>
               <CFormInput
-                size="sm"
+                placeholder="Nhập ghi chú hoặc mô tả về chiến dịch này..."
                 value={editingTheme?.description || ''}
                 onChange={(e) =>
                   setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
                 }
               />
+              <small className="text-muted d-block mt-1">
+                Ghi chú nội dung chiến dịch dành cho ban quản trị
+              </small>
             </div>
           </CCardBody>
         </CCard>
@@ -759,48 +788,50 @@ function EditThemeConfig() {
       {/* TAB 2: HÌNH ẢNH */}
       {activeMainTab === 'images' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-            <span>Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Quản lý banner &amp; hình ảnh chiến dịch</h5>
+              <small className="text-muted">
+                Tải lên và xem trước ảnh đại diện / banner chính của chiến dịch giao diện
+              </small>
+            </div>
           </CCardHeader>
           <CCardBody className="p-4">
-            <p className="text-muted text-xs mb-3">
-              Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
-            </p>
-
             <CRow className="g-4">
               <CCol md={6}>
-                {/* Upload Box */}
                 <div className="p-4 bg-light rounded border text-center mb-3">
-                  <label className="form-label font-semibold text-dark mb-2">
+                  <label
+                    className="form-label fw-bold text-dark mb-2 d-block"
+                    style={{ fontSize: '14.5px' }}
+                  >
                     Tải banner / ảnh đại diện mới từ máy tính
                   </label>
                   <CFormInput
                     type="file"
                     accept="image/*"
-                    size="sm"
                     className="mb-2"
                     onChange={handleFileChange}
                   />
-                  <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
+                  <small className="text-muted d-block">
+                    Hỗ trợ định dạng: JPG, PNG, WEBP (Dung lượng tối đa 5MB)
+                  </small>
                 </div>
               </CCol>
 
               <CCol md={6}>
+                <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '14.5px' }}>
+                  Ảnh đại diện chiến dịch hiện tại
+                </label>
                 {editingTheme?.image ? (
-                  <div>
-                    <span className="form-label font-semibold text-dark small d-block mb-1">
-                      Ảnh đại diện chiến dịch hiện tại
-                    </span>
-                    <div
-                      className="rounded border overflow-hidden bg-light shadow-xs"
-                      style={{ height: '180px' }}
-                    >
-                      <CImage
-                        src={editingTheme.image}
-                        className="w-100 h-100"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
+                  <div
+                    className="rounded border overflow-hidden bg-white shadow-xs p-2"
+                    style={{ height: '200px' }}
+                  >
+                    <CImage
+                      src={editingTheme.image}
+                      className="w-100 h-100 rounded"
+                      style={{ objectFit: 'contain' }}
+                    />
                   </div>
                 ) : (
                   <div className="p-4 bg-light rounded border text-center text-muted">
@@ -816,10 +847,13 @@ function EditThemeConfig() {
       {/* TAB 3: CẤU HÌNH LOGO */}
       {activeMainTab === 'logo' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <span className="fw-bold text-dark fs-6">
-              Cấu hình Logo Header &amp; Chân trang Footer
-            </span>
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Cấu hình Logo Header &amp; Chân trang Footer</h5>
+              <small className="text-muted">
+                Tùy biến Logo sự kiện và hình trang trí các góc chân trang
+              </small>
+            </div>
 
             {/* SUB TABS FOR HEADER & FOOTER */}
             <CNav variant="pills" className="small">
@@ -860,30 +894,35 @@ function EditThemeConfig() {
                 <CRow className="g-4 align-items-center">
                   <CCol md={7}>
                     <div className="p-4 bg-light rounded border text-center">
-                      <label className="form-label font-semibold text-dark mb-2">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '14px' }}
+                      >
                         Tải ảnh Logo chiến dịch mới từ máy tính
                       </label>
                       <CFormInput
                         type="file"
                         accept="image/*"
-                        size="sm"
                         className="mb-2"
                         onChange={handleMainLogoUpload}
                       />
-                      <span className="text-muted text-xs d-block">
+                      <small className="text-muted d-block">
                         {
                           'Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo mặc định trên Header website.'
                         }
-                      </span>
+                      </small>
                     </div>
                   </CCol>
 
                   {/* Live Logo Preview Box */}
                   <CCol md={5}>
                     <div className="p-3 bg-light rounded border text-center">
-                      <span className="fw-semibold text-dark text-xs d-block mb-2">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '13.5px' }}
+                      >
                         Xem trước trực tiếp Logo Header
-                      </span>
+                      </label>
                       <div
                         className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
                         style={{ height: '140px' }}
@@ -916,29 +955,33 @@ function EditThemeConfig() {
                   <CCol md={7}>
                     {/* Upload Box */}
                     <div className="p-3 bg-light rounded border text-center mb-3">
-                      <label className="form-label font-semibold text-dark small mb-1">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '14px' }}
+                      >
                         Tải ảnh trang trí Chân trang Footer từ máy tính
                       </label>
                       <CFormInput
                         type="file"
                         accept="image/*"
-                        size="sm"
                         className="mb-1"
                         onChange={handleFooterOrnamentUpload}
                       />
-                      <span className="text-muted text-xs">
+                      <small className="text-muted d-block">
                         Khuyên dùng ảnh PNG / WEBP tách nền
-                      </span>
+                      </small>
                     </div>
 
                     {/* Position & Size */}
                     <CRow className="g-3">
                       <CCol md={6}>
-                        <label className="form-label font-semibold text-dark small mb-1">
+                        <label
+                          className="form-label fw-bold text-dark mb-1"
+                          style={{ fontSize: '13.5px' }}
+                        >
                           Vị trí hiển thị trên Footer
                         </label>
                         <CFormSelect
-                          size="sm"
                           value={
                             editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
                           }
@@ -958,11 +1001,13 @@ function EditThemeConfig() {
                         </CFormSelect>
                       </CCol>
                       <CCol md={6}>
-                        <label className="form-label font-semibold text-dark small mb-1">
+                        <label
+                          className="form-label fw-bold text-dark mb-1"
+                          style={{ fontSize: '13.5px' }}
+                        >
                           Kích thước hình trang trí
                         </label>
                         <CFormSelect
-                          size="sm"
                           value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
                           onChange={(e) =>
                             setEditingTheme((prev) => ({
@@ -986,9 +1031,12 @@ function EditThemeConfig() {
                   {/* Live Footer Preview Box */}
                   <CCol md={5}>
                     <div className="p-3 bg-light rounded border text-center">
-                      <span className="fw-semibold text-dark text-xs d-block mb-2">
+                      <label
+                        className="form-label fw-bold text-dark mb-2 d-block"
+                        style={{ fontSize: '13.5px' }}
+                      >
                         Xem trước trực tiếp Chân trang Footer
-                      </span>
+                      </label>
                       <div
                         className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
                         style={{ height: '140px' }}
@@ -1039,18 +1087,22 @@ function EditThemeConfig() {
       {/* TAB 4: BACKGROUND WEBSITE */}
       {activeMainTab === 'background' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-            <span>Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Họa tiết &amp; hoa văn nền Website</h5>
+              <small className="text-muted">
+                Tùy chỉnh watermark, pattern hoa văn lặp và độ trong suốt nền website
+              </small>
+            </div>
           </CCardHeader>
           <CCardBody className="p-4">
             <CRow className="g-4">
               <CCol md={6}>
-                <div className="mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
+                <div className="mb-3.5">
+                  <label className="form-label fw-bold text-dark mb-1" style={{ fontSize: '14px' }}>
                     Chọn mẫu hoa văn nền
                   </label>
                   <CFormSelect
-                    size="sm"
                     value={currentPreset}
                     onChange={(e) =>
                       setEditingTheme((prev) => ({
@@ -1068,24 +1120,33 @@ function EditThemeConfig() {
                       </option>
                     ))}
                   </CFormSelect>
+                  <small className="text-muted d-block mt-1">
+                    Hoa văn biểu tượng sự kiện được lặp tinh tế trên nền trang
+                  </small>
                 </div>
 
                 {currentPreset === 'custom' && (
-                  <div className="mb-3">
-                    <label className="form-label font-semibold text-dark small mb-1">
+                  <div className="mb-3.5">
+                    <label
+                      className="form-label fw-bold text-dark mb-1"
+                      style={{ fontSize: '14px' }}
+                    >
                       Tải ảnh nền riêng
                     </label>
-                    <CFormInput type="file" size="sm" onChange={handleCustomBgUpload} />
+                    <CFormInput type="file" onChange={handleCustomBgUpload} />
                   </div>
                 )}
 
                 {/* OPACITY SLIDER */}
-                <div className="mb-3">
+                <div className="mb-3.5">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <label className="form-label font-semibold text-dark small mb-0">
+                    <label
+                      className="form-label fw-bold text-dark mb-0"
+                      style={{ fontSize: '14px' }}
+                    >
                       Độ đậm nhạt hoa văn (Opacity)
                     </label>
-                    <span className="text-muted text-xs font-monospace">
+                    <span className="badge bg-primary px-2 py-1 font-monospace">
                       {Math.round((localOpacity || 0.15) * 100)}%
                     </span>
                   </div>
@@ -1108,15 +1169,17 @@ function EditThemeConfig() {
                       }))
                     }}
                   />
+                  <small className="text-muted d-block">
+                    Khuyên dùng 15% - 25% để không làm rối mắt người dùng khi đọc nội dung
+                  </small>
                 </div>
 
                 {/* COVERAGE MODE SELECT */}
                 <div className="mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
+                  <label className="form-label fw-bold text-dark mb-1" style={{ fontSize: '14px' }}>
                     Chế độ áp dụng hoa văn
                   </label>
                   <CFormSelect
-                    size="sm"
                     value={editingTheme?.background?.mode || 'pattern'}
                     onChange={(e) =>
                       setEditingTheme((prev) => ({
@@ -1138,14 +1201,17 @@ function EditThemeConfig() {
               <CCol md={6}>
                 {/* LIVE WATERMARK PREVIEW */}
                 <div>
-                  <span className="fw-semibold text-dark text-xs d-block mb-2">
+                  <label
+                    className="form-label fw-bold text-dark mb-2 d-block"
+                    style={{ fontSize: '14px' }}
+                  >
                     Xem trước trực tiếp hoa văn nền (Live Preview)
-                  </span>
+                  </label>
                   <div
                     className="rounded border overflow-hidden position-relative shadow-xs"
                     style={{
                       backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                      height: '240px',
+                      height: '260px',
                     }}
                   >
                     <ThemeBackgroundWatermarkLayer
@@ -1163,29 +1229,62 @@ function EditThemeConfig() {
       {/* TAB 5: BẢNG MÀU */}
       {activeMainTab === 'colors' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
-            <span>Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Bảng màu tổng thể Website</h5>
+              <small className="text-muted">
+                Thiết lập hệ thống màu sắc chủ đạo, thanh menu và các điểm nhấn trên giao diện
+              </small>
+            </div>
           </CCardHeader>
           <CCardBody className="p-4">
             <CRow className="g-4">
               <CCol md={6}>
-                <CRow className="g-2">
+                <CRow className="g-3">
                   {[
-                    { label: 'Màu chính (Nút & Viền)', key: 'primary' },
-                    { label: 'Màu thanh Menu Topbar', key: 'secondary' },
-                    { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
-                    { label: 'Màu nền website', key: 'background' },
-                    { label: 'Màu chữ văn bản', key: 'text' },
+                    {
+                      label: 'Màu chính (Nút & Viền)',
+                      key: 'primary',
+                      desc: 'Màu nhận diện thương hiệu & nút bấm chính',
+                    },
+                    {
+                      label: 'Màu thanh Menu Topbar',
+                      key: 'secondary',
+                      desc: 'Màu nền thanh menu điều hướng & topbar',
+                    },
+                    {
+                      label: 'Màu nhấn (Sale & Hotline)',
+                      key: 'accent',
+                      desc: 'Màu nổi bật cho nhãn giảm giá & hotline',
+                    },
+                    {
+                      label: 'Màu nền website',
+                      key: 'background',
+                      desc: 'Màu phông nền toàn trang web',
+                    },
+                    {
+                      label: 'Màu chữ văn bản',
+                      key: 'text',
+                      desc: 'Màu chữ tiêu đề & nội dung chính',
+                    },
                   ].map((item) => (
                     <CCol key={item.key} md={12}>
-                      <div className="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
-                        <span className="small text-secondary fw-semibold">{item.label}</span>
+                      <div className="p-3 border rounded bg-light d-flex align-items-center justify-content-between">
+                        <div>
+                          <label
+                            className="form-label fw-bold text-dark mb-0 d-block"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            {item.label}
+                          </label>
+                          <small className="text-muted">{item.desc}</small>
+                        </div>
                         <div className="d-flex align-items-center gap-2">
                           <input
                             type="color"
                             value={editingTheme?.colors?.[item.key] || '#2356c4'}
                             className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
-                            style={{ width: '28px', height: '28px' }}
+                            style={{ width: '34px', height: '34px' }}
                             onChange={(e) => {
                               const newCols = {
                                 ...(editingTheme?.colors || {}),
@@ -1195,10 +1294,9 @@ function EditThemeConfig() {
                             }}
                           />
                           <CFormInput
-                            size="sm"
                             value={editingTheme?.colors?.[item.key] || '#2356c4'}
                             className="font-monospace text-uppercase"
-                            style={{ width: '85px', fontSize: '11px' }}
+                            style={{ width: '95px', fontSize: '12px', textAlign: 'center' }}
                             onChange={(e) => {
                               const newCols = {
                                 ...(editingTheme?.colors || {}),
@@ -1215,30 +1313,33 @@ function EditThemeConfig() {
               </CCol>
 
               <CCol md={6}>
-                <span className="fw-semibold text-dark text-xs d-block mb-2">
+                <label
+                  className="form-label fw-bold text-dark mb-2 d-block"
+                  style={{ fontSize: '14px' }}
+                >
                   Xem trước phối màu giao diện (Color Mockup)
-                </span>
+                </label>
                 <div
                   className="p-3 rounded border shadow-xs"
                   style={{
                     backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                    minHeight: '200px',
+                    minHeight: '260px',
                   }}
                 >
                   <div
-                    className="p-2.5 rounded mb-3 text-white fw-bold d-flex justify-content-between align-items-center"
+                    className="p-3 rounded mb-3 text-white fw-bold d-flex justify-content-between align-items-center shadow-xs"
                     style={{ backgroundColor: editingTheme?.colors?.secondary || '#ffb716' }}
                   >
                     <span>Menu / Header Topbar</span>
                     <span
-                      className="badge px-2 py-1"
+                      className="badge px-2.5 py-1.5 fw-bold"
                       style={{ backgroundColor: editingTheme?.colors?.accent || '#e30019' }}
                     >
-                      HOT SALE
+                      HOT SALE -50%
                     </span>
                   </div>
 
-                  <div className="p-3 bg-white rounded border mb-3">
+                  <div className="p-3 bg-white rounded border shadow-xs mb-2">
                     <h6
                       className="fw-bold mb-1"
                       style={{ color: editingTheme?.colors?.text || '#222222' }}
@@ -1249,15 +1350,23 @@ function EditThemeConfig() {
                       className="small mb-3"
                       style={{ color: editingTheme?.colors?.text || '#555555' }}
                     >
-                      Mô tả chi tiết sản phẩm hiển thị trên nền website đã chọn.
+                      Mô tả chi tiết sản phẩm hiển thị trên nền website với màu sắc phối chuẩn.
                     </p>
-                    <button
-                      type="button"
-                      className="btn btn-sm text-white fw-bold px-3 py-1.5 rounded"
-                      style={{ backgroundColor: editingTheme?.colors?.primary || '#2356c4' }}
-                    >
-                      Nút bấm chính (Primary)
-                    </button>
+                    <div className="d-flex align-items-center gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-sm text-white fw-bold px-3 py-1.5 rounded"
+                        style={{ backgroundColor: editingTheme?.colors?.primary || '#2356c4' }}
+                      >
+                        Thêm vào giỏ hàng
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-secondary fw-semibold px-3 py-1.5 rounded"
+                      >
+                        Xem chi tiết
+                      </button>
+                    </div>
                   </div>
                 </div>
               </CCol>
