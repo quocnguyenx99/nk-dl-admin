@@ -19,6 +19,7 @@ import {
   CNavLink,
   CRow,
   CSpinner,
+  CFormSwitch,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilSave } from '@coreui/icons'
@@ -278,8 +279,9 @@ function EditThemeConfig() {
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [editingTheme, setEditingTheme] = useState(null)
+  const [allThemes, setAllThemes] = useState([])
   const [localOpacity, setLocalOpacity] = useState(0.15)
-  const [activeMainTab, setActiveMainTab] = useState('theme_config')
+  const [activeMainTab, setActiveMainTab] = useState('overview')
   const [activePreviewTab, setActivePreviewTab] = useState('home')
   const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
   const [previewModal, setPreviewModal] = useState({
@@ -348,6 +350,7 @@ function EditThemeConfig() {
           isActive: !!item.is_active,
         }))
 
+        setAllThemes(themeList)
         const target = themeList.find((t) => String(t.id) === String(themeId)) || themeList[0]
         if (target) {
           setEditingTheme(target)
@@ -569,24 +572,23 @@ function EditThemeConfig() {
         code: editingTheme.code || 'default',
         start_date: editingTheme.startDate || null,
         end_date: editingTheme.endDate || null,
-        is_active: !!editingTheme.isActive,
+        is_active: editingTheme.isActive ? 1 : 0,
         theme_config: {
-          tag: editingTheme.tag,
-          description: editingTheme.description,
-          image: editingTheme.image,
-          colors: editingTheme.colors,
+          tag: editingTheme.tag || 'Chiến dịch',
+          description: editingTheme.description || '',
+          image: editingTheme.image || '',
+          colors: editingTheme.colors || {},
           decorations: {
             particles: editingTheme?.background?.preset || editingTheme?.code || 'none',
             ornaments: editingTheme?.background?.preset || editingTheme?.code || 'none',
             productOrnamentUrl: editingTheme?.decorations?.productOrnamentUrl || '',
-            productOrnamentPosition:
-              editingTheme?.decorations?.productOrnamentPosition || 'bottom-left',
-            productOrnamentSize: editingTheme?.decorations?.productOrnamentSize || '30%',
+            productOrnamentPosition: 'full',
+            productOrnamentSize: '100%',
             productOrnamentApplyTo:
               editingTheme?.decorations?.productOrnamentApplyTo || 'main_only',
             logoUrl: editingTheme?.decorations?.logoUrl || '',
             logoOrnamentUrl: editingTheme?.decorations?.logoOrnamentUrl || '',
-            logoOrnamentPosition: editingTheme?.decorations?.logoOrnamentPosition || 'bottom-left',
+            logoOrnamentPosition: editingTheme?.decorations?.logoOrnamentPosition || 'bottom-right',
             logoOrnamentSize: editingTheme?.decorations?.logoOrnamentSize || '36px',
             footerOrnamentUrl: editingTheme?.decorations?.footerOrnamentUrl || '',
             footerOrnamentPosition:
@@ -632,71 +634,135 @@ function EditThemeConfig() {
   const bgConfig = editingTheme?.background || { preset: 'none', opacity: 0.15, mode: 'pattern' }
   const festiveTheme = editingTheme?.decorations?.particles || editingTheme?.code || 'none'
 
+  const MAIN_BUILDER_TABS = [
+    { key: 'overview', label: 'Tổng quan' },
+    { key: 'colors', label: 'Màu sắc' },
+    { key: 'pages_layout', label: 'Trang & Bố cục' },
+    { key: 'resources', label: 'Banner & Tài nguyên' },
+    { key: 'effects', label: 'Hiệu ứng' },
+  ]
+
   return (
     <div className="pb-5">
-      {/* Header Bar */}
-      <div className="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-        <div>
-          <h4 className="fw-bold text-dark mb-0 text-uppercase">
-            CHỈNH SỬA CHIẾN DỊCH GIAO DIỆN: {editingTheme?.name}
-          </h4>
+      {/* Top Builder Header */}
+      <div className="mb-4">
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+          <h3 className="fw-bold mb-0" style={{ color: '#4a1512', fontSize: '23px' }}>
+            Trình xây dựng giao diện
+          </h3>
+          <div className="d-flex align-items-center gap-2">
+            <CButton
+              color="primary"
+              className="text-white px-3.5 py-2 fw-bold shadow-sm d-flex align-items-center gap-1.5"
+              disabled={isSaving}
+              onClick={handleSave}
+            >
+              {isSaving ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+            </CButton>
+            <CButton
+              color="secondary"
+              variant="outline"
+              className="fw-semibold px-3 py-2 d-flex align-items-center gap-1"
+              onClick={() => navigate('/theme-custom/config')}
+            >
+              <CIcon icon={cilArrowLeft} /> Quay lại danh sách
+            </CButton>
+          </div>
         </div>
-        <div className="d-flex align-items-center gap-2">
-          <CButton
-            color="secondary"
-            variant="outline"
-            className="fw-semibold d-flex align-items-center gap-1"
-            onClick={() => navigate('/theme-custom/config')}
+
+        {/* 2 Select Boxes: Website & Giao diện */}
+        <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
+          {/* Box 1: Website */}
+          <div
+            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between cursor-pointer"
+            style={{ minWidth: '270px', borderColor: '#f1dfd8' }}
           >
-            <CIcon icon={cilArrowLeft} /> Quay lại danh sách
-          </CButton>
+            <div>
+              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
+                Website
+              </small>
+              <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
+                Website chính (vitinhnguyenkim.vn)
+              </span>
+            </div>
+            <span className="text-muted ms-2 small">▼</span>
+          </div>
+
+          {/* Box 2: Giao diện */}
+          <div
+            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between position-relative cursor-pointer"
+            style={{ minWidth: '280px', borderColor: '#f1dfd8' }}
+          >
+            <div>
+              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
+                Giao diện
+              </small>
+              <div className="d-flex align-items-center gap-2">
+                <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
+                  {editingTheme?.name || 'Chiến dịch giao diện'}
+                </span>
+                <span
+                  className={`badge rounded-pill ${
+                    editingTheme?.isActive
+                      ? 'bg-success-subtle text-success border border-success-subtle'
+                      : 'bg-light text-secondary border'
+                  }`}
+                  style={{ fontSize: '10.5px' }}
+                >
+                  {editingTheme?.isActive ? 'Đang áp dụng' : 'Bản nháp'}
+                </span>
+              </div>
+            </div>
+            <span className="text-muted ms-2 small">▼</span>
+
+            {/* Hidden native select for switching theme */}
+            <select
+              className="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+              value={editingTheme?.id || themeId}
+              onChange={(e) => navigate(`/theme-custom/edit?id=${e.target.value}`)}
+            >
+              {allThemes.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name} {t.isActive ? '(Đang áp dụng)' : '(Bản nháp)'}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Underline Style Navigation Tabs */}
+        <div className="d-flex align-items-center gap-4 border-bottom pt-1 pb-0 overflow-auto">
+          {MAIN_BUILDER_TABS.map((tab) => {
+            const isActive = activeMainTab === tab.key
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                className={`btn btn-link text-decoration-none px-1 py-2.5 position-relative border-0 shadow-none ${
+                  isActive ? 'text-danger fw-bold' : 'text-secondary fw-semibold'
+                }`}
+                style={{ fontSize: '14.5px', whiteSpace: 'nowrap' }}
+                onClick={() => setActiveMainTab(tab.key)}
+              >
+                {tab.label}
+                {isActive && (
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
+                    style={{
+                      height: '3px',
+                      backgroundColor: '#b91c1c',
+                      borderRadius: '3px 3px 0 0',
+                    }}
+                  />
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      {/* 4 MAIN BIG TABS NAVIGATION */}
-      <div className="mb-4 bg-white p-2 rounded border shadow-xs">
-        <CNav variant="pills" className="d-flex flex-wrap gap-2">
-          <CNavItem>
-            <CNavLink
-              active={activeMainTab === 'theme_config'}
-              className="cursor-pointer fw-bold py-2 px-3"
-              onClick={() => setActiveMainTab('theme_config')}
-            >
-              1. Cấu hình theme
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink
-              active={activeMainTab === 'logo'}
-              className="cursor-pointer fw-bold py-2 px-3"
-              onClick={() => setActiveMainTab('logo')}
-            >
-              2. Cấu hình logo &amp; Trang trí
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink
-              active={activeMainTab === 'background'}
-              className="cursor-pointer fw-bold py-2 px-3"
-              onClick={() => setActiveMainTab('background')}
-            >
-              3. Background website
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink
-              active={activeMainTab === 'colors'}
-              className="cursor-pointer fw-bold py-2 px-3"
-              onClick={() => setActiveMainTab('colors')}
-            >
-              4. Bảng màu
-            </CNavLink>
-          </CNavItem>
-        </CNav>
-      </div>
-
-      {/* TAB 1: CẤU HÌNH THEME (Bao gồm thông tin & Banner hình ảnh) */}
-      {activeMainTab === 'theme_config' && (
+      {/* TAB 1: TỔNG QUAN (Thông tin chiến dịch & Banner hình ảnh) */}
+      {activeMainTab === 'overview' && (
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
@@ -854,12 +920,12 @@ function EditThemeConfig() {
         </CCard>
       )}
 
-      {/* TAB 3: TRANG TRÍ (SẢN PHẨM, LOGO & FOOTER) */}
-      {activeMainTab === 'logo' && (
+      {/* TAB 4: BANNER & TÀI NGUYÊN (SẢN PHẨM, LOGO & FOOTER) */}
+      {activeMainTab === 'resources' && (
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom">
             <h5 className="fw-bold text-dark mb-0">
-              {'Cấu hình Trang trí (Hình ảnh sản phẩm, Logo & Chân trang)'}
+              {'Cấu hình Banner & Tài nguyên (Khung sản phẩm, Logo & Chân trang)'}
             </h5>
           </CCardHeader>
 
@@ -1354,8 +1420,8 @@ function EditThemeConfig() {
         </CCard>
       )}
 
-      {/* TAB 4: BACKGROUND WEBSITE */}
-      {activeMainTab === 'background' && (
+      {/* TAB 5: HIỆU ỨNG (BACKGROUND & PARTICLES) */}
+      {activeMainTab === 'effects' && (
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
@@ -1632,6 +1698,78 @@ function EditThemeConfig() {
                       </button>
                     </div>
                   </div>
+                </div>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      )}
+
+      {/* TAB 3: TRANG & BỐ CỤC */}
+      {activeMainTab === 'pages_layout' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+              <h5 className="fw-bold text-dark mb-0">Cấu hình Trang &amp; Bố cục hiển thị</h5>
+            </div>
+          </CCardHeader>
+          <CCardBody className="p-4">
+            <CRow className="g-4">
+              <CCol md={12}>
+                <div className="table-responsive border rounded bg-white">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th style={{ width: '60px' }}>STT</th>
+                        <th>Tên trang</th>
+                        <th>Mẫu bố cục (Layout)</th>
+                        <th style={{ width: '160px' }}>Trạng thái</th>
+                        <th style={{ width: '130px' }}>Tùy chỉnh</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pagesLayouts.map((page, index) => (
+                        <tr key={page.id}>
+                          <td className="text-muted">{index + 1}</td>
+                          <td>
+                            <span className="fw-bold text-dark">{page.name}</span>
+                          </td>
+                          <td>
+                            <CFormSelect
+                              size="sm"
+                              value={page.layout}
+                              style={{ maxWidth: '260px' }}
+                              onChange={(e) => {
+                                const newLayouts = [...pagesLayouts]
+                                newLayouts[index].layout = e.target.value
+                                setPagesLayouts(newLayouts)
+                              }}
+                            >
+                              <option value="Tiêu chuẩn">Tiêu chuẩn (Mặc định)</option>
+                              <option value="Đầy đủ (Full Width)">Đầy đủ (Full Width)</option>
+                              <option value="Dạng lưới (Grid)">Dạng lưới (Grid)</option>
+                            </CFormSelect>
+                          </td>
+                          <td>
+                            <CFormSwitch
+                              label={page.enabled ? 'Áp dụng' : 'Tắt'}
+                              checked={page.enabled}
+                              onChange={(e) => {
+                                const newLayouts = [...pagesLayouts]
+                                newLayouts[index].enabled = e.target.checked
+                                setPagesLayouts(newLayouts)
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-light text-primary border cursor-pointer px-2.5 py-1.5 fw-semibold">
+                              ⚙ Thiết lập
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </CCol>
             </CRow>
