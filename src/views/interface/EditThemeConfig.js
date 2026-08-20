@@ -261,6 +261,7 @@ function EditThemeConfig() {
   const [isSaving, setIsSaving] = useState(false)
   const [editingTheme, setEditingTheme] = useState(null)
   const [localOpacity, setLocalOpacity] = useState(0.15)
+  const [activeMainTab, setActiveMainTab] = useState('theme_config')
   const [activePreviewTab, setActivePreviewTab] = useState('home')
   const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
 
@@ -603,126 +604,174 @@ function EditThemeConfig() {
         </div>
       </div>
 
-      {/* ROW 1: General Info & Interface Images */}
-      <CRow className="g-4 mb-4">
-        {/* Thẻ 1: Thông tin chung & Lập lịch chiến dịch */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>
-                Thẻ 1: Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)
-              </span>
-            </CCardHeader>
-            <CCardBody className="p-3">
-              <CRow className="g-2 mb-2">
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tên chiến dịch *
-                  </label>
-                  <CFormInput
-                    size="sm"
-                    value={editingTheme?.name || ''}
-                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
-                  />
-                </CCol>
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Mã Code (Slug)
-                  </label>
-                  <CFormInput
-                    size="sm"
-                    value={editingTheme?.code || ''}
-                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
-                  />
-                </CCol>
-              </CRow>
+      {/* 5 MAIN BIG TABS NAVIGATION */}
+      <div className="mb-4 bg-white p-2 rounded border shadow-xs">
+        <CNav variant="pills" className="d-flex flex-wrap gap-2">
+          <CNavItem>
+            <CNavLink
+              active={activeMainTab === 'theme_config'}
+              className="cursor-pointer fw-bold py-2 px-3"
+              onClick={() => setActiveMainTab('theme_config')}
+            >
+              1. Cấu hình theme
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink
+              active={activeMainTab === 'images'}
+              className="cursor-pointer fw-bold py-2 px-3"
+              onClick={() => setActiveMainTab('images')}
+            >
+              2. Hình ảnh
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink
+              active={activeMainTab === 'logo'}
+              className="cursor-pointer fw-bold py-2 px-3"
+              onClick={() => setActiveMainTab('logo')}
+            >
+              3. Cấu hình logo
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink
+              active={activeMainTab === 'background'}
+              className="cursor-pointer fw-bold py-2 px-3"
+              onClick={() => setActiveMainTab('background')}
+            >
+              4. Background website
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink
+              active={activeMainTab === 'colors'}
+              className="cursor-pointer fw-bold py-2 px-3"
+              onClick={() => setActiveMainTab('colors')}
+            >
+              5. Bảng màu
+            </CNavLink>
+          </CNavItem>
+        </CNav>
+      </div>
 
-              <CRow className="g-2 mb-2">
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Phân loại chiến dịch
-                  </label>
-                  <CFormInput
-                    size="sm"
-                    value={editingTheme?.tag || 'festive'}
-                    onChange={(e) => setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))}
-                  />
-                </CCol>
-                <CCol md={6} className="d-flex align-items-end">
-                  <div className="p-2 border rounded bg-light w-100">
-                    <CFormCheck
-                      type="switch"
-                      id="isActiveSwitch"
-                      label="Kích hoạt áp dụng ngay"
-                      checked={editingTheme?.isActive}
-                      onChange={(e) =>
-                        setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
-                      }
-                    />
-                  </div>
-                </CCol>
-              </CRow>
-
-              <CRow className="g-2 mb-2">
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày bắt đầu
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.startDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
-                    }
-                  />
-                </CCol>
-                <CCol md={6}>
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Ngày kết thúc
-                  </label>
-                  <CFormInput
-                    type="date"
-                    size="sm"
-                    value={formatDateInput(editingTheme?.endDate)}
-                    onChange={(e) =>
-                      setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
-                    }
-                  />
-                </CCol>
-              </CRow>
-
-              <div>
+      {/* TAB 1: CẤU HÌNH THEME */}
+      {activeMainTab === 'theme_config' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+            <span>Thông tin chung &amp; Lập lịch chiến dịch (Campaign Info &amp; Schedule)</span>
+          </CCardHeader>
+          <CCardBody className="p-4">
+            <CRow className="g-3 mb-3">
+              <CCol md={6}>
                 <label className="form-label font-semibold text-dark small mb-1">
-                  Mô tả chi tiết chiến dịch
+                  Tên chiến dịch *
                 </label>
                 <CFormInput
                   size="sm"
-                  value={editingTheme?.description || ''}
+                  value={editingTheme?.name || ''}
+                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, name: e.target.value }))}
+                />
+              </CCol>
+              <CCol md={6}>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Mã Code (Slug)
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.code || ''}
+                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, code: e.target.value }))}
+                />
+              </CCol>
+            </CRow>
+
+            <CRow className="g-3 mb-3">
+              <CCol md={6}>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Phân loại chiến dịch
+                </label>
+                <CFormInput
+                  size="sm"
+                  value={editingTheme?.tag || 'festive'}
+                  onChange={(e) => setEditingTheme((prev) => ({ ...prev, tag: e.target.value }))}
+                />
+              </CCol>
+              <CCol md={6} className="d-flex align-items-end">
+                <div className="p-2 border rounded bg-light w-100">
+                  <CFormCheck
+                    type="switch"
+                    id="isActiveSwitch"
+                    label="Kích hoạt áp dụng ngay"
+                    checked={editingTheme?.isActive}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({ ...prev, isActive: e.target.checked }))
+                    }
+                  />
+                </div>
+              </CCol>
+            </CRow>
+
+            <CRow className="g-3 mb-3">
+              <CCol md={6}>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Ngày bắt đầu
+                </label>
+                <CFormInput
+                  type="date"
+                  size="sm"
+                  value={formatDateInput(editingTheme?.startDate)}
                   onChange={(e) =>
-                    setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                    setEditingTheme((prev) => ({ ...prev, startDate: e.target.value }))
                   }
                 />
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
+              </CCol>
+              <CCol md={6}>
+                <label className="form-label font-semibold text-dark small mb-1">
+                  Ngày kết thúc
+                </label>
+                <CFormInput
+                  type="date"
+                  size="sm"
+                  value={formatDateInput(editingTheme?.endDate)}
+                  onChange={(e) =>
+                    setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
+                  }
+                />
+              </CCol>
+            </CRow>
 
-        {/* Thẻ 2: Banner & Hero Assets */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 2: Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <div>
-                <p className="text-muted text-xs mb-2">
-                  Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
-                </p>
+            <div>
+              <label className="form-label font-semibold text-dark small mb-1">
+                Mô tả chi tiết chiến dịch
+              </label>
+              <CFormInput
+                size="sm"
+                value={editingTheme?.description || ''}
+                onChange={(e) =>
+                  setEditingTheme((prev) => ({ ...prev, description: e.target.value }))
+                }
+              />
+            </div>
+          </CCardBody>
+        </CCard>
+      )}
 
+      {/* TAB 2: HÌNH ẢNH */}
+      {activeMainTab === 'images' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+            <span>Banner &amp; Hình ảnh Giao diện (Banners &amp; Assets)</span>
+          </CCardHeader>
+          <CCardBody className="p-4">
+            <p className="text-muted text-xs mb-3">
+              Quản lý danh sách hình ảnh banner hiển thị trên chiến dịch
+            </p>
+
+            <CRow className="g-4">
+              <CCol md={6}>
                 {/* Upload Box */}
-                <div className="p-3 bg-light rounded border text-center mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
+                <div className="p-4 bg-light rounded border text-center mb-3">
+                  <label className="form-label font-semibold text-dark mb-2">
                     Tải banner / ảnh đại diện mới từ máy tính
                   </label>
                   <CFormInput
@@ -734,15 +783,17 @@ function EditThemeConfig() {
                   />
                   <span className="text-muted text-xs">Chấp nhận JPG, PNG, WEBP (Tối đa 5MB)</span>
                 </div>
+              </CCol>
 
-                {editingTheme?.image && (
+              <CCol md={6}>
+                {editingTheme?.image ? (
                   <div>
                     <span className="form-label font-semibold text-dark small d-block mb-1">
-                      Ảnh đại diện chiến dịch
+                      Ảnh đại diện chiến dịch hiện tại
                     </span>
                     <div
-                      className="rounded border overflow-hidden bg-light mb-3"
-                      style={{ height: '120px' }}
+                      className="rounded border overflow-hidden bg-light shadow-xs"
+                      style={{ height: '180px' }}
                     >
                       <CImage
                         src={editingTheme.image}
@@ -751,414 +802,471 @@ function EditThemeConfig() {
                       />
                     </div>
                   </div>
+                ) : (
+                  <div className="p-4 bg-light rounded border text-center text-muted">
+                    Chưa có ảnh đại diện nào được tải lên
+                  </div>
                 )}
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      )}
 
-      {/* ROW 2: Single Unified Card with Top Nav Tabs for Header Logo & Footer Ornaments */}
-      <CRow className="mb-4">
-        <CCol md={12}>
-          <CCard className="shadow-xs border">
-            <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-              <span className="fw-bold text-dark fs-6">
-                Thẻ 3: Cấu hình Logo Header &amp; Chân trang Footer
-              </span>
+      {/* TAB 3: CẤU HÌNH LOGO */}
+      {activeMainTab === 'logo' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <span className="fw-bold text-dark fs-6">
+              Cấu hình Logo Header &amp; Chân trang Footer
+            </span>
 
-              {/* TOP NAV BUTTONS / TABS TO SWITCH BETWEEN HEADER & FOOTER */}
-              <CNav variant="pills" className="small">
-                <CNavItem>
-                  <CNavLink
-                    active={activeOrnamentTab === 'header_logo'}
-                    className="cursor-pointer fw-bold py-1.5 px-3"
-                    onClick={() => setActiveOrnamentTab('header_logo')}
-                  >
-                    Logo Header
-                  </CNavLink>
-                </CNavItem>
-                <CNavItem>
-                  <CNavLink
-                    active={activeOrnamentTab === 'footer'}
-                    className="cursor-pointer fw-bold py-1.5 px-3"
-                    onClick={() => setActiveOrnamentTab('footer')}
-                  >
-                    Chân trang Footer
-                  </CNavLink>
-                </CNavItem>
-              </CNav>
-            </CCardHeader>
-
-            <CCardBody className="p-4">
-              {/* TAB 1: LOGO HEADER */}
-              {activeOrnamentTab === 'header_logo' && (
-                <div>
-                  <div className="mb-3 border-bottom pb-2">
-                    <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
-                    <p className="text-muted text-xs mb-0">
-                      Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển
-                      thị trên Header website.
-                    </p>
-                  </div>
-
-                  <CRow className="g-4 align-items-center">
-                    <CCol md={7}>
-                      <div className="p-4 bg-light rounded border text-center">
-                        <label className="form-label font-semibold text-dark mb-2">
-                          Tải ảnh Logo chiến dịch mới từ máy tính
-                        </label>
-                        <CFormInput
-                          type="file"
-                          accept="image/*"
-                          size="sm"
-                          className="mb-2"
-                          onChange={handleMainLogoUpload}
-                        />
-                        <span className="text-muted text-xs d-block">
-                          Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo
-                          mặc định trên Header website.
-                        </span>
-                      </div>
-                    </CCol>
-
-                    {/* Live Logo Preview Box */}
-                    <CCol md={5}>
-                      <div className="p-3 bg-light rounded border text-center">
-                        <span className="fw-semibold text-dark text-xs d-block mb-2">
-                          Xem trước trực tiếp Logo Header
-                        </span>
-                        <div
-                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
-                          style={{ height: '120px' }}
-                        >
-                          <div className="p-2 bg-white rounded border">
-                            <img
-                              src={editingTheme?.decorations?.logoUrl || logoNk}
-                              alt="Logo Header"
-                              style={{ height: '55px', objectFit: 'contain' }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </CCol>
-                  </CRow>
-                </div>
-              )}
-
-              {/* TAB 2: FOOTER */}
-              {activeOrnamentTab === 'footer' && (
-                <div>
-                  <div className="mb-3 border-bottom pb-2">
-                    <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
-                    <p className="text-muted text-xs mb-0">
-                      Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
-                    </p>
-                  </div>
-
-                  <CRow className="g-4 align-items-center">
-                    <CCol md={7}>
-                      {/* Upload Box */}
-                      <div className="p-3 bg-light rounded border text-center mb-3">
-                        <label className="form-label font-semibold text-dark small mb-1">
-                          Tải ảnh trang trí Chân trang Footer từ máy tính
-                        </label>
-                        <CFormInput
-                          type="file"
-                          accept="image/*"
-                          size="sm"
-                          className="mb-1"
-                          onChange={handleFooterOrnamentUpload}
-                        />
-                        <span className="text-muted text-xs">
-                          Khuyên dùng ảnh PNG / WEBP tách nền
-                        </span>
-                      </div>
-
-                      {/* Position & Size */}
-                      <CRow className="g-3">
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark small mb-1">
-                            Vị trí hiển thị trên Footer
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={
-                              editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
-                            }
-                            onChange={(e) =>
-                              setEditingTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  footerOrnamentPosition: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="both-corners">Hai bên góc lề Footer (Tiêu chuẩn)</option>
-                            <option value="left-only">Chỉ góc bên trái Footer</option>
-                            <option value="right-only">Chỉ góc bên phía phải Footer</option>
-                          </CFormSelect>
-                        </CCol>
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark small mb-1">
-                            Kích thước hình trang trí
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
-                            onChange={(e) =>
-                              setEditingTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  footerOrnamentSize: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="32px">Nhỏ (32px)</option>
-                            <option value="48px">Vừa tiêu chuẩn (48px)</option>
-                            <option value="64px">Lớn (64px)</option>
-                            <option value="80px">Rất lớn (80px)</option>
-                          </CFormSelect>
-                        </CCol>
-                      </CRow>
-                    </CCol>
-
-                    {/* Live Footer Preview Box */}
-                    <CCol md={5}>
-                      <div className="p-3 bg-light rounded border text-center">
-                        <span className="fw-semibold text-dark text-xs d-block mb-2">
-                          Xem trước trực tiếp Chân trang Footer
-                        </span>
-                        <div
-                          className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
-                          style={{ height: '120px' }}
-                        >
-                          <div className="d-flex align-items-center gap-2">
-                            {editingTheme?.decorations?.footerOrnamentUrl ? (
-                              <img
-                                src={editingTheme.decorations.footerOrnamentUrl}
-                                alt="Footer Left"
-                                style={{
-                                  height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                                  objectFit: 'contain',
-                                }}
-                              />
-                            ) : (
-                              <span className="text-muted text-xs fst-italic">
-                                [Hình trang trí]
-                              </span>
-                            )}
-                          </div>
-
-                          <span className="text-muted text-xs fw-semibold">
-                            © 2026 VI TÍNH NGUYÊN KIM
-                          </span>
-
-                          <div className="d-flex align-items-center gap-2">
-                            {editingTheme?.decorations?.footerOrnamentUrl ? (
-                              <img
-                                src={editingTheme.decorations.footerOrnamentUrl}
-                                alt="Footer Right"
-                                style={{
-                                  height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                                  objectFit: 'contain',
-                                }}
-                              />
-                            ) : (
-                              <span className="text-muted text-xs fst-italic">
-                                [Hình trang trí]
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CCol>
-                  </CRow>
-                </div>
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-
-      {/* ROW 3: Watermarks & Color Tokens */}
-      <CRow className="g-4 mb-4">
-        {/* Thẻ 4: Background & Watermarks */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 4: Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
-            </CCardHeader>
-            <CCardBody className="p-3">
-              <div className="mb-3">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Chọn mẫu hoa văn nền
-                </label>
-                <CFormSelect
-                  size="sm"
-                  value={currentPreset}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({
-                      ...prev,
-                      background: {
-                        ...bgConfig,
-                        preset: e.target.value,
-                      },
-                    }))
-                  }
+            {/* SUB TABS FOR HEADER & FOOTER */}
+            <CNav variant="pills" className="small">
+              <CNavItem>
+                <CNavLink
+                  active={activeOrnamentTab === 'header_logo'}
+                  className="cursor-pointer fw-bold py-1.5 px-3"
+                  onClick={() => setActiveOrnamentTab('header_logo')}
                 >
-                  {PRESET_BACKGROUNDS.map((p) => (
-                    <option key={p.key} value={p.key}>
-                      {p.name}
-                    </option>
-                  ))}
-                </CFormSelect>
-              </div>
-
-              {currentPreset === 'custom' && (
-                <div className="mb-3">
-                  <label className="form-label font-semibold text-dark small mb-1">
-                    Tải ảnh nền riêng
-                  </label>
-                  <CFormInput type="file" size="sm" onChange={handleCustomBgUpload} />
-                </div>
-              )}
-
-              {/* OPACITY SLIDER */}
-              <div className="mb-3">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <label className="form-label font-semibold text-dark small mb-0">
-                    Độ đậm nhạt hoa văn (Opacity)
-                  </label>
-                  <span className="text-muted text-xs font-monospace">
-                    {Math.round((localOpacity || 0.15) * 100)}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="0.05"
-                  max="0.8"
-                  step="0.05"
-                  value={localOpacity || 0.15}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value)
-                    setLocalOpacity(val)
-                    setEditingTheme((prev) => ({
-                      ...prev,
-                      background: {
-                        ...(prev?.background || {}),
-                        opacity: val,
-                      },
-                    }))
-                  }}
-                />
-              </div>
-
-              {/* COVERAGE MODE SELECT */}
-              <div className="mb-3">
-                <label className="form-label font-semibold text-dark small mb-1">
-                  Chế độ áp dụng hoa văn
-                </label>
-                <CFormSelect
-                  size="sm"
-                  value={editingTheme?.background?.mode || 'pattern'}
-                  onChange={(e) =>
-                    setEditingTheme((prev) => ({
-                      ...prev,
-                      background: {
-                        ...(prev?.background || {}),
-                        mode: e.target.value,
-                      },
-                    }))
-                  }
+                  Logo Header
+                </CNavLink>
+              </CNavItem>
+              <CNavItem>
+                <CNavLink
+                  active={activeOrnamentTab === 'footer'}
+                  className="cursor-pointer fw-bold py-1.5 px-3"
+                  onClick={() => setActiveOrnamentTab('footer')}
                 >
-                  <option value="pattern">Áp dụng lặp lại toàn trang (Full Page)</option>
-                  <option value="banner_only">Chỉ áp dụng khu vực Banner chính</option>
-                  <option value="header_footer">Áp dụng khu vực Header &amp; Footer</option>
-                </CFormSelect>
-              </div>
+                  Chân trang Footer
+                </CNavLink>
+              </CNavItem>
+            </CNav>
+          </CCardHeader>
 
-              {/* LIVE WATERMARK PREVIEW */}
+          <CCardBody className="p-4">
+            {/* SUB-TAB 1: LOGO HEADER */}
+            {activeOrnamentTab === 'header_logo' && (
               <div>
-                <span className="fw-semibold text-dark text-xs d-block mb-1">
-                  Xem trước trực tiếp hoa văn nền (Live Preview)
-                </span>
-                <div
-                  className="rounded border overflow-hidden position-relative"
-                  style={{
-                    backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                    height: '140px',
-                  }}
-                >
-                  <ThemeBackgroundWatermarkLayer
-                    background={{ ...bgConfig, opacity: localOpacity }}
-                    themeCode={editingTheme?.code}
-                  />
+                <div className="mb-3 border-bottom pb-2">
+                  <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
+                  <p className="text-muted text-xs mb-0">
+                    Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển thị
+                    trên Header website.
+                  </p>
                 </div>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
 
-        {/* Thẻ 5: Colors */}
-        <CCol md={6}>
-          <CCard className="h-100 shadow-xs border">
-            <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between">
-              <span>Thẻ 5: Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
-            </CCardHeader>
-            <CCardBody className="p-3 d-flex flex-column justify-content-between">
-              <CRow className="g-2">
-                {[
-                  { label: 'Màu chính (Nút & Viền)', key: 'primary' },
-                  { label: 'Màu thanh Menu Topbar', key: 'secondary' },
-                  { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
-                  { label: 'Màu nền website', key: 'background' },
-                  { label: 'Màu chữ văn bản', key: 'text' },
-                ].map((item) => (
-                  <CCol key={item.key} md={12}>
-                    <div className="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
-                      <span className="small text-secondary fw-semibold">{item.label}</span>
-                      <div className="d-flex align-items-center gap-2">
-                        <input
-                          type="color"
-                          value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                          className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
-                          style={{ width: '28px', height: '28px' }}
-                          onChange={(e) => {
-                            const newCols = {
-                              ...(editingTheme?.colors || {}),
-                              [item.key]: e.target.value,
-                            }
-                            setEditingTheme((prev) => ({ ...prev, colors: newCols }))
-                          }}
-                        />
-                        <CFormInput
-                          size="sm"
-                          value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                          className="font-monospace text-uppercase"
-                          style={{ width: '85px', fontSize: '11px' }}
-                          onChange={(e) => {
-                            const newCols = {
-                              ...(editingTheme?.colors || {}),
-                              [item.key]: e.target.value,
-                            }
-                            setEditingTheme((prev) => ({ ...prev, colors: newCols }))
-                          }}
-                        />
+                <CRow className="g-4 align-items-center">
+                  <CCol md={7}>
+                    <div className="p-4 bg-light rounded border text-center">
+                      <label className="form-label font-semibold text-dark mb-2">
+                        Tải ảnh Logo chiến dịch mới từ máy tính
+                      </label>
+                      <CFormInput
+                        type="file"
+                        accept="image/*"
+                        size="sm"
+                        className="mb-2"
+                        onChange={handleMainLogoUpload}
+                      />
+                      <span className="text-muted text-xs d-block">
+                        Chấp nhận PNG, WEBP, JPG tách nền. Ảnh logo này sẽ hiển thị thay thế Logo mặc
+                        định trên Header website.
+                      </span>
+                    </div>
+                  </CCol>
+
+                  {/* Live Logo Preview Box */}
+                  <CCol md={5}>
+                    <div className="p-3 bg-light rounded border text-center">
+                      <span className="fw-semibold text-dark text-xs d-block mb-2">
+                        Xem trước trực tiếp Logo Header
+                      </span>
+                      <div
+                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-center"
+                        style={{ height: '140px' }}
+                      >
+                        <div className="p-2 bg-white rounded border">
+                          <img
+                            src={editingTheme?.decorations?.logoUrl || logoNk}
+                            alt="Logo Header"
+                            style={{ height: '55px', objectFit: 'contain' }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </CCol>
-                ))}
-              </CRow>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+                </CRow>
+              </div>
+            )}
+
+            {/* SUB-TAB 2: FOOTER */}
+            {activeOrnamentTab === 'footer' && (
+              <div>
+                <div className="mb-3 border-bottom pb-2">
+                  <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
+                  <p className="text-muted text-xs mb-0">
+                    Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
+                  </p>
+                </div>
+
+                <CRow className="g-4 align-items-center">
+                  <CCol md={7}>
+                    {/* Upload Box */}
+                    <div className="p-3 bg-light rounded border text-center mb-3">
+                      <label className="form-label font-semibold text-dark small mb-1">
+                        Tải ảnh trang trí Chân trang Footer từ máy tính
+                      </label>
+                      <CFormInput
+                        type="file"
+                        accept="image/*"
+                        size="sm"
+                        className="mb-1"
+                        onChange={handleFooterOrnamentUpload}
+                      />
+                      <span className="text-muted text-xs">
+                        Khuyên dùng ảnh PNG / WEBP tách nền
+                      </span>
+                    </div>
+
+                    {/* Position & Size */}
+                    <CRow className="g-3">
+                      <CCol md={6}>
+                        <label className="form-label font-semibold text-dark small mb-1">
+                          Vị trí hiển thị trên Footer
+                        </label>
+                        <CFormSelect
+                          size="sm"
+                          value={
+                            editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
+                          }
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                footerOrnamentPosition: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="both-corners">Hai bên góc lề Footer (Tiêu chuẩn)</option>
+                          <option value="left-only">Chỉ góc bên trái Footer</option>
+                          <option value="right-only">Chỉ góc bên phía phải Footer</option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol md={6}>
+                        <label className="form-label font-semibold text-dark small mb-1">
+                          Kích thước hình trang trí
+                        </label>
+                        <CFormSelect
+                          size="sm"
+                          value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
+                          onChange={(e) =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                footerOrnamentSize: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="32px">Nhỏ (32px)</option>
+                          <option value="48px">Vừa tiêu chuẩn (48px)</option>
+                          <option value="64px">Lớn (64px)</option>
+                          <option value="80px">Rất lớn (80px)</option>
+                        </CFormSelect>
+                      </CCol>
+                    </CRow>
+                  </CCol>
+
+                  {/* Live Footer Preview Box */}
+                  <CCol md={5}>
+                    <div className="p-3 bg-light rounded border text-center">
+                      <span className="fw-semibold text-dark text-xs d-block mb-2">
+                        Xem trước trực tiếp Chân trang Footer
+                      </span>
+                      <div
+                        className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
+                        style={{ height: '140px' }}
+                      >
+                        <div className="d-flex align-items-center gap-2">
+                          {editingTheme?.decorations?.footerOrnamentUrl ? (
+                            <img
+                              src={editingTheme.decorations.footerOrnamentUrl}
+                              alt="Footer Left"
+                              style={{
+                                height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                objectFit: 'contain',
+                              }}
+                            />
+                          ) : (
+                            <span className="text-muted text-xs fst-italic">
+                              [Hình trang trí]
+                            </span>
+                          )}
+                        </div>
+
+                        <span className="text-muted text-xs fw-semibold">
+                          © 2026 VI TÍNH NGUYÊN KIM
+                        </span>
+
+                        <div className="d-flex align-items-center gap-2">
+                          {editingTheme?.decorations?.footerOrnamentUrl ? (
+                            <img
+                              src={editingTheme.decorations.footerOrnamentUrl}
+                              alt="Footer Right"
+                              style={{
+                                height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                objectFit: 'contain',
+                              }}
+                            />
+                          ) : (
+                            <span className="text-muted text-xs fst-italic">
+                              [Hình trang trí]
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CCol>
+                </CRow>
+              </div>
+            )}
+          </CCardBody>
+        </CCard>
+      )}
+
+      {/* TAB 4: BACKGROUND WEBSITE */}
+      {activeMainTab === 'background' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+            <span>Họa tiết &amp; Hoa văn nền Website (Background &amp; Watermarks)</span>
+          </CCardHeader>
+          <CCardBody className="p-4">
+            <CRow className="g-4">
+              <CCol md={6}>
+                <div className="mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Chọn mẫu hoa văn nền
+                  </label>
+                  <CFormSelect
+                    size="sm"
+                    value={currentPreset}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({
+                        ...prev,
+                        background: {
+                          ...bgConfig,
+                          preset: e.target.value,
+                        },
+                      }))
+                    }
+                  >
+                    {PRESET_BACKGROUNDS.map((p) => (
+                      <option key={p.key} value={p.key}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </CFormSelect>
+                </div>
+
+                {currentPreset === 'custom' && (
+                  <div className="mb-3">
+                    <label className="form-label font-semibold text-dark small mb-1">
+                      Tải ảnh nền riêng
+                    </label>
+                    <CFormInput type="file" size="sm" onChange={handleCustomBgUpload} />
+                  </div>
+                )}
+
+                {/* OPACITY SLIDER */}
+                <div className="mb-3">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <label className="form-label font-semibold text-dark small mb-0">
+                      Độ đậm nhạt hoa văn (Opacity)
+                    </label>
+                    <span className="text-muted text-xs font-monospace">
+                      {Math.round((localOpacity || 0.15) * 100)}%
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    className="form-range"
+                    min="0.05"
+                    max="0.8"
+                    step="0.05"
+                    value={localOpacity || 0.15}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value)
+                      setLocalOpacity(val)
+                      setEditingTheme((prev) => ({
+                        ...prev,
+                        background: {
+                          ...(prev?.background || {}),
+                          opacity: val,
+                        },
+                      }))
+                    }}
+                  />
+                </div>
+
+                {/* COVERAGE MODE SELECT */}
+                <div className="mb-3">
+                  <label className="form-label font-semibold text-dark small mb-1">
+                    Chế độ áp dụng hoa văn
+                  </label>
+                  <CFormSelect
+                    size="sm"
+                    value={editingTheme?.background?.mode || 'pattern'}
+                    onChange={(e) =>
+                      setEditingTheme((prev) => ({
+                        ...prev,
+                        background: {
+                          ...(prev?.background || {}),
+                          mode: e.target.value,
+                        },
+                      }))
+                    }
+                  >
+                    <option value="pattern">Áp dụng lặp lại toàn trang (Full Page)</option>
+                    <option value="banner_only">Chỉ áp dụng khu vực Banner chính</option>
+                    <option value="header_footer">Áp dụng khu vực Header &amp; Footer</option>
+                  </CFormSelect>
+                </div>
+              </CCol>
+
+              <CCol md={6}>
+                {/* LIVE WATERMARK PREVIEW */}
+                <div>
+                  <span className="fw-semibold text-dark text-xs d-block mb-2">
+                    Xem trước trực tiếp hoa văn nền (Live Preview)
+                  </span>
+                  <div
+                    className="rounded border overflow-hidden position-relative shadow-xs"
+                    style={{
+                      backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
+                      height: '240px',
+                    }}
+                  >
+                    <ThemeBackgroundWatermarkLayer
+                      background={{ ...bgConfig, opacity: localOpacity }}
+                      themeCode={editingTheme?.code}
+                    />
+                  </div>
+                </div>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      )}
+
+      {/* TAB 5: BẢNG MÀU */}
+      {activeMainTab === 'colors' && (
+        <CCard className="mb-4 shadow-xs border">
+          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom">
+            <span>Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)</span>
+          </CCardHeader>
+          <CCardBody className="p-4">
+            <CRow className="g-4">
+              <CCol md={6}>
+                <CRow className="g-2">
+                  {[
+                    { label: 'Màu chính (Nút & Viền)', key: 'primary' },
+                    { label: 'Màu thanh Menu Topbar', key: 'secondary' },
+                    { label: 'Màu nhấn (Sale & Hotline)', key: 'accent' },
+                    { label: 'Màu nền website', key: 'background' },
+                    { label: 'Màu chữ văn bản', key: 'text' },
+                  ].map((item) => (
+                    <CCol key={item.key} md={12}>
+                      <div className="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+                        <span className="small text-secondary fw-semibold">{item.label}</span>
+                        <div className="d-flex align-items-center gap-2">
+                          <input
+                            type="color"
+                            value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                            className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
+                            style={{ width: '28px', height: '28px' }}
+                            onChange={(e) => {
+                              const newCols = {
+                                ...(editingTheme?.colors || {}),
+                                [item.key]: e.target.value,
+                              }
+                              setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                            }}
+                          />
+                          <CFormInput
+                            size="sm"
+                            value={editingTheme?.colors?.[item.key] || '#2356c4'}
+                            className="font-monospace text-uppercase"
+                            style={{ width: '85px', fontSize: '11px' }}
+                            onChange={(e) => {
+                              const newCols = {
+                                ...(editingTheme?.colors || {}),
+                                [item.key]: e.target.value,
+                              }
+                              setEditingTheme((prev) => ({ ...prev, colors: newCols }))
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </CCol>
+                  ))}
+                </CRow>
+              </CCol>
+
+              <CCol md={6}>
+                <span className="fw-semibold text-dark text-xs d-block mb-2">
+                  Xem trước phối màu giao diện (Color Mockup)
+                </span>
+                <div
+                  className="p-3 rounded border shadow-xs"
+                  style={{
+                    backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
+                    minHeight: '200px',
+                  }}
+                >
+                  <div
+                    className="p-2.5 rounded mb-3 text-white fw-bold d-flex justify-content-between align-items-center"
+                    style={{ backgroundColor: editingTheme?.colors?.secondary || '#ffb716' }}
+                  >
+                    <span>Menu / Header Topbar</span>
+                    <span
+                      className="badge px-2 py-1"
+                      style={{ backgroundColor: editingTheme?.colors?.accent || '#e30019' }}
+                    >
+                      HOT SALE
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-white rounded border mb-3">
+                    <h6
+                      className="fw-bold mb-1"
+                      style={{ color: editingTheme?.colors?.text || '#222222' }}
+                    >
+                      Tiêu đề sản phẩm mẫu
+                    </h6>
+                    <p
+                      className="small mb-3"
+                      style={{ color: editingTheme?.colors?.text || '#555555' }}
+                    >
+                      Mô tả chi tiết sản phẩm hiển thị trên nền website đã chọn.
+                    </p>
+                    <button
+                      type="button"
+                      className="btn btn-sm text-white fw-bold px-3 py-1.5 rounded"
+                      style={{ backgroundColor: editingTheme?.colors?.primary || '#2356c4' }}
+                    >
+                      Nút bấm chính (Primary)
+                    </button>
+                  </div>
+                </div>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      )}
 
       {/* Footer Action Bar */}
       <div className="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
