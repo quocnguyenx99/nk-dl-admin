@@ -762,7 +762,9 @@ function EditThemeConfig() {
                     setEditingTheme((prev) => ({ ...prev, endDate: e.target.value }))
                   }
                 />
-                <small className="text-muted d-block mt-1">Thời điểm tự động kết thúc áp dụng</small>
+                <small className="text-muted d-block mt-1">
+                  {'Thời điểm tự động kết thúc áp dụng'}
+                </small>
               </CCol>
             </CRow>
 
@@ -849,7 +851,9 @@ function EditThemeConfig() {
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
-              <h5 className="fw-bold text-dark mb-0">Cấu hình Logo Header &amp; Chân trang Footer</h5>
+              <h5 className="fw-bold text-dark mb-0">
+                {'Cấu hình Logo Header & Chân trang Footer'}
+              </h5>
               <small className="text-muted">
                 Tùy biến Logo sự kiện và hình trang trí các góc chân trang
               </small>
