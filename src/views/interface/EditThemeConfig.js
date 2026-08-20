@@ -45,10 +45,14 @@ const formatDateInput = (dateStr) => {
 const getProductOrnamentStyle = (pos, size) => {
   if (pos === 'full') {
     return {
-      inset: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       width: '100%',
       height: '100%',
-      objectFit: 'contain',
+      objectFit: 'fill',
+      zIndex: 10,
     }
   }
   const isBottom = !pos || pos.includes('bottom')
@@ -57,13 +61,16 @@ const getProductOrnamentStyle = (pos, size) => {
   const isRight = pos && pos.includes('right')
 
   return {
-    bottom: isBottom ? '6px' : 'auto',
-    top: isTop ? '6px' : 'auto',
-    left: isLeft ? '6px' : 'auto',
-    right: isRight ? '6px' : 'auto',
-    maxWidth: size || '30%',
-    maxHeight: size || '30%',
+    position: 'absolute',
+    bottom: isBottom ? '4px' : 'auto',
+    top: isTop ? '4px' : 'auto',
+    left: isLeft ? '4px' : 'auto',
+    right: isRight ? '4px' : 'auto',
+    width: size || '35%',
+    maxWidth: '100%',
+    height: 'auto',
     objectFit: 'contain',
+    zIndex: 10,
   }
 }
 
@@ -1014,7 +1021,7 @@ function EditThemeConfig() {
                           Kích thước huy hiệu
                         </label>
                         <CFormSelect
-                          value={editingTheme?.decorations?.productOrnamentSize || '30%'}
+                          value={editingTheme?.decorations?.productOrnamentSize || '35%'}
                           disabled={editingTheme?.decorations?.productOrnamentPosition === 'full'}
                           onChange={(e) =>
                             setEditingTheme((prev) => ({
@@ -1026,10 +1033,13 @@ function EditThemeConfig() {
                             }))
                           }
                         >
-                          <option value="22%">Nhỏ (22%)</option>
-                          <option value="30%">Vừa tiêu chuẩn (30%)</option>
-                          <option value="38%">Lớn (38%)</option>
-                          <option value="45%">Rất lớn (45%)</option>
+                          <option value="20%">Nhỏ gọn (20%)</option>
+                          <option value="30%">Tiêu chuẩn (30%)</option>
+                          <option value="40%">Vừa lớn (40%)</option>
+                          <option value="50%">Lớn nửa cạnh (50%)</option>
+                          <option value="65%">Rất lớn (65%)</option>
+                          <option value="80%">Cực lớn (80%)</option>
+                          <option value="100%">Tràn ngang 100%</option>
                         </CFormSelect>
                       </CCol>
 
