@@ -658,7 +658,6 @@ function EditThemeConfig() {
   const MAIN_BUILDER_TABS = [
     { key: 'overview', label: 'Tổng quan' },
     { key: 'colors', label: 'Màu sắc' },
-    { key: 'pages_layout', label: 'Trang & Bố cục' },
     { key: 'resources', label: 'Banner & Tài nguyên' },
     { key: 'effects', label: 'Hiệu ứng' },
   ]
@@ -1684,80 +1683,6 @@ function EditThemeConfig() {
                       </button>
                     </div>
                   </div>
-                </div>
-              </CCol>
-            </CRow>
-          </CCardBody>
-        </CCard>
-      )}
-
-      {/* TAB 3: TRANG & BỐ CỤC */}
-      {activeMainTab === 'pages_layout' && (
-        <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-            <div>
-              <h5 className="fw-bold text-dark mb-0">Cấu hình Trang &amp; Bố cục hiển thị</h5>
-            </div>
-          </CCardHeader>
-          <CCardBody className="p-4">
-            <CRow className="g-4">
-              <CCol md={12}>
-                <div className="table-responsive border rounded bg-white">
-                  <table className="table table-hover align-middle mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th style={{ width: '60px' }}>STT</th>
-                        <th>Tên trang</th>
-                        <th>Mẫu bố cục (Layout)</th>
-                        <th style={{ width: '160px' }}>Trạng thái</th>
-                        <th style={{ width: '130px' }}>Tùy chỉnh</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pagesLayouts.map((page, index) => (
-                        <tr key={page.id}>
-                          <td className="text-muted">{index + 1}</td>
-                          <td>
-                            <span className="fw-bold text-dark">{page.name}</span>
-                          </td>
-                          <td>
-                            <CFormSelect
-                              size="sm"
-                              value={page.layout}
-                              style={{ maxWidth: '260px' }}
-                              onChange={(e) => {
-                                const newLayouts = [...pagesLayouts]
-                                newLayouts[index].layout = e.target.value
-                                setPagesLayouts(newLayouts)
-                              }}
-                            >
-                              <option value="Tiêu chuẩn">Tiêu chuẩn (Mặc định)</option>
-                              <option value="Đầy đủ (Full Width)">Đầy đủ (Full Width)</option>
-                              <option value="Dạng lưới (Grid)">Dạng lưới (Grid)</option>
-                            </CFormSelect>
-                          </td>
-                          <td>
-                            <CFormCheck
-                              type="switch"
-                              id={`edit-switch-${page.id}`}
-                              label={page.enabled ? 'Áp dụng' : 'Tắt'}
-                              checked={page.enabled}
-                              onChange={(e) => {
-                                const newLayouts = [...pagesLayouts]
-                                newLayouts[index].enabled = e.target.checked
-                                setPagesLayouts(newLayouts)
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <span className="badge bg-light text-primary border cursor-pointer px-2.5 py-1.5 fw-semibold">
-                              ⚙ Thiết lập
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
                 </div>
               </CCol>
             </CRow>
