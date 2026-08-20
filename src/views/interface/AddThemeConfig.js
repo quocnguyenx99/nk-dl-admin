@@ -19,8 +19,6 @@ import {
   CNavLink,
   CRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilArrowLeft, cilSave } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
@@ -598,7 +596,7 @@ function AddThemeConfig() {
               className="fw-semibold px-3 py-2 d-flex align-items-center gap-1"
               onClick={() => navigate('/theme-custom/config')}
             >
-              <CIcon icon={cilArrowLeft} /> Quay lại danh sách
+              Quay lại danh sách
             </CButton>
           </div>
         </div>
@@ -768,7 +766,7 @@ function AddThemeConfig() {
                         className="rounded border overflow-hidden bg-light mb-3"
                         style={{ height: '120px' }}
                       >
-                        <CImage
+                        <img
                           src={newTheme.image}
                           className="w-100 h-100"
                           style={{ objectFit: 'cover' }}

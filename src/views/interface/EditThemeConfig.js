@@ -20,8 +20,6 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilArrowLeft, cilSave } from '@coreui/icons'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
@@ -688,7 +686,7 @@ function EditThemeConfig() {
               className="fw-semibold px-3 py-2 d-flex align-items-center gap-1"
               onClick={() => navigate('/theme-custom/config')}
             >
-              <CIcon icon={cilArrowLeft} /> Quay lại danh sách
+              Quay lại danh sách
             </CButton>
           </div>
         </div>
@@ -864,7 +862,7 @@ function EditThemeConfig() {
                           })
                         }
                       >
-                        <CImage
+                        <img
                           src={editingTheme.image}
                           className="w-100 h-100 rounded"
                           style={{ objectFit: 'contain' }}
