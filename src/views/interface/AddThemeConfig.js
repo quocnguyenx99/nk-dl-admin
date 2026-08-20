@@ -22,6 +22,32 @@ import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
 import logoNk from '../../assets/images/logo/nk viền.png'
 
+// Product ornament positioning style helper
+const getProductOrnamentStyle = (pos, size) => {
+  if (pos === 'full') {
+    return {
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+    }
+  }
+  const isBottom = !pos || pos.includes('bottom')
+  const isTop = pos && pos.includes('top')
+  const isLeft = !pos || pos.includes('left')
+  const isRight = pos && pos.includes('right')
+
+  return {
+    bottom: isBottom ? '6px' : 'auto',
+    top: isTop ? '6px' : 'auto',
+    left: isLeft ? '6px' : 'auto',
+    right: isRight ? '6px' : 'auto',
+    maxWidth: size || '30%',
+    maxHeight: size || '30%',
+    objectFit: 'contain',
+  }
+}
+
 // Preset Background Patterns & Wallpapers
 const PRESET_BACKGROUNDS = [
   {
@@ -865,45 +891,10 @@ function AddThemeConfig() {
                                 src={newTheme.decorations.productOrnamentUrl}
                                 alt="Product Ornament Overlay"
                                 className="position-absolute pointer-events-none"
-                                style={
-                                  newTheme?.decorations?.productOrnamentPosition === 'full'
-                                    ? {
-                                        inset: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'contain',
-                                      }
-                                    : {
-                                        bottom:
-                                          newTheme?.decorations?.productOrnamentPosition?.includes(
-                                            'bottom',
-                                          ) || !newTheme?.decorations?.productOrnamentPosition
-                                            ? '6px'
-                                            : 'auto',
-                                        top: newTheme?.decorations?.productOrnamentPosition?.includes(
-                                          'top',
-                                        )
-                                          ? '6px'
-                                          : 'auto',
-                                        left:
-                                          newTheme?.decorations?.productOrnamentPosition?.includes(
-                                            'left',
-                                          ) || !newTheme?.decorations?.productOrnamentPosition
-                                            ? '6px'
-                                            : 'auto',
-                                        right:
-                                          newTheme?.decorations?.productOrnamentPosition?.includes(
-                                            'right',
-                                          )
-                                            ? '6px'
-                                            : 'auto',
-                                        maxWidth:
-                                          newTheme?.decorations?.productOrnamentSize || '30%',
-                                        maxHeight:
-                                          newTheme?.decorations?.productOrnamentSize || '30%',
-                                        objectFit: 'contain',
-                                      }
-                                }
+                                style={getProductOrnamentStyle(
+                                  newTheme?.decorations?.productOrnamentPosition,
+                                  newTheme?.decorations?.productOrnamentSize,
+                                )}
                               />
                             ) : (
                               <div

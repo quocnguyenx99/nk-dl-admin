@@ -41,6 +41,32 @@ const formatDateInput = (dateStr) => {
   return `${year}-${month}-${day}`
 }
 
+// Product ornament positioning style helper
+const getProductOrnamentStyle = (pos, size) => {
+  if (pos === 'full') {
+    return {
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+    }
+  }
+  const isBottom = !pos || pos.includes('bottom')
+  const isTop = pos && pos.includes('top')
+  const isLeft = !pos || pos.includes('left')
+  const isRight = pos && pos.includes('right')
+
+  return {
+    bottom: isBottom ? '6px' : 'auto',
+    top: isTop ? '6px' : 'auto',
+    left: isLeft ? '6px' : 'auto',
+    right: isRight ? '6px' : 'auto',
+    maxWidth: size || '30%',
+    maxHeight: size || '30%',
+    objectFit: 'contain',
+  }
+}
+
 // Preset Background Patterns & Wallpapers
 const PRESET_BACKGROUNDS = [
   {
@@ -1068,45 +1094,10 @@ function EditThemeConfig() {
                               src={editingTheme.decorations.productOrnamentUrl}
                               alt="Product Ornament Overlay"
                               className="position-absolute pointer-events-none"
-                              style={
-                                editingTheme?.decorations?.productOrnamentPosition === 'full'
-                                  ? {
-                                      inset: 0,
-                                      width: '100%',
-                                      height: '100%',
-                                      objectFit: 'contain',
-                                    }
-                                  : {
-                                      bottom:
-                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
-                                          'bottom',
-                                        ) || !editingTheme?.decorations?.productOrnamentPosition
-                                          ? '6px'
-                                          : 'auto',
-                                      top: editingTheme?.decorations?.productOrnamentPosition?.includes(
-                                        'top',
-                                      )
-                                        ? '6px'
-                                        : 'auto',
-                                      left:
-                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
-                                          'left',
-                                        ) || !editingTheme?.decorations?.productOrnamentPosition
-                                          ? '6px'
-                                          : 'auto',
-                                      right:
-                                        editingTheme?.decorations?.productOrnamentPosition?.includes(
-                                          'right',
-                                        )
-                                          ? '6px'
-                                          : 'auto',
-                                      maxWidth:
-                                        editingTheme?.decorations?.productOrnamentSize || '30%',
-                                      maxHeight:
-                                        editingTheme?.decorations?.productOrnamentSize || '30%',
-                                      objectFit: 'contain',
-                                    }
-                              }
+                              style={getProductOrnamentStyle(
+                                editingTheme?.decorations?.productOrnamentPosition,
+                                editingTheme?.decorations?.productOrnamentSize,
+                              )}
                             />
                           ) : (
                             <div
