@@ -811,21 +811,24 @@ function AddThemeConfig() {
                       </CRow>
 
                       {/* Realistic Product Detail Page Mockup */}
-                      <div className="border rounded bg-white p-3 shadow-xs position-relative">
+                      <div
+                        className="border rounded bg-white p-3 shadow-xs position-relative mx-auto"
+                        style={{ maxWidth: '780px' }}
+                      >
                         {/* Breadcrumbs */}
-                        <div className="text-muted mb-3" style={{ fontSize: '12px' }}>
+                        <div className="text-muted mb-2.5" style={{ fontSize: '11.5px' }}>
                           <span>Trang chủ</span> <span className="mx-1">/</span>
                           <span>Laptop</span> <span className="mx-1">/</span>
                           <span>Laptop Dell</span> <span className="mx-1">/</span>
                           <span className="text-dark fw-semibold">Laptop Dell Max</span>
                         </div>
 
-                        <CRow className="g-4 align-items-start">
-                          {/* Left: Product Gallery */}
+                        <CRow className="g-3 align-items-center">
+                          {/* Left: Product Image */}
                           <CCol md={5}>
                             <div
-                              className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center cursor-pointer shadow-xs"
-                              style={{ aspectRatio: '1 / 1' }}
+                              className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center cursor-pointer shadow-xs mx-auto"
+                              style={{ maxWidth: '230px', aspectRatio: '1 / 1' }}
                               title="Nhấp vào để phóng to xem chi tiết"
                               onClick={() =>
                                 setPreviewModal({
@@ -838,14 +841,14 @@ function AddThemeConfig() {
                             >
                               {/* Navigation Arrows */}
                               <span
-                                className="position-absolute start-0 top-50 translate-middle-y text-muted ps-2 fw-bold user-select-none"
-                                style={{ fontSize: '20px', opacity: 0.5, zIndex: 5 }}
+                                className="position-absolute start-0 top-50 translate-middle-y text-muted ps-1.5 fw-bold user-select-none"
+                                style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
                               >
                                 ‹
                               </span>
                               <span
-                                className="position-absolute end-0 top-50 translate-middle-y text-muted pe-2 fw-bold user-select-none"
-                                style={{ fontSize: '20px', opacity: 0.5, zIndex: 5 }}
+                                className="position-absolute end-0 top-50 translate-middle-y text-muted pe-1.5 fw-bold user-select-none"
+                                style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
                               >
                                 ›
                               </span>
@@ -875,56 +878,16 @@ function AddThemeConfig() {
                                 </div>
                               )}
                             </div>
-
-                            {/* Thumbnails Row */}
-                            <div className="d-flex align-items-center justify-content-start gap-1.5 mt-2 overflow-auto">
-                              {[
-                                'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80',
-                                'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80',
-                                'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80',
-                                'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=150&q=80',
-                                'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=150&q=80',
-                              ].map((thumb, idx) => (
-                                <div
-                                  key={idx}
-                                  className={`position-relative rounded border overflow-hidden p-0.5 ${
-                                    idx === 0 ? 'border-primary border-2' : 'border-light-subtle'
-                                  }`}
-                                  style={{
-                                    width: '46px',
-                                    height: '46px',
-                                    backgroundColor: '#fff',
-                                    flexShrink: 0,
-                                  }}
-                                >
-                                  <img
-                                    src={thumb}
-                                    alt={`Thumb ${idx}`}
-                                    className="w-100 h-100"
-                                    style={{ objectFit: 'contain' }}
-                                  />
-                                  {newTheme?.decorations?.productOrnamentUrl &&
-                                    newTheme?.decorations?.productOrnamentApplyTo === 'all' && (
-                                      <img
-                                        src={newTheme.decorations.productOrnamentUrl}
-                                        alt="Frame Thumb"
-                                        className="position-absolute pointer-events-none"
-                                        style={getProductOrnamentStyle()}
-                                      />
-                                    )}
-                                </div>
-                              ))}
-                            </div>
                           </CCol>
 
                           {/* Right: Realistic Product Info */}
                           <CCol md={7}>
-                            <h5 className="fw-bold text-dark mb-1" style={{ fontSize: '16px' }}>
+                            <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '14.5px' }}>
                               NB DELL PRO MAX 16 MC16250
-                            </h5>
+                            </h6>
                             <p
                               className="text-secondary small mb-2"
-                              style={{ fontSize: '11px', lineHeight: '1.4' }}
+                              style={{ fontSize: '10.5px', lineHeight: '1.35' }}
                             >
                               ULTRA 7 265H VPRO / 16 INCH FHD+ 300NIT / 32GB DDR5 (2X16) / 512GB SSD
                               / RTX PRO 500 6GB GDDR7 / WI-FI 6E / 96WH / 130W USB-C / WIN11 HOME /
@@ -932,18 +895,18 @@ function AddThemeConfig() {
                             </p>
 
                             <div
-                              className="d-flex flex-wrap align-items-center gap-2 text-muted small mb-2"
-                              style={{ fontSize: '11.5px' }}
+                              className="d-flex flex-wrap align-items-center gap-2 text-muted small mb-1.5"
+                              style={{ fontSize: '11px' }}
                             >
                               <span>
-                                Mã sản phẩm:{' '}
+                                Mã SP:{' '}
                                 <span className="text-primary fw-semibold">
                                   NBDE_MC16250_U732G512
                                 </span>
                               </span>
                               <span>|</span>
                               <span>
-                                Thương hiệu: <span className="text-primary fw-semibold">Dell</span>
+                                Hiệu: <span className="text-primary fw-semibold">Dell</span>
                               </span>
                               <span>|</span>
                               <span>
@@ -951,54 +914,67 @@ function AddThemeConfig() {
                               </span>
                             </div>
 
-                            <div className="d-flex align-items-center gap-2 mb-2">
-                              <span className="text-warning" style={{ fontSize: '13px' }}>
+                            <div className="d-flex align-items-center gap-1.5 mb-1.5">
+                              <span className="text-warning" style={{ fontSize: '12px' }}>
                                 ★★★★★
                               </span>
-                              <span className="text-muted small">5</span>
-                              <span className="text-muted ms-2 cursor-pointer" title="Yêu thích">
+                              <span className="text-muted small" style={{ fontSize: '10.5px' }}>
+                                5
+                              </span>
+                              <span
+                                className="text-muted ms-2 cursor-pointer small"
+                                title="Yêu thích"
+                              >
                                 ♡
                               </span>
-                              <span className="text-muted ms-1 cursor-pointer" title="Chia sẻ">
+                              <span
+                                className="text-muted ms-1 cursor-pointer small"
+                                title="Chia sẻ"
+                              >
                                 🔗
                               </span>
                             </div>
 
                             <div className="d-flex align-items-baseline gap-2 mb-1">
                               <span className="text-danger fw-bold fs-5">90.200.000 đ</span>
-                              <small className="text-muted" style={{ fontSize: '11.5px' }}>
+                              <small className="text-muted" style={{ fontSize: '11px' }}>
                                 (Đã bao gồm VAT)
                               </small>
                             </div>
 
                             <div
-                              className="text-success small fw-semibold mb-3 d-flex align-items-center gap-1"
-                              style={{ fontSize: '12px' }}
+                              className="text-success small fw-semibold mb-2.5 d-flex align-items-center gap-1"
+                              style={{ fontSize: '11.5px' }}
                             >
                               <span>✔</span> Sẵn sàng giao ngay
                             </div>
 
                             {/* Quantity & Action Buttons */}
-                            <div className="d-flex align-items-center gap-2 mb-3">
+                            <div className="d-flex align-items-center gap-2 mb-2.5">
                               <span
                                 className="text-dark small fw-semibold me-1"
-                                style={{ fontSize: '12px' }}
+                                style={{ fontSize: '11.5px' }}
                               >
                                 Số lượng:
                               </span>
-                              <div className="btn-group border rounded" style={{ height: '30px' }}>
+                              <div className="btn-group border rounded" style={{ height: '26px' }}>
                                 <button
                                   type="button"
                                   className="btn btn-sm btn-light py-0 px-2 fw-bold"
+                                  style={{ fontSize: '11px' }}
                                 >
                                   -
                                 </button>
-                                <span className="px-3 d-flex align-items-center bg-white small fw-bold">
+                                <span
+                                  className="px-2.5 d-flex align-items-center bg-white small fw-bold"
+                                  style={{ fontSize: '11px' }}
+                                >
                                   1
                                 </span>
                                 <button
                                   type="button"
                                   className="btn btn-sm btn-light py-0 px-2 fw-bold"
+                                  style={{ fontSize: '11px' }}
                                 >
                                   +
                                 </button>
@@ -1008,9 +984,9 @@ function AddThemeConfig() {
                             <div className="d-flex align-items-center gap-2">
                               <button
                                 type="button"
-                                className="btn btn-warning fw-bold text-dark flex-grow-1 py-2 px-3 shadow-xs"
+                                className="btn btn-warning fw-bold text-dark flex-grow-1 py-1.5 px-2.5 shadow-xs"
                                 style={{
-                                  fontSize: '12.5px',
+                                  fontSize: '12px',
                                   backgroundColor: '#eab308',
                                   borderColor: '#eab308',
                                 }}
@@ -1019,9 +995,9 @@ function AddThemeConfig() {
                               </button>
                               <button
                                 type="button"
-                                className="btn btn-primary fw-bold text-white flex-grow-1 py-2 px-3 shadow-xs"
+                                className="btn btn-primary fw-bold text-white flex-grow-1 py-1.5 px-2.5 shadow-xs"
                                 style={{
-                                  fontSize: '12.5px',
+                                  fontSize: '12px',
                                   backgroundColor: '#2563eb',
                                   borderColor: '#2563eb',
                                 }}
