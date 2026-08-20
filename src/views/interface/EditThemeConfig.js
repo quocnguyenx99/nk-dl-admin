@@ -1043,12 +1043,6 @@ function EditThemeConfig() {
                               )}
                             </div>
                           </div>
-                          <small className="text-primary text-xs d-block mt-2 fw-semibold cursor-pointer">
-                            🔍 Nhấp vào ảnh để mở popup xem phóng to
-                          </small>
-                          <small className="text-muted d-block mt-2">
-                            Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
-                          </small>
                         </div>
                       </CCol>
                     </CRow>

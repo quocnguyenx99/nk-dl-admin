@@ -866,9 +866,6 @@ function AddThemeConfig() {
                                 )}
                               </div>
                             </div>
-                            <span className="text-muted text-xs d-block mt-2">
-                              Mô phỏng lớp phủ đè lên ảnh gốc giống Shopee
-                            </span>
                           </div>
                         </CCol>
                       </CRow>
