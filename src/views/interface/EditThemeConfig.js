@@ -710,9 +710,6 @@ function EditThemeConfig() {
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
               <h5 className="fw-bold text-dark mb-0">Cấu hình thông tin chiến dịch</h5>
-              <small className="text-muted">
-                Thiết lập tên, mã định danh và thời gian áp dụng chiến dịch
-              </small>
             </div>
           </CCardHeader>
           <CCardBody className="p-4">
@@ -811,9 +808,6 @@ function EditThemeConfig() {
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
               <h5 className="fw-bold text-dark mb-0">Quản lý banner &amp; hình ảnh chiến dịch</h5>
-              <small className="text-muted">
-                Tải lên và xem trước ảnh đại diện / banner chính của chiến dịch giao diện
-              </small>
             </div>
           </CCardHeader>
           <CCardBody className="p-4">
@@ -1243,9 +1237,6 @@ function EditThemeConfig() {
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
               <h5 className="fw-bold text-dark mb-0">Họa tiết &amp; hoa văn nền Website</h5>
-              <small className="text-muted">
-                Tùy chỉnh watermark, pattern hoa văn lặp và độ trong suốt nền website
-              </small>
             </div>
           </CCardHeader>
           <CCardBody className="p-4">
@@ -1385,9 +1376,6 @@ function EditThemeConfig() {
           <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
             <div>
               <h5 className="fw-bold text-dark mb-0">Bảng màu tổng thể Website</h5>
-              <small className="text-muted">
-                Thiết lập hệ thống màu sắc chủ đạo, thanh menu và các điểm nhấn trên giao diện
-              </small>
             </div>
           </CCardHeader>
           <CCardBody className="p-4">
