@@ -931,16 +931,6 @@ function EditThemeConfig() {
                 {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
                 {activeOrnamentTab === 'product_image' && (
                   <div>
-                    <div className="mb-3 border-bottom pb-2">
-                      <h6 className="fw-bold text-success mb-1">
-                        Cấu hình Khung viền đè ảnh sản phẩm (Khung 4 cạnh 1:1)
-                      </h6>
-                      <p className="text-muted text-xs mb-0">
-                        Tải ảnh khung viền chiến dịch tự động đè phủ toàn bộ 4 cạnh lên ảnh sản
-                        phẩm.
-                      </p>
-                    </div>
-
                     <CRow className="g-4 align-items-center">
                       <CCol md={7}>
                         {/* Upload Box */}
@@ -1068,15 +1058,6 @@ function EditThemeConfig() {
                 {/* SUB-TAB 1: LOGO HEADER */}
                 {activeOrnamentTab === 'header_logo' && (
                   <div>
-                    <div className="mb-3 border-bottom pb-2">
-                      <h6 className="fw-bold text-primary mb-1">Cấu hình Logo Header</h6>
-                      <p className="text-muted text-xs mb-0">
-                        {
-                          'Tải ảnh Logo riêng cho chiến dịch (Logo Noel, Logo Tết, Logo Kỷ niệm...) hiển thị trên Header website.'
-                        }
-                      </p>
-                    </div>
-
                     <CRow className="g-4 align-items-center">
                       <CCol md={7}>
                         <div className="p-4 bg-light rounded border text-center">
@@ -1130,13 +1111,6 @@ function EditThemeConfig() {
                 {/* SUB-TAB 2: FOOTER */}
                 {activeOrnamentTab === 'footer' && (
                   <div>
-                    <div className="mb-3 border-bottom pb-2">
-                      <h6 className="fw-bold text-info mb-1">Cấu hình Chân trang Footer</h6>
-                      <p className="text-muted text-xs mb-0">
-                        Tải ảnh trang trí Chân trang Footer hiển thị ở hai bên lề Footer.
-                      </p>
-                    </div>
-
                     <CRow className="g-4 align-items-center">
                       <CCol md={7}>
                         {/* Upload Box */}
