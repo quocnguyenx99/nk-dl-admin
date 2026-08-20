@@ -670,66 +670,6 @@ function EditThemeConfig() {
           </div>
         </div>
 
-        {/* 2 Select Boxes: Website & Giao diện */}
-        <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
-          {/* Box 1: Website */}
-          <div
-            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between cursor-pointer"
-            style={{ minWidth: '270px', borderColor: '#f1dfd8' }}
-          >
-            <div>
-              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
-                Website
-              </small>
-              <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
-                Website chính (vitinhnguyenkim.vn)
-              </span>
-            </div>
-            <span className="text-muted ms-2 small">▼</span>
-          </div>
-
-          {/* Box 2: Giao diện */}
-          <div
-            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between position-relative cursor-pointer"
-            style={{ minWidth: '280px', borderColor: '#f1dfd8' }}
-          >
-            <div>
-              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
-                Giao diện
-              </small>
-              <div className="d-flex align-items-center gap-2">
-                <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
-                  {editingTheme?.name || 'Chiến dịch giao diện'}
-                </span>
-                <span
-                  className={`badge rounded-pill ${
-                    editingTheme?.isActive
-                      ? 'bg-success-subtle text-success border border-success-subtle'
-                      : 'bg-light text-secondary border'
-                  }`}
-                  style={{ fontSize: '10.5px' }}
-                >
-                  {editingTheme?.isActive ? 'Đang áp dụng' : 'Bản nháp'}
-                </span>
-              </div>
-            </div>
-            <span className="text-muted ms-2 small">▼</span>
-
-            {/* Hidden native select for switching theme */}
-            <select
-              className="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
-              value={editingTheme?.id || themeId}
-              onChange={(e) => navigate(`/theme-custom/edit?id=${e.target.value}`)}
-            >
-              {allThemes.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} {t.isActive ? '(Đang áp dụng)' : '(Bản nháp)'}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
         {/* Underline Style Navigation Tabs */}
         <div className="d-flex align-items-center gap-4 border-bottom pt-1 pb-0 overflow-auto">
           {MAIN_BUILDER_TABS.map((tab) => {

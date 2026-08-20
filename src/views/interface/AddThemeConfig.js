@@ -580,49 +580,6 @@ function AddThemeConfig() {
           </div>
         </div>
 
-        {/* 2 Select Boxes: Website & Giao diện */}
-        <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
-          {/* Box 1: Website */}
-          <div
-            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between cursor-pointer"
-            style={{ minWidth: '270px', borderColor: '#f1dfd8' }}
-          >
-            <div>
-              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
-                Website
-              </small>
-              <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
-                Website chính (vitinhnguyenkim.vn)
-              </span>
-            </div>
-            <span className="text-muted ms-2 small">▼</span>
-          </div>
-
-          {/* Box 2: Giao diện */}
-          <div
-            className="p-2.5 px-3 bg-white rounded-3 border shadow-xs d-flex align-items-center justify-content-between position-relative cursor-pointer"
-            style={{ minWidth: '280px', borderColor: '#f1dfd8' }}
-          >
-            <div>
-              <small className="text-muted d-block" style={{ fontSize: '11px' }}>
-                Giao diện
-              </small>
-              <div className="d-flex align-items-center gap-2">
-                <span className="fw-bold text-dark" style={{ fontSize: '13.5px' }}>
-                  {newTheme?.name || 'Chiến dịch mới'}
-                </span>
-                <span
-                  className="badge rounded-pill bg-light text-secondary border"
-                  style={{ fontSize: '10.5px' }}
-                >
-                  Tạo mới
-                </span>
-              </div>
-            </div>
-            <span className="text-muted ms-2 small">▼</span>
-          </div>
-        </div>
-
         {/* Underline Style Navigation Tabs */}
         <div className="d-flex align-items-center gap-4 border-bottom pt-1 pb-0 overflow-auto">
           {MAIN_BUILDER_TABS.map((tab) => {
