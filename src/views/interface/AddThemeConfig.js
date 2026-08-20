@@ -26,35 +26,16 @@ import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
 import logoNk from '../../assets/images/logo/nk viền.png'
 
-// Product ornament positioning style helper
-const getProductOrnamentStyle = (pos, size) => {
-  if (pos === 'full') {
-    return {
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '100%',
-      height: '100%',
-      objectFit: 'fill',
-      zIndex: 10,
-    }
-  }
-  const isBottom = !pos || pos.includes('bottom')
-  const isTop = pos && pos.includes('top')
-  const isLeft = !pos || pos.includes('left')
-  const isRight = pos && pos.includes('right')
-
+// Product ornament positioning style helper (Full frame 1:1)
+const getProductOrnamentStyle = () => {
   return {
-    position: 'absolute',
-    bottom: isBottom ? '4px' : 'auto',
-    top: isTop ? '4px' : 'auto',
-    left: isLeft ? '4px' : 'auto',
-    right: isRight ? '4px' : 'auto',
-    width: size || '35%',
-    maxWidth: '100%',
-    height: 'auto',
-    objectFit: 'contain',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'fill',
     zIndex: 10,
   }
 }
@@ -465,12 +446,14 @@ function AddThemeConfig() {
           decorations: {
             ...(prev?.decorations || {}),
             productOrnamentUrl: uploadedUrl,
+            productOrnamentPosition: 'full',
+            productOrnamentSize: '100%',
           },
         }))
-        toast.success('Đã tải ảnh trang trí sản phẩm thành công!')
+        toast.success('Đã tải ảnh khung viền sản phẩm thành công!')
       }
     } catch (err) {
-      toast.error('Lỗi upload ảnh trang trí sản phẩm: ' + err.message)
+      toast.error('Lỗi upload ảnh khung viền sản phẩm: ' + err.message)
     }
   }
 
@@ -770,11 +753,10 @@ function AddThemeConfig() {
                 <div>
                   <div className="mb-3 border-bottom pb-2">
                     <h6 className="fw-bold text-success mb-1">
-                      Cấu hình Khung &amp; Huy hiệu đè ảnh sản phẩm (Shopee Style)
+                      Cấu hình Khung viền đè ảnh sản phẩm (Khung 4 cạnh 1:1)
                     </h6>
                     <p className="text-muted text-xs mb-0">
-                      Tải ảnh khung viền chiến dịch hoặc huy hiệu (Badge / Watermark / Logo ngành
-                      hàng như Shopee Home, Hàng chính hãng...) đè lên ảnh chi tiết sản phẩm.
+                      Tải ảnh khung viền chiến dịch tự động đè phủ toàn bộ 4 cạnh lên ảnh sản phẩm.
                     </p>
                   </div>
 
@@ -783,7 +765,7 @@ function AddThemeConfig() {
                       {/* Upload Box */}
                       <div className="p-3 bg-light rounded border text-center mb-3">
                         <label className="form-label font-semibold text-dark mb-2 d-block">
-                          Tải ảnh Khung / Huy hiệu trang trí sản phẩm
+                          Tải ảnh Khung viền trang trí sản phẩm
                         </label>
                         <CFormInput
                           type="file"
@@ -798,89 +780,37 @@ function AddThemeConfig() {
                         </span>
                       </div>
 
-                      {/* Options */}
-                      <CRow className="g-3">
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark text-xs mb-1">
-                            Vị trí hiển thị trên ảnh
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={newTheme?.decorations?.productOrnamentPosition || 'bottom-left'}
-                            onChange={(e) =>
-                              setNewTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  productOrnamentPosition: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="bottom-left">
-                              Góc dưới bên trái (Tiêu chuẩn Shopee Home)
-                            </option>
-                            <option value="bottom-right">Góc dưới bên phải</option>
-                            <option value="top-left">Góc trên bên trái</option>
-                            <option value="top-right">Góc trên bên phải</option>
-                            <option value="full">Toàn bộ khung viền 4 cạnh (Frame 1:1)</option>
-                          </CFormSelect>
-                        </CCol>
-
-                        <CCol md={6}>
-                          <label className="form-label font-semibold text-dark text-xs mb-1">
-                            Kích thước huy hiệu
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={newTheme?.decorations?.productOrnamentSize || '35%'}
-                            disabled={newTheme?.decorations?.productOrnamentPosition === 'full'}
-                            onChange={(e) =>
-                              setNewTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  productOrnamentSize: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="20%">Nhỏ gọn (20%)</option>
-                            <option value="30%">Tiêu chuẩn (30%)</option>
-                            <option value="40%">Vừa lớn (40%)</option>
-                            <option value="50%">Lớn nửa cạnh (50%)</option>
-                            <option value="65%">Rất lớn (65%)</option>
-                            <option value="80%">Cực lớn (80%)</option>
-                            <option value="100%">Tràn ngang 100%</option>
-                          </CFormSelect>
-                        </CCol>
-
-                        <CCol md={12}>
-                          <label className="form-label font-semibold text-dark text-xs mb-1">
-                            Phạm vi áp dụng trên sản phẩm
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={newTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
-                            onChange={(e) =>
-                              setNewTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  productOrnamentApplyTo: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="main_only">
-                              Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
-                            </option>
-                            <option value="all">
-                              Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
-                            </option>
-                          </CFormSelect>
-                        </CCol>
-                      </CRow>
+                      {/* Scope of application */}
+                      <div className="mb-2">
+                        <label className="form-label font-semibold text-dark text-xs mb-1">
+                          Phạm vi áp dụng khung viền
+                        </label>
+                        <CFormSelect
+                          size="sm"
+                          value={newTheme?.decorations?.productOrnamentApplyTo || 'main_only'}
+                          onChange={(e) =>
+                            setNewTheme((prev) => ({
+                              ...prev,
+                              decorations: {
+                                ...(prev?.decorations || {}),
+                                productOrnamentPosition: 'full',
+                                productOrnamentSize: '100%',
+                                productOrnamentApplyTo: e.target.value,
+                              },
+                            }))
+                          }
+                        >
+                          <option value="main_only">
+                            Chỉ áp dụng cho ảnh bìa / đại diện chính của sản phẩm
+                          </option>
+                          <option value="all">
+                            Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
+                          </option>
+                        </CFormSelect>
+                        <span className="text-muted text-xs d-block mt-1">
+                          Khung viền sẽ tự động áp dụng vừa vặn 4 cạnh lên khung ảnh sản phẩm
+                        </span>
+                      </div>
                     </CCol>
 
                     {/* Live Product Image Preview Box */}
