@@ -122,11 +122,13 @@ function EditAddressManagement() {
         setPhoneEditor(data?.phone)
 
         if (data?.icon_zalo_url || data?.icon_zalo) {
-          const url = data.icon_zalo_url || (data.icon_zalo.startsWith('http') ? data.icon_zalo : `${imageBaseUrl}/${data.icon_zalo}`)
+          const raw = data.icon_zalo_url || data.icon_zalo
+          const url = raw.startsWith('http') ? raw : `${imageBaseUrl}/${raw}`
           setIconZaloPreview(url)
         }
         if (data?.messenger_icon_url || data?.messenger_icon) {
-          const url = data.messenger_icon_url || (data.messenger_icon.startsWith('http') ? data.messenger_icon : `${imageBaseUrl}/${data.messenger_icon}`)
+          const raw = data.messenger_icon_url || data.messenger_icon
+          const url = raw.startsWith('http') ? raw : `${imageBaseUrl}/${raw}`
           setMessengerIconPreview(url)
         }
       } else {
