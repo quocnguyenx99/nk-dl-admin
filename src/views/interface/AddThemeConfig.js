@@ -301,6 +301,7 @@ function AddThemeConfig() {
         !file.type ||
         !file.type.startsWith('image/') ||
         file.type === 'image/svg+xml' ||
+        file.type === 'image/png' ||
         file.size < 200 * 1024
       ) {
         resolve(file)
@@ -358,7 +359,14 @@ function AddThemeConfig() {
     const res = await axiosClient.post('theme/upload-image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
-    return res.data?.data?.url || ''
+    return (
+      res.data?.data?.url ||
+      res.data?.url ||
+      res.data?.data?.image ||
+      res.data?.data?.filePath ||
+      res.data?.filePath ||
+      ''
+    )
   }
 
   const handleFileChange = async (e) => {
@@ -439,6 +447,19 @@ function AddThemeConfig() {
   const handleProductOrnamentUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Immediately show local preview
+    const localUrl = URL.createObjectURL(file)
+    setNewTheme((prev) => ({
+      ...prev,
+      decorations: {
+        ...(prev?.decorations || {}),
+        productOrnamentUrl: localUrl,
+        productOrnamentPosition: 'full',
+        productOrnamentSize: '100%',
+      },
+    }))
+
     try {
       const uploadedUrl = await uploadFileToServer(file)
       if (uploadedUrl) {
@@ -452,9 +473,12 @@ function AddThemeConfig() {
           },
         }))
         toast.success('Đã tải ảnh khung viền sản phẩm thành công!')
+      } else {
+        toast.warn('Đã chọn khung viền, vui lòng nhấn Lưu để hoàn tất!')
       }
     } catch (err) {
-      toast.error('Lỗi upload ảnh khung viền sản phẩm: ' + err.message)
+      console.error('Upload product ornament error:', err)
+      toast.warn('Khung viền đã được gắn, hãy nhấn Lưu Chiến Dịch để lưu lại.')
     }
   }
 
@@ -995,11 +1019,12 @@ function AddThemeConfig() {
                   <CCol md={9} className="ps-md-3">
                     {/* SUB-TAB 0: HÌNH ẢNH SẢN PHẨM */}
                     {activeOrnamentTab === 'product_image' && (
-                      <div>
-                        {/* Controls row */}
-                        <CRow className="g-3 mb-4">
-                          <CCol md={6}>
-                            <div className="p-3 bg-light rounded border">
+                      <CRow className="g-4 align-items-start">
+                        {/* Cột trái: Tải ảnh khung viền & Phạm vi áp dụng */}
+                        <CCol lg={5} md={12}>
+                          <div className="d-flex flex-column gap-3">
+                            {/* Khối 1: Tải ảnh khung viền */}
+                            <div className="p-3 bg-light rounded border shadow-xs">
                               <label
                                 className="form-label fw-bold text-dark mb-1 d-block"
                                 style={{ fontSize: '13.5px' }}
@@ -1010,19 +1035,63 @@ function AddThemeConfig() {
                                 type="file"
                                 accept="image/png,image/webp,image/svg+xml"
                                 size="sm"
-                                className="mb-1"
+                                className="mb-2"
                                 onChange={handleProductOrnamentUpload}
                               />
-                              <span className="text-muted text-xs d-block">
+                              <small
+                                className="text-muted d-block mb-2"
+                                style={{ fontSize: '11.5px', lineHeight: '1.4' }}
+                              >
                                 Khuyên dùng ảnh PNG / WEBP trong suốt chuẩn tỉ lệ 1:1 (Ví dụ:
                                 1200x1200px)
-                              </span>
-                            </div>
-                          </CCol>
+                              </small>
 
-                          <CCol md={6}>
-                            <div className="p-3 bg-light rounded border h-100">
-                              <label className="form-label font-semibold text-dark text-xs mb-1">
+                              {newTheme?.decorations?.productOrnamentUrl && (
+                                <div className="d-flex align-items-center justify-content-between p-2 bg-white rounded border mt-2">
+                                  <div className="d-flex align-items-center gap-2">
+                                    <img
+                                      src={newTheme.decorations.productOrnamentUrl}
+                                      alt="Khung hiện tại"
+                                      style={{
+                                        width: '36px',
+                                        height: '36px',
+                                        objectFit: 'contain',
+                                      }}
+                                      className="rounded border p-0.5 bg-light"
+                                    />
+                                    <span
+                                      className="text-success small fw-semibold"
+                                      style={{ fontSize: '12px' }}
+                                    >
+                                      Đã gắn khung viền
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-danger py-0.5 px-2"
+                                    style={{ fontSize: '11.5px' }}
+                                    onClick={() =>
+                                      setNewTheme((prev) => ({
+                                        ...prev,
+                                        decorations: {
+                                          ...(prev?.decorations || {}),
+                                          productOrnamentUrl: '',
+                                        },
+                                      }))
+                                    }
+                                  >
+                                    Gỡ khung
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Khối 2: Phạm vi áp dụng */}
+                            <div className="p-3 bg-light rounded border shadow-xs">
+                              <label
+                                className="form-label fw-bold text-dark mb-1 d-block"
+                                style={{ fontSize: '13.5px' }}
+                              >
                                 Phạm vi áp dụng khung viền
                               </label>
                               <CFormSelect
@@ -1047,215 +1116,202 @@ function AddThemeConfig() {
                                   Áp dụng cho tất cả hình ảnh trong chi tiết sản phẩm
                                 </option>
                               </CFormSelect>
-                              <span className="text-muted text-xs d-block mt-1">
+                              <small
+                                className="text-muted d-block mt-2"
+                                style={{ fontSize: '11.5px', lineHeight: '1.4' }}
+                              >
                                 Khung viền sẽ tự động áp dụng vừa vặn 4 cạnh lên khung ảnh sản phẩm
-                              </span>
+                              </small>
                             </div>
-                          </CCol>
-                        </CRow>
-
-                        {/* Realistic Product Detail Page Mockup */}
-                        <div
-                          className="border rounded bg-white p-3 shadow-xs position-relative mx-auto"
-                          style={{ maxWidth: '780px' }}
-                        >
-                          {/* Breadcrumbs */}
-                          <div className="text-muted mb-2.5" style={{ fontSize: '11.5px' }}>
-                            <span>Trang chủ</span> <span className="mx-1">/</span>
-                            <span>Laptop</span> <span className="mx-1">/</span>
-                            <span>Laptop Dell</span> <span className="mx-1">/</span>
-                            <span className="text-dark fw-semibold">Laptop Dell Max</span>
                           </div>
+                        </CCol>
 
-                          <CRow className="g-3 align-items-center">
-                            {/* Left: Product Image */}
-                            <CCol md={5}>
-                              <div
-                                className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center cursor-pointer shadow-xs mx-auto"
-                                style={{ maxWidth: '230px', aspectRatio: '1 / 1' }}
-                                title="Nhấp vào để phóng to xem chi tiết"
-                                onClick={() =>
-                                  setPreviewModal({
-                                    visible: true,
-                                    title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung viền',
-                                    type: 'product_ornament',
-                                    imageUrl: '',
-                                  })
-                                }
-                              >
-                                {/* Navigation Arrows */}
-                                <span
-                                  className="position-absolute start-0 top-50 translate-middle-y text-muted ps-1.5 fw-bold user-select-none"
-                                  style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
-                                >
-                                  ‹
-                                </span>
-                                <span
-                                  className="position-absolute end-0 top-50 translate-middle-y text-muted pe-1.5 fw-bold user-select-none"
-                                  style={{ fontSize: '18px', opacity: 0.5, zIndex: 5 }}
-                                >
-                                  ›
-                                </span>
+                        {/* Cột phải: Realistic Product Detail Mockup */}
+                        <CCol lg={7} md={12}>
+                          <div className="p-3 border rounded bg-white shadow-xs position-relative">
+                            <div className="text-muted mb-2" style={{ fontSize: '11px' }}>
+                              <span>Trang chủ</span> <span className="mx-1">/</span>
+                              <span>Laptop</span> <span className="mx-1">/</span>
+                              <span>Laptop Dell</span> <span className="mx-1">/</span>
+                              <span className="text-dark fw-semibold">Laptop Dell Max</span>
+                            </div>
 
-                                {/* Main Laptop Image */}
-                                <img
-                                  src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80"
-                                  alt="Dell Laptop Main"
-                                  className="w-100 h-100"
-                                  style={{ objectFit: 'contain', padding: '10px' }}
-                                />
-
-                                {/* Overlay Frame */}
-                                {newTheme?.decorations?.productOrnamentUrl ? (
-                                  <img
-                                    src={newTheme.decorations.productOrnamentUrl}
-                                    alt="Product Ornament Overlay"
-                                    className="position-absolute pointer-events-none"
-                                    style={getProductOrnamentStyle()}
-                                  />
-                                ) : (
-                                  <div
-                                    className="position-absolute bottom-0 start-0 p-1 m-1.5 bg-dark bg-opacity-75 text-white rounded pointer-events-none"
-                                    style={{ fontSize: '9px' }}
-                                  >
-                                    [Chưa có khung]
-                                  </div>
-                                )}
-                              </div>
-                            </CCol>
-
-                            {/* Right: Realistic Product Info */}
-                            <CCol md={7}>
-                              <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '14.5px' }}>
-                                NB DELL PRO MAX 16 MC16250
-                              </h6>
-                              <p
-                                className="text-secondary small mb-2"
-                                style={{ fontSize: '10.5px', lineHeight: '1.35' }}
-                              >
-                                ULTRA 7 265H VPRO / 16 INCH FHD+ 300NIT / 32GB DDR5 (2X16) / 512GB
-                                SSD / RTX PRO 500 6GB GDDR7 / WI-FI 6E / 96WH / 130W USB-C / WIN11
-                                HOME / 36M PRO+KYHD
-                              </p>
-
-                              <div
-                                className="d-flex flex-wrap align-items-center gap-2 text-muted small mb-1.5"
-                                style={{ fontSize: '11px' }}
-                              >
-                                <span>
-                                  Mã SP:{' '}
-                                  <span className="text-primary fw-semibold">
-                                    NBDE_MC16250_U732G512
-                                  </span>
-                                </span>
-                                <span>|</span>
-                                <span>
-                                  Hiệu: <span className="text-primary fw-semibold">Dell</span>
-                                </span>
-                                <span>|</span>
-                                <span>
-                                  Tình trạng: <span className="text-success fw-bold">Còn hàng</span>
-                                </span>
-                              </div>
-
-                              <div className="d-flex align-items-center gap-1.5 mb-1.5">
-                                <span className="text-warning" style={{ fontSize: '12px' }}>
-                                  ★★★★★
-                                </span>
-                                <span className="text-muted small" style={{ fontSize: '10.5px' }}>
-                                  5
-                                </span>
-                                <span
-                                  className="text-muted ms-2 cursor-pointer small"
-                                  title="Yêu thích"
-                                >
-                                  ♡
-                                </span>
-                                <span
-                                  className="text-muted ms-1 cursor-pointer small"
-                                  title="Chia sẻ"
-                                >
-                                  🔗
-                                </span>
-                              </div>
-
-                              <div className="d-flex align-items-baseline gap-2 mb-1">
-                                <span className="text-danger fw-bold fs-5">90.200.000 đ</span>
-                                <small className="text-muted" style={{ fontSize: '11px' }}>
-                                  (Đã bao gồm VAT)
-                                </small>
-                              </div>
-
-                              <div
-                                className="text-success small fw-semibold mb-2.5 d-flex align-items-center gap-1"
-                                style={{ fontSize: '11.5px' }}
-                              >
-                                <span>✔</span> Sẵn sàng giao ngay
-                              </div>
-
-                              {/* Quantity & Action Buttons */}
-                              <div className="d-flex align-items-center gap-2 mb-2.5">
-                                <span
-                                  className="text-dark small fw-semibold me-1"
-                                  style={{ fontSize: '11.5px' }}
-                                >
-                                  Số lượng:
-                                </span>
+                            <CRow className="g-3 align-items-center">
+                              {/* Left: Product Image */}
+                              <CCol md={5} sm={12}>
                                 <div
-                                  className="btn-group border rounded"
-                                  style={{ height: '26px' }}
+                                  className="position-relative w-100 rounded border overflow-hidden bg-white d-flex align-items-center justify-content-center cursor-pointer shadow-xs mx-auto"
+                                  style={{ maxWidth: '210px', aspectRatio: '1 / 1' }}
+                                  title="Nhấp vào để phóng to xem chi tiết"
+                                  onClick={() =>
+                                    setPreviewModal({
+                                      visible: true,
+                                      title: 'Xem trước chi tiết ảnh sản phẩm kèm Khung viền',
+                                      type: 'product_ornament',
+                                      imageUrl: '',
+                                    })
+                                  }
                                 >
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-light py-0 px-2 fw-bold"
-                                    style={{ fontSize: '11px' }}
-                                  >
-                                    -
-                                  </button>
+                                  {/* Navigation Arrows */}
                                   <span
-                                    className="px-2.5 d-flex align-items-center bg-white small fw-bold"
+                                    className="position-absolute start-0 top-50 translate-middle-y text-muted ps-1.5 fw-bold user-select-none"
+                                    style={{ fontSize: '16px', opacity: 0.5, zIndex: 5 }}
+                                  >
+                                    ‹
+                                  </span>
+                                  <span
+                                    className="position-absolute end-0 top-50 translate-middle-y text-muted pe-1.5 fw-bold user-select-none"
+                                    style={{ fontSize: '16px', opacity: 0.5, zIndex: 5 }}
+                                  >
+                                    ›
+                                  </span>
+
+                                  {/* Main Laptop Image */}
+                                  <img
+                                    src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80"
+                                    alt="Dell Laptop Main"
+                                    className="w-100 h-100"
+                                    style={{ objectFit: 'contain', padding: '8px' }}
+                                  />
+
+                                  {/* Overlay Frame */}
+                                  {newTheme?.decorations?.productOrnamentUrl ? (
+                                    <img
+                                      src={newTheme.decorations.productOrnamentUrl}
+                                      alt="Product Ornament Overlay"
+                                      className="position-absolute pointer-events-none"
+                                      style={getProductOrnamentStyle()}
+                                    />
+                                  ) : (
+                                    <div
+                                      className="position-absolute bottom-0 start-0 p-1 m-1 bg-dark bg-opacity-75 text-white rounded pointer-events-none"
+                                      style={{ fontSize: '8.5px' }}
+                                    >
+                                      [Chưa có khung]
+                                    </div>
+                                  )}
+                                </div>
+                              </CCol>
+
+                              {/* Right: Product Info */}
+                              <CCol md={7} sm={12}>
+                                <h6
+                                  className="fw-bold text-dark mb-1"
+                                  style={{ fontSize: '13.5px' }}
+                                >
+                                  NB DELL PRO MAX 16 MC16250
+                                </h6>
+                                <p
+                                  className="text-secondary small mb-1.5"
+                                  style={{ fontSize: '10px', lineHeight: '1.3' }}
+                                >
+                                  ULTRA 7 265H VPRO / 16 INCH FHD+ 300NIT / 32GB DDR5 (2X16) / 512GB
+                                  SSD / RTX PRO 500 6GB GDDR7 / WI-FI 6E / WIN11 HOME
+                                </p>
+
+                                <div
+                                  className="d-flex flex-wrap align-items-center gap-1.5 text-muted small mb-1"
+                                  style={{ fontSize: '10.5px' }}
+                                >
+                                  <span>
+                                    Mã SP:{' '}
+                                    <span className="text-primary fw-semibold">NBDE_MC16250</span>
+                                  </span>
+                                  <span>|</span>
+                                  <span>
+                                    Hiệu: <span className="text-primary fw-semibold">Dell</span>
+                                  </span>
+                                  <span>|</span>
+                                  <span className="text-success fw-bold">Còn hàng</span>
+                                </div>
+
+                                <div className="d-flex align-items-center gap-1 mb-1">
+                                  <span className="text-warning" style={{ fontSize: '11px' }}>
+                                    ★★★★★
+                                  </span>
+                                  <span className="text-muted small" style={{ fontSize: '10px' }}>
+                                    5
+                                  </span>
+                                </div>
+
+                                <div className="d-flex align-items-baseline gap-2 mb-1">
+                                  <span className="text-danger fw-bold fs-6">90.200.000 đ</span>
+                                  <small className="text-muted" style={{ fontSize: '10px' }}>
+                                    (Đã bao gồm VAT)
+                                  </small>
+                                </div>
+
+                                <div
+                                  className="text-success small fw-semibold mb-2 d-flex align-items-center gap-1"
+                                  style={{ fontSize: '10.5px' }}
+                                >
+                                  <span>✔</span> Sẵn sàng giao ngay
+                                </div>
+
+                                {/* Quantity & Action Buttons */}
+                                <div className="d-flex align-items-center gap-2 mb-2">
+                                  <span
+                                    className="text-dark small fw-semibold me-1"
                                     style={{ fontSize: '11px' }}
                                   >
-                                    1
+                                    SL:
                                   </span>
+                                  <div
+                                    className="btn-group border rounded"
+                                    style={{ height: '22px' }}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm btn-light py-0 px-1.5 fw-bold"
+                                      style={{ fontSize: '10px' }}
+                                    >
+                                      -
+                                    </button>
+                                    <span
+                                      className="px-2 d-flex align-items-center bg-white small fw-bold"
+                                      style={{ fontSize: '10px' }}
+                                    >
+                                      1
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm btn-light py-0 px-1.5 fw-bold"
+                                      style={{ fontSize: '10px' }}
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                </div>
+
+                                <div className="d-flex align-items-center gap-2">
                                   <button
                                     type="button"
-                                    className="btn btn-sm btn-light py-0 px-2 fw-bold"
-                                    style={{ fontSize: '11px' }}
+                                    className="btn btn-warning fw-bold text-dark flex-grow-1 py-1 px-2 shadow-xs"
+                                    style={{
+                                      fontSize: '11px',
+                                      backgroundColor: '#eab308',
+                                      borderColor: '#eab308',
+                                    }}
                                   >
-                                    +
+                                    🛒 Thêm vào giỏ
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary fw-bold text-white flex-grow-1 py-1 px-2 shadow-xs"
+                                    style={{
+                                      fontSize: '11px',
+                                      backgroundColor: '#2563eb',
+                                      borderColor: '#2563eb',
+                                    }}
+                                  >
+                                    ⚡ Mua ngay
                                   </button>
                                 </div>
-                              </div>
-
-                              <div className="d-flex align-items-center gap-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-warning fw-bold text-dark flex-grow-1 py-1.5 px-2.5 shadow-xs"
-                                  style={{
-                                    fontSize: '12px',
-                                    backgroundColor: '#eab308',
-                                    borderColor: '#eab308',
-                                  }}
-                                >
-                                  🛒 Thêm vào giỏ
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-primary fw-bold text-white flex-grow-1 py-1.5 px-2.5 shadow-xs"
-                                  style={{
-                                    fontSize: '12px',
-                                    backgroundColor: '#2563eb',
-                                    borderColor: '#2563eb',
-                                  }}
-                                >
-                                  ⚡ Mua ngay
-                                </button>
-                              </div>
-                            </CCol>
-                          </CRow>
-                        </div>
-                      </div>
+                              </CCol>
+                            </CRow>
+                          </div>
+                        </CCol>
+                      </CRow>
                     )}
 
                     {/* SUB-TAB 1: LOGO HEADER */}
