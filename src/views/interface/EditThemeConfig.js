@@ -19,7 +19,6 @@ import {
   CNavLink,
   CRow,
   CSpinner,
-  CFormSwitch,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilSave } from '@coreui/icons'
@@ -1691,7 +1690,9 @@ function EditThemeConfig() {
                             </CFormSelect>
                           </td>
                           <td>
-                            <CFormSwitch
+                            <CFormCheck
+                              type="switch"
+                              id={`edit-switch-${page.id}`}
                               label={page.enabled ? 'Áp dụng' : 'Tắt'}
                               checked={page.enabled}
                               onChange={(e) => {

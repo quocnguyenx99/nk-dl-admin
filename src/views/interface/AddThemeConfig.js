@@ -18,7 +18,6 @@ import {
   CNavItem,
   CNavLink,
   CRow,
-  CFormSwitch,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilSave } from '@coreui/icons'
@@ -923,7 +922,9 @@ function AddThemeConfig() {
                             </CFormSelect>
                           </td>
                           <td>
-                            <CFormSwitch
+                            <CFormCheck
+                              type="switch"
+                              id={`add-switch-${page.id}`}
                               label={page.enabled ? 'Áp dụng' : 'Tắt'}
                               checked={page.enabled}
                               onChange={(e) => {
