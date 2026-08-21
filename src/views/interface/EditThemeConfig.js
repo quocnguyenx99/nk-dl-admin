@@ -270,8 +270,10 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
 
 const DEFAULT_THEME_COLORS = {
   primary: '#2356c4',
-  cart_btn: '#2a83e9',
-  contact_btn: '#6b7280',
+  cart_btn_bg: '#F1F8FE',
+  cart_btn_text: '#2a83e9',
+  contact_btn_bg: '#E5E7EB',
+  contact_btn_text: '#6b7280',
   active_border: '#2563eb',
   secondary: '#ffb716',
   category_menu: '#222222',
@@ -295,7 +297,10 @@ function EditThemeConfig() {
   const [activeColorPreviewTab, setActiveColorPreviewTab] = useState('all')
   const selectAndScrollToColor = (key) => {
     setActiveColorPreviewTab(key)
-    const el = document.getElementById(`color-item-${key}`)
+    let targetKey = key
+    if (key === 'cart_btn') targetKey = 'cart_btn_bg'
+    if (key === 'contact_btn') targetKey = 'contact_btn_bg'
+    const el = document.getElementById(`color-item-${targetKey}`)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
@@ -1856,10 +1861,10 @@ function EditThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu nút Thêm vào giỏ',
-                      key: 'cart_btn',
-                      desc: 'Nút "Thêm vào giỏ" trên thẻ sản phẩm & chi tiết',
-                      defaultVal: '#2a83e9',
+                      label: 'Màu nền nút Thêm vào giỏ',
+                      key: 'cart_btn_bg',
+                      desc: 'Màu nền của nút "Thêm vào giỏ" trên thẻ sản phẩm & chi tiết',
+                      defaultVal: '#F1F8FE',
                       icon: (
                         <svg
                           width="18"
@@ -1878,10 +1883,32 @@ function EditThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu nút Liên hệ (Hết hàng)',
-                      key: 'contact_btn',
-                      desc: 'Nút "Liên hệ" khi sản phẩm hết hàng hoặc giá liên hệ',
-                      defaultVal: '#6b7280',
+                      label: 'Màu chữ nút Thêm vào giỏ',
+                      key: 'cart_btn_text',
+                      desc: 'Màu chữ và icon của nút "Thêm vào giỏ"',
+                      defaultVal: '#2a83e9',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="4 7 4 4 20 4 20 7" />
+                          <line x1="9" x2="15" y1="20" y2="20" />
+                          <line x1="12" x2="12" y1="4" y2="20" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu nền nút Liên hệ (Hết hàng)',
+                      key: 'contact_btn_bg',
+                      desc: 'Màu nền của nút "Liên hệ" khi sản phẩm hết hàng hoặc giá liên hệ',
+                      defaultVal: '#E5E7EB',
                       icon: (
                         <svg
                           width="18"
@@ -1894,6 +1921,28 @@ function EditThemeConfig() {
                           strokeLinejoin="round"
                         >
                           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu chữ nút Liên hệ (Hết hàng)',
+                      key: 'contact_btn_text',
+                      desc: 'Màu chữ và icon của nút "Liên hệ" khi sản phẩm hết hàng',
+                      defaultVal: '#6b7280',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="4 7 4 4 20 4 20 7" />
+                          <line x1="9" x2="15" y1="20" y2="20" />
+                          <line x1="12" x2="12" y1="4" y2="20" />
                         </svg>
                       ),
                     },
@@ -2567,8 +2616,15 @@ function EditThemeConfig() {
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor: `${editingTheme?.colors?.cart_btn || '#2a83e9'}18`,
-                              color: editingTheme?.colors?.cart_btn || '#2a83e9',
+                              backgroundColor:
+                                editingTheme?.colors?.cart_btn_bg ||
+                                (editingTheme?.colors?.cart_btn
+                                  ? `${editingTheme.colors.cart_btn}18`
+                                  : '#F1F8FE'),
+                              color:
+                                editingTheme?.colors?.cart_btn_text ||
+                                editingTheme?.colors?.cart_btn ||
+                                '#2a83e9',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'cart_btn'
@@ -2605,8 +2661,15 @@ function EditThemeConfig() {
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor: `${editingTheme?.colors?.contact_btn || '#6b7280'}18`,
-                              color: editingTheme?.colors?.contact_btn || '#6b7280',
+                              backgroundColor:
+                                editingTheme?.colors?.contact_btn_bg ||
+                                (editingTheme?.colors?.contact_btn
+                                  ? `${editingTheme.colors.contact_btn}18`
+                                  : '#E5E7EB'),
+                              color:
+                                editingTheme?.colors?.contact_btn_text ||
+                                editingTheme?.colors?.contact_btn ||
+                                '#6b7280',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'contact_btn'
