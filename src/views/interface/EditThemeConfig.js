@@ -268,6 +268,18 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
   )
 }
 
+const DEFAULT_THEME_COLORS = {
+  primary: '#2356c4',
+  cart_btn: '#ffb716',
+  active_border: '#2563eb',
+  secondary: '#ffb716',
+  category_menu: '#222222',
+  hotline: '#222222',
+  accent: '#e30019',
+  background: '#f7f7f7',
+  text: '#222222',
+}
+
 function EditThemeConfig() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -281,6 +293,14 @@ function EditThemeConfig() {
   const [activeMainTab, setActiveMainTab] = useState('overview')
   const [activePreviewTab, setActivePreviewTab] = useState('home')
   const [activeOrnamentTab, setActiveOrnamentTab] = useState('header_logo')
+  const [activeColorPreviewTab, setActiveColorPreviewTab] = useState('all')
+  const selectAndScrollToColor = (key) => {
+    setActiveColorPreviewTab(key)
+    const el = document.getElementById(`color-item-${key}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
   const [previewModal, setPreviewModal] = useState({
     visible: false,
     title: '',
@@ -325,12 +345,9 @@ function EditThemeConfig() {
           image:
             item.theme_config?.image ||
             'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80',
-          colors: item.theme_config?.colors || {
-            primary: '#2356c4',
-            secondary: '#ffb716',
-            accent: '#e30019',
-            background: '#f7f7f7',
-            text: '#222222',
+          colors: {
+            ...DEFAULT_THEME_COLORS,
+            ...(item.theme_config?.colors || {}),
           },
           decorations: item.theme_config?.decorations || {
             particles: item.theme_config?.background?.preset || item.code || 'none',
@@ -907,27 +924,146 @@ function EditThemeConfig() {
             <CRow className="g-4">
               {/* Cột trái: Danh mục các mục trang trí */}
               <CCol md={3} className="border-end pe-md-3">
-                <div className="d-flex flex-column gap-2">
+                <div className="d-flex flex-column gap-2.5">
                   {[
-                    { key: 'product_image', title: 'Hình ảnh sản phẩm' },
-                    { key: 'header_logo', title: 'Logo Header' },
-                    { key: 'footer', title: 'Chân trang' },
+                    {
+                      key: 'product_image',
+                      title: 'Hình ảnh sản phẩm',
+                      desc: 'Khung viền ảnh sản phẩm',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                          <circle cx="9" cy="9" r="2" />
+                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      key: 'header_logo',
+                      title: 'Logo Header',
+                      desc: 'Biểu tượng gắn logo',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      key: 'footer',
+                      title: 'Chân trang',
+                      desc: 'Họa tiết viền Footer',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="20" height="16" x="2" y="4" rx="2" />
+                          <path d="M2 14h20" />
+                          <path d="M6 18h2" />
+                          <path d="M12 18h6" />
+                        </svg>
+                      ),
+                    },
                   ].map((subTab) => {
                     const isActive = activeOrnamentTab === subTab.key
                     return (
-                      <button
+                      <div
                         key={subTab.key}
-                        type="button"
-                        className={`btn text-start py-2.5 px-3 rounded border transition-all ${
-                          isActive
-                            ? 'btn-primary text-white shadow-sm border-primary fw-bold'
-                            : 'btn-light text-dark bg-white border-light-subtle fw-semibold'
-                        }`}
-                        style={{ fontSize: '13.5px' }}
+                        role="button"
+                        tabIndex={0}
+                        className="p-3 rounded-3 border d-flex align-items-center justify-content-between position-relative"
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: isActive ? '#f0f7ff' : '#ffffff',
+                          borderColor: isActive ? '#93c5fd' : '#e2e8f0',
+                          boxShadow: isActive
+                            ? '0 2px 6px rgba(37, 99, 235, 0.08)'
+                            : '0 1px 2px rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.2s ease-in-out',
+                        }}
                         onClick={() => setActiveOrnamentTab(subTab.key)}
+                        onKeyDown={(e) => e.key === 'Enter' && setActiveOrnamentTab(subTab.key)}
                       >
-                        {subTab.title}
-                      </button>
+                        <div className="d-flex align-items-center gap-3">
+                          <div
+                            className="d-flex align-items-center justify-content-center rounded-2 border"
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              flexShrink: 0,
+                              backgroundColor: isActive ? '#eff6ff' : '#f8fafc',
+                              borderColor: isActive ? '#bfdbfe' : '#e2e8f0',
+                              color: isActive ? '#2563eb' : '#64748b',
+                            }}
+                          >
+                            {subTab.icon}
+                          </div>
+                          <div>
+                            <div
+                              className="fw-bold"
+                              style={{
+                                fontSize: '13.5px',
+                                lineHeight: '1.2',
+                                color: isActive ? '#1d4ed8' : '#1e293b',
+                              }}
+                            >
+                              {subTab.title}
+                            </div>
+                            <small
+                              className="d-block"
+                              style={{
+                                fontSize: '11px',
+                                marginTop: '2px',
+                                color: isActive ? '#3b82f6' : '#64748b',
+                              }}
+                            >
+                              {subTab.desc}
+                            </small>
+                          </div>
+                        </div>
+                        <div>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={isActive ? '#3b82f6' : '#94a3b8'}
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{
+                              transform: isActive ? 'translateX(2px)' : 'none',
+                              transition: 'transform 0.2s',
+                            }}
+                          >
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </div>
+                      </div>
                     )
                   })}
                 </div>
@@ -1340,432 +1476,167 @@ function EditThemeConfig() {
 
                     {/* Cột phải: Realistic Nguyen Kim Footer Mockup */}
                     <CCol lg={8} md={12}>
-                      <div className="p-3 border rounded bg-white shadow-xs position-relative overflow-hidden">
-                        <div className="d-flex align-items-center justify-content-between mb-2">
-                          <span className="text-dark fw-bold" style={{ fontSize: '12px' }}>
-                            Xem trước Chân trang Website (Live Footer Preview)
-                          </span>
-                          <span
-                            className="badge bg-light text-muted border"
-                            style={{ fontSize: '10.5px' }}
-                          >
-                            Khớp 100% giao diện thực tế
-                          </span>
-                        </div>
+                      <div className="d-flex align-items-center justify-content-between mb-2">
+                        <span className="text-dark fw-bold" style={{ fontSize: '12px' }}>
+                          Xem trước
+                        </span>
+                      </div>
 
-                        {/* Mockup Container */}
-                        <div
-                          className="position-relative border rounded p-3 bg-white shadow-xs"
-                          style={{
-                            minHeight: '340px',
-                            backgroundColor: '#ffffff',
-                            fontSize: '11px',
-                            color: '#444',
-                            fontFamily: 'system-ui, -apple-system, sans-serif',
-                          }}
-                        >
-                          {/* FLOATING ACTION BUTTONS (LEFT) */}
-                          <div
-                            className="position-absolute start-0 top-50 translate-middle-y d-flex flex-column gap-1.5 ms-1"
-                            style={{ zIndex: 12 }}
-                          >
-                            <div
-                              className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-xs"
-                              style={{ width: '24px', height: '24px', fontSize: '11px' }}
-                              title="Messenger"
-                            >
-                              💬
-                            </div>
-                            <div
-                              className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-xs"
-                              style={{
-                                width: '24px',
-                                height: '24px',
-                                fontSize: '8.5px',
-                                backgroundColor: '#0068ff',
-                              }}
-                              title="Zalo"
-                            >
-                              Zalo
-                            </div>
-                            <div
-                              className="rounded-circle text-white d-flex align-items-center justify-content-center shadow-xs"
-                              style={{
-                                width: '24px',
-                                height: '24px',
-                                fontSize: '10px',
-                                backgroundColor: '#eab308',
-                              }}
-                              title="Hotline"
-                            >
-                              🎧
-                            </div>
-                          </div>
-
-                          {/* FLOATING BACK TO TOP (BOTTOM RIGHT) */}
-                          <div
-                            className="position-absolute end-0 bottom-0 m-2 rounded-circle text-white d-flex align-items-center justify-content-center shadow-xs"
+                      {/* Mockup Container */}
+                      <div
+                        className="position-relative border rounded p-3 bg-white shadow-xs"
+                        style={{
+                          minHeight: '340px',
+                          backgroundColor: '#ffffff',
+                          fontSize: '11px',
+                          color: '#444',
+                          fontFamily: 'system-ui, -apple-system, sans-serif',
+                        }}
+                      >
+                        {/* OVERLAY ORNAMENT FRAME (Căn vừa 4 góc chân trang) */}
+                        {editingTheme?.decorations?.footerOrnamentUrl && (
+                          <img
+                            src={editingTheme.decorations.footerOrnamentUrl}
+                            alt="Footer Ornament Frame"
+                            className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
                             style={{
-                              width: '24px',
-                              height: '24px',
-                              fontSize: '10px',
-                              backgroundColor: '#eab308',
-                              zIndex: 12,
+                              objectFit: 'fill',
+                              zIndex: 10,
                             }}
-                            title="Lên đầu trang"
-                          >
-                            ▲
-                          </div>
+                          />
+                        )}
 
-                          {/* OVERLAY ORNAMENT FRAME (Căn vừa 4 góc chân trang) */}
-                          {editingTheme?.decorations?.footerOrnamentUrl && (
-                            <img
-                              src={editingTheme.decorations.footerOrnamentUrl}
-                              alt="Footer Ornament Frame"
-                              className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
-                              style={{
-                                objectFit: 'fill',
-                                zIndex: 10,
-                              }}
-                            />
-                          )}
+                        {/* FOOTER REALISTIC CONTENT */}
+                        <div className="position-relative px-2 py-1" style={{ zIndex: 2 }}>
+                          {/* TOP ROW: 4 COLUMNS */}
+                          <CRow className="g-3 mb-3">
+                            {/* Cột 1: Về Nguyên Kim */}
+                            <CCol md={3} xs={6}>
+                              <div
+                                className="fw-bold mb-2"
+                                style={{ color: '#d97706', fontSize: '11.5px' }}
+                              >
+                                Về Nguyên Kim
+                              </div>
+                              <div
+                                className="d-flex flex-column gap-1 text-secondary"
+                                style={{ fontSize: '9.5px', lineHeight: '1.4' }}
+                              >
+                                <span>Giới thiệu công ty</span>
+                                <span>Tư vấn hỏi đáp</span>
+                                <span>Liên hệ và góp ý</span>
+                                <span>Yêu cầu báo giá</span>
+                              </div>
+                            </CCol>
 
-                          {/* FOOTER REALISTIC CONTENT */}
-                          <div className="position-relative px-2 py-1" style={{ zIndex: 2 }}>
-                            {/* TOP ROW: 4 COLUMNS */}
-                            <CRow className="g-3 mb-3">
-                              {/* Cột 1: Về Nguyên Kim */}
-                              <CCol md={3} xs={6}>
-                                <div
-                                  className="fw-bold mb-2"
-                                  style={{ color: '#d97706', fontSize: '11.5px' }}
-                                >
-                                  Về Nguyên Kim
-                                </div>
-                                <div
-                                  className="d-flex flex-column gap-1 text-secondary"
-                                  style={{ fontSize: '9.5px', lineHeight: '1.4' }}
-                                >
-                                  <span>Giới thiệu công ty</span>
-                                  <span>Tư vấn hỏi đáp</span>
-                                  <span>Liên hệ và góp ý</span>
-                                  <span>Yêu cầu báo giá</span>
-                                </div>
-                              </CCol>
+                            {/* Cột 2: Chính sách & Điều khoản */}
+                            <CCol md={3} xs={6}>
+                              <div
+                                className="fw-bold mb-2"
+                                style={{ color: '#d97706', fontSize: '11.5px' }}
+                              >
+                                Chính sách &amp; Điều khoản
+                              </div>
+                              <div
+                                className="d-flex flex-column gap-1 text-secondary"
+                                style={{ fontSize: '9.5px', lineHeight: '1.4' }}
+                              >
+                                <span>Hướng dẫn gửi bảo hành</span>
+                                <span>Chính sách bảo mật TT cá nhân</span>
+                                <span>Chính sách giao hàng</span>
+                                <span>Chính sách bảo hành</span>
+                                <span>Quy định thanh toán</span>
+                                <span>Chính sách hoàn tiền</span>
+                                <span>Chính sách đổi sản phẩm</span>
+                                <span>Chính sách kiểm hàng</span>
+                              </div>
+                            </CCol>
 
-                              {/* Cột 2: Chính sách & Điều khoản */}
-                              <CCol md={3} xs={6}>
-                                <div
-                                  className="fw-bold mb-2"
-                                  style={{ color: '#d97706', fontSize: '11.5px' }}
-                                >
-                                  Chính sách &amp; Điều khoản
-                                </div>
-                                <div
-                                  className="d-flex flex-column gap-1 text-secondary"
-                                  style={{ fontSize: '9.5px', lineHeight: '1.4' }}
-                                >
-                                  <span>Hướng dẫn gửi bảo hành</span>
-                                  <span>Chính sách bảo mật TT cá nhân</span>
-                                  <span>Chính sách giao hàng</span>
-                                  <span>Chính sách bảo hành</span>
-                                  <span>Quy định thanh toán</span>
-                                  <span>Chính sách hoàn tiền</span>
-                                  <span>Chính sách đổi sản phẩm</span>
-                                  <span>Chính sách kiểm hàng</span>
-                                </div>
-                              </CCol>
-
-                              {/* Cột 3: Tổng đài hỗ trợ */}
-                              <CCol md={3} xs={6}>
-                                <div
-                                  className="fw-bold mb-2"
-                                  style={{ color: '#d97706', fontSize: '11.5px' }}
-                                >
-                                  Tổng đài hỗ trợ
-                                </div>
-                                <div className="d-flex align-items-center gap-1.5 mb-2">
-                                  <span
-                                    className="d-inline-flex align-items-center justify-content-center text-white rounded"
-                                    style={{
-                                      backgroundColor: '#cc181e',
-                                      width: '22px',
-                                      height: '22px',
-                                      fontSize: '9px',
-                                    }}
-                                  >
-                                    ▶
-                                  </span>
-                                  <span
-                                    className="d-inline-flex align-items-center justify-content-center text-white rounded fw-bold"
-                                    style={{
-                                      backgroundColor: '#1877f2',
-                                      width: '22px',
-                                      height: '22px',
-                                      fontSize: '11px',
-                                    }}
-                                  >
-                                    f
-                                  </span>
-                                </div>
-                                <div
-                                  className="border rounded bg-white p-1.5 shadow-xs"
-                                  style={{ fontSize: '9px', maxWidth: '140px' }}
-                                >
-                                  <div className="d-flex align-items-center gap-1 mb-1">
-                                    <span
-                                      className="rounded-circle border d-inline-block"
-                                      style={{
-                                        width: '14px',
-                                        height: '14px',
-                                        backgroundColor: '#d97706',
-                                      }}
-                                    />
-                                    <span
-                                      className="fw-bold text-dark"
-                                      style={{ fontSize: '8.5px' }}
-                                    >
-                                      Vi Tính Nguyên Kim
-                                    </span>
-                                  </div>
-                                  <div className="text-muted mb-1" style={{ fontSize: '7.5px' }}>
-                                    25K người theo dõi
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-light border py-0 px-1 w-100 fw-semibold"
-                                    style={{ fontSize: '8px' }}
-                                  >
-                                    f Theo dõi Trang
-                                  </button>
-                                </div>
-                              </CCol>
-
-                              {/* Cột 4: Vị trí của chúng tôi */}
-                              <CCol md={3} xs={6}>
-                                <div
-                                  className="fw-bold mb-2"
-                                  style={{ color: '#d97706', fontSize: '11.5px' }}
-                                >
-                                  Vị trí của chúng tôi
-                                </div>
-                                <div
-                                  className="border rounded bg-light p-1.5 position-relative overflow-hidden text-center"
+                            {/* Cột 3: Tổng đài hỗ trợ */}
+                            <CCol md={3} xs={6}>
+                              <div
+                                className="fw-bold mb-2"
+                                style={{ color: '#d97706', fontSize: '11.5px' }}
+                              >
+                                Tổng đài hỗ trợ
+                              </div>
+                              <div className="d-flex align-items-center gap-1.5 mb-2">
+                                <span
+                                  className="d-inline-flex align-items-center justify-content-center text-white rounded"
                                   style={{
-                                    height: '80px',
-                                    background: 'linear-gradient(135deg, #e0f2fe 0%, #fef3c7 100%)',
+                                    backgroundColor: '#cc181e',
+                                    width: '22px',
+                                    height: '22px',
+                                    fontSize: '9px',
                                   }}
                                 >
-                                  <span
-                                    className="badge bg-white text-primary border position-absolute top-0 start-0 m-1"
-                                    style={{ fontSize: '7.5px' }}
-                                  >
-                                    Maps ↗
-                                  </span>
-                                  <div
-                                    className="mt-3 text-danger fw-bold"
-                                    style={{ fontSize: '8.5px' }}
-                                  >
-                                    📍 Công Ty TNHH TTNA
-                                  </div>
-                                  <small
-                                    className="text-muted d-block"
-                                    style={{ fontSize: '7.5px' }}
-                                  >
-                                    Nhà Thờ Giáo Xứ Tân Định
-                                  </small>
-                                </div>
-                              </CCol>
-                            </CRow>
-
-                            {/* BOTTOM ROW: COMPANY INFO & CERTIFICATES */}
-                            <CRow className="g-3 align-items-center pt-2">
-                              {/* Thông tin công ty & Logo */}
-                              <CCol md={4} sm={12}>
-                                <div className="mb-1.5">
-                                  <div className="lh-1 mb-1">
-                                    <span
-                                      className="fw-bold"
-                                      style={{ color: '#e11d48', fontSize: '15px' }}
-                                    >
-                                      nguyên kim
-                                    </span>
-                                    <br />
-                                    <span
-                                      className="fw-bold"
-                                      style={{ color: '#2563eb', fontSize: '13px' }}
-                                    >
-                                      computer
-                                    </span>
-                                    <small
-                                      className="d-block text-danger fw-semibold"
-                                      style={{ fontSize: '7.5px' }}
-                                    >
-                                      Since 2004
-                                    </small>
-                                  </div>
-                                  <div
-                                    className="fw-bold"
-                                    style={{ color: '#2563eb', fontSize: '10.5px' }}
-                                  >
-                                    Công ty TNHH Vi tính Nguyên Kim
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="text-secondary d-flex flex-column gap-0.5"
-                                  style={{ fontSize: '8.5px', lineHeight: '1.35' }}
+                                  ▶
+                                </span>
+                                <span
+                                  className="d-inline-flex align-items-center justify-content-center text-white rounded fw-bold"
+                                  style={{
+                                    backgroundColor: '#1877f2',
+                                    width: '22px',
+                                    height: '22px',
+                                    fontSize: '11px',
+                                  }}
                                 >
-                                  <div>
-                                    📍 245B Trần Quang Khải, khu phố 9, Phường Tân Định, TP. Hồ Chí
-                                    Minh
-                                  </div>
-                                  <div>
-                                    📞 CSKH: <strong className="text-dark">1800 6739</strong> - Mã
-                                    Số Thuế: 0303753468
-                                  </div>
-                                  <div>✉ cskh@nguyenkimvn.vn</div>
-                                  <div>🕒 8h - 17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h</div>
-                                </div>
+                                  f
+                                </span>
+                              </div>
+                            </CCol>
 
-                                <div className="mt-1.5">
-                                  <span
-                                    className="badge px-1.5 py-1 text-primary border"
-                                    style={{
-                                      fontSize: '7.5px',
-                                      backgroundColor: '#eff6ff',
-                                      borderColor: '#bfdbfe',
-                                    }}
-                                  >
-                                    ✔ ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
-                                  </span>
-                                </div>
-                              </CCol>
+                            {/* Cột 4: Vị trí của chúng tôi */}
+                            <CCol md={3} xs={6}>
+                              <div
+                                className="fw-bold mb-2"
+                                style={{ color: '#d97706', fontSize: '11.5px' }}
+                              >
+                                Vị trí của chúng tôi
+                              </div>
+                            </CCol>
+                          </CRow>
 
-                              {/* Nhà phân phối uy tín */}
-                              <CCol md={4} sm={6}>
-                                <div className="text-center">
-                                  <div
-                                    className="fw-bold mb-2"
-                                    style={{ color: '#d97706', fontSize: '9px' }}
-                                  >
-                                    NHÀ PHÂN PHỐI UY TÍN CHẤT LƯỢNG HÀNG ĐẦU
-                                  </div>
-                                  <div className="d-flex flex-wrap align-items-center justify-content-center gap-1.5">
-                                    <div
-                                      className="border rounded p-1 bg-white text-center shadow-xs"
-                                      style={{ width: '46px', height: '46px' }}
-                                    >
-                                      <div style={{ fontSize: '7px', color: '#b45309' }}>🏛</div>
-                                      <span style={{ fontSize: '6px', fontWeight: 'bold' }}>
-                                        TRUST
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white text-center shadow-xs"
-                                      style={{ width: '46px', height: '46px' }}
-                                    >
-                                      <div style={{ fontSize: '7px', color: '#d97706' }}>🏆</div>
-                                      <span style={{ fontSize: '6px', fontWeight: 'bold' }}>
-                                        TOP BRAND
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white text-center shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '46px', height: '46px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-success"
-                                        style={{ fontSize: '7px' }}
-                                      >
-                                        FAST500
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white text-center shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '46px', height: '46px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-danger"
-                                        style={{ fontSize: '7px' }}
-                                      >
-                                        VNR500
-                                      </span>
-                                    </div>
-                                  </div>
+                          {/* BOTTOM ROW: COMPANY INFO */}
+                          <CRow className="g-3 align-items-center pt-2 border-top">
+                            {/* Thông tin công ty & Logo */}
+                            <CCol xs={12}>
+                              <div className="mb-1.5">
+                                <img
+                                  src={editingTheme?.decorations?.logoUrl || logoNk}
+                                  alt="Nguyen Kim Logo"
+                                  style={{
+                                    height: '34px',
+                                    maxWidth: '140px',
+                                    objectFit: 'contain',
+                                  }}
+                                  className="mb-1.5 d-block"
+                                />
+                                <div
+                                  className="fw-bold"
+                                  style={{ color: '#2563eb', fontSize: '10.5px' }}
+                                >
+                                  Công ty TNHH Vi tính Nguyên Kim
                                 </div>
-                              </CCol>
+                              </div>
 
-                              {/* Chứng nhận đối tác */}
-                              <CCol md={4} sm={6}>
-                                <div className="text-center">
-                                  <div
-                                    className="fw-bold mb-2"
-                                    style={{ color: '#d97706', fontSize: '9px' }}
-                                  >
-                                    CHỨNG NHẬN ĐỐI TÁC
-                                  </div>
-                                  <div className="d-flex flex-wrap align-items-center justify-content-center gap-1.5">
-                                    <div
-                                      className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '48px', height: '36px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-primary"
-                                        style={{ fontSize: '11px' }}
-                                      >
-                                        hp
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '48px', height: '36px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-dark"
-                                        style={{ fontSize: '9px' }}
-                                      >
-                                        ASUS
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '56px', height: '36px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-info"
-                                        style={{ fontSize: '8px' }}
-                                      >
-                                        DELL
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '52px', height: '36px' }}
-                                    >
-                                      <span
-                                        className="badge bg-danger text-white p-0.5"
-                                        style={{ fontSize: '7.5px' }}
-                                      >
-                                        Lenovo
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
-                                      style={{ width: '56px', height: '36px' }}
-                                    >
-                                      <span
-                                        className="fw-bold text-primary"
-                                        style={{ fontSize: '7.5px' }}
-                                      >
-                                        SAMSUNG
-                                      </span>
-                                    </div>
-                                  </div>
+                              <div
+                                className="text-secondary d-flex flex-column gap-0.5"
+                                style={{ fontSize: '8.5px', lineHeight: '1.35' }}
+                              >
+                                <div>
+                                  📍 245B Trần Quang Khải, khu phố 9, Phường Tân Định, TP. Hồ Chí
+                                  Minh
                                 </div>
-                              </CCol>
-                            </CRow>
-                          </div>
+                                <div>
+                                  📞 CSKH: <strong className="text-dark">1800 6739</strong> - Mã Số
+                                  Thuế: 0303753468
+                                </div>
+                                <div>✉ cskh@nguyenkimvn.vn</div>
+                                <div>🕒 8h - 17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h</div>
+                              </div>
+                            </CCol>
+                          </CRow>
                         </div>
                       </div>
                     </CCol>
@@ -1919,141 +1790,872 @@ function EditThemeConfig() {
       {/* TAB 5: BẢNG MÀU */}
       {activeMainTab === 'colors' && (
         <CCard className="mb-4 shadow-xs border">
-          <CCardHeader className="bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+          <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
-              <h5 className="fw-bold text-dark mb-0">Bảng màu tổng thể Website</h5>
+              <span className="fs-6 fw-bold text-dark">
+                Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)
+              </span>
+              <small className="text-muted d-block mt-0.5" style={{ fontSize: '12px' }}>
+                Tùy chỉnh màu sắc nhận diện thương hiệu và các thành phần tương tác trên website
+              </small>
             </div>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1.5 rounded-2 px-3 py-1.5 shadow-2xs fw-semibold"
+              style={{ fontSize: '12.5px' }}
+              onClick={() => {
+                setEditingTheme((prev) => ({
+                  ...prev,
+                  colors: { ...DEFAULT_THEME_COLORS },
+                }))
+                setActiveColorPreviewTab('all')
+                toast.info('Đã khôi phục bảng màu về mặc định của website')
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span>Khôi phục màu mặc định</span>
+            </button>
           </CCardHeader>
           <CCardBody className="p-4">
             <CRow className="g-4">
-              <CCol md={6}>
-                <CRow className="g-3">
+              {/* Cột trái: Danh sách cấu hình màu */}
+              <CCol lg={5} md={12}>
+                <div className="d-flex flex-column gap-2.5">
                   {[
                     {
-                      label: 'Màu chính (Nút & Viền)',
+                      label: 'Màu chính (Nút Mua ngay & Viền)',
                       key: 'primary',
-                      desc: 'Màu nhận diện thương hiệu & nút bấm chính',
+                      desc: 'Nút Mua ngay & nhận diện thương hiệu',
+                      defaultVal: '#2356c4',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                          <circle cx="9" cy="9" r="2" />
+                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu nút Thêm vào giỏ',
+                      key: 'cart_btn',
+                      desc: 'Nút "Thêm vào giỏ" trên trang chi tiết sản phẩm',
+                      defaultVal: '#ffb716',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="8" cy="21" r="1" />
+                          <circle cx="19" cy="21" r="1" />
+                          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu viền khi chọn',
+                      key: 'active_border',
+                      desc: 'Viền khi click chọn Danh mục, Brand, Filter',
+                      defaultVal: '#2563eb',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="18" height="18" x="3" y="3" rx="3" />
+                          <path d="m9 12 2 2 4-4" />
+                        </svg>
+                      ),
                     },
                     {
                       label: 'Màu thanh Menu Topbar',
                       key: 'secondary',
-                      desc: 'Màu nền thanh menu điều hướng & topbar',
+                      desc: 'Thanh menu điều hướng chính & topbar',
+                      defaultVal: '#ffb716',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="3" x2="21" y1="6" y2="6" />
+                          <line x1="3" x2="21" y1="12" y2="12" />
+                          <line x1="3" x2="21" y1="18" y2="18" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu Danh mục sản phẩm & Hotline (Header)',
+                      key: 'category_menu',
+                      desc: 'Màu chữ "☰ Danh mục sản phẩm" và số điện thoại Hotline trên header',
+                      defaultVal: '#222222',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="4" x2="20" y1="12" y2="12" />
+                          <line x1="4" x2="20" y1="6" y2="6" />
+                          <line x1="4" x2="20" y1="18" y2="18" />
+                        </svg>
+                      ),
                     },
                     {
                       label: 'Màu nhấn (Sale & Hotline)',
                       key: 'accent',
-                      desc: 'Màu nổi bật cho nhãn giảm giá & hotline',
+                      desc: 'Huy hiệu giảm giá, giá sale & hotline',
+                      defaultVal: '#e30019',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      ),
                     },
                     {
                       label: 'Màu nền website',
                       key: 'background',
                       desc: 'Màu phông nền toàn trang web',
+                      defaultVal: '#f7f7f7',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="20" height="16" x="2" y="4" rx="2" />
+                          <path d="M2 14h20" />
+                          <path d="M6 18h2" />
+                          <path d="M12 18h6" />
+                        </svg>
+                      ),
                     },
                     {
                       label: 'Màu chữ văn bản',
                       key: 'text',
-                      desc: 'Màu chữ tiêu đề & nội dung chính',
+                      desc: 'Màu chữ tiêu đề & nội dung bài viết',
+                      defaultVal: '#222222',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="4 7 4 4 20 4 20 7" />
+                          <line x1="9" x2="15" y1="20" y2="20" />
+                          <line x1="12" x2="12" y1="4" y2="20" />
+                        </svg>
+                      ),
                     },
-                  ].map((item) => (
-                    <CCol key={item.key} md={12}>
-                      <div className="p-3 border rounded bg-light d-flex align-items-center justify-content-between">
-                        <div>
-                          <label
-                            className="form-label fw-bold text-dark mb-0 d-block"
-                            style={{ fontSize: '13.5px' }}
+                  ].map((item) => {
+                    const isFocus = activeColorPreviewTab === item.key
+                    const currentColor =
+                      item.key === 'category_menu'
+                        ? editingTheme?.colors?.category_menu ||
+                          editingTheme?.colors?.hotline ||
+                          item.defaultVal
+                        : editingTheme?.colors?.[item.key] || item.defaultVal
+
+                    return (
+                      <div
+                        id={`color-item-${item.key}`}
+                        key={item.key}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => selectAndScrollToColor(item.key)}
+                        onKeyDown={(e) => e.key === 'Enter' && selectAndScrollToColor(item.key)}
+                        className="p-3 rounded-3 border d-flex align-items-center justify-content-between position-relative transition-all"
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: isFocus ? '#f0f7ff' : '#ffffff',
+                          borderColor: isFocus ? '#3b82f6' : '#e2e8f0',
+                          borderWidth: isFocus ? '2px' : '1px',
+                          boxShadow: isFocus
+                            ? '0 4px 12px rgba(37, 99, 235, 0.15)'
+                            : '0 1px 2px rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.2s ease-in-out',
+                        }}
+                      >
+                        <div className="d-flex align-items-center gap-3">
+                          <div
+                            className="d-flex align-items-center justify-content-center rounded-2 border"
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              flexShrink: 0,
+                              backgroundColor: isFocus ? '#eff6ff' : '#f8fafc',
+                              borderColor: isFocus ? '#bfdbfe' : '#e2e8f0',
+                              color: isFocus ? '#2563eb' : '#64748b',
+                            }}
                           >
-                            {item.label}
-                          </label>
-                          <small className="text-muted">{item.desc}</small>
+                            {item.icon}
+                          </div>
+                          <div>
+                            <div
+                              className="fw-bold"
+                              style={{
+                                fontSize: '13.5px',
+                                lineHeight: '1.2',
+                                color: isFocus ? '#1d4ed8' : '#1e293b',
+                              }}
+                            >
+                              {item.label}
+                            </div>
+                            <small
+                              className="d-block"
+                              style={{
+                                fontSize: '11px',
+                                marginTop: '2px',
+                                color: isFocus ? '#3b82f6' : '#64748b',
+                              }}
+                            >
+                              {item.desc}
+                            </small>
+                          </div>
                         </div>
-                        <div className="d-flex align-items-center gap-2">
+
+                        <div
+                          className="d-flex align-items-center gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <input
                             type="color"
-                            value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                            className="form-control form-control-color border-0 p-0 rounded cursor-pointer"
-                            style={{ width: '34px', height: '34px' }}
+                            value={currentColor}
+                            className="form-control form-control-color border-0 p-0 rounded cursor-pointer shadow-2xs"
+                            style={{ width: '32px', height: '32px', flexShrink: 0 }}
                             onChange={(e) => {
+                              setActiveColorPreviewTab(item.key)
+                              const val = e.target.value
                               const newCols = {
                                 ...(editingTheme?.colors || {}),
-                                [item.key]: e.target.value,
+                                [item.key]: val,
+                                ...(item.key === 'category_menu' ? { hotline: val } : {}),
                               }
                               setEditingTheme((prev) => ({ ...prev, colors: newCols }))
                             }}
                           />
                           <CFormInput
-                            value={editingTheme?.colors?.[item.key] || '#2356c4'}
-                            className="font-monospace text-uppercase"
-                            style={{ width: '95px', fontSize: '12px', textAlign: 'center' }}
+                            size="sm"
+                            value={currentColor}
+                            className="font-monospace text-uppercase shadow-2xs"
+                            style={{ width: '80px', fontSize: '11.5px', textAlign: 'center' }}
                             onChange={(e) => {
+                              setActiveColorPreviewTab(item.key)
+                              const val = e.target.value
                               const newCols = {
                                 ...(editingTheme?.colors || {}),
-                                [item.key]: e.target.value,
+                                [item.key]: val,
+                                ...(item.key === 'category_menu' ? { hotline: val } : {}),
                               }
                               setEditingTheme((prev) => ({ ...prev, colors: newCols }))
                             }}
                           />
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={isFocus ? '#3b82f6' : '#94a3b8'}
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{
+                              transform: isFocus ? 'translateX(2px)' : 'none',
+                              transition: 'transform 0.2s',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
                         </div>
                       </div>
-                    </CCol>
-                  ))}
-                </CRow>
+                    )
+                  })}
+                </div>
               </CCol>
 
-              <CCol md={6}>
-                <label
-                  className="form-label fw-bold text-dark mb-2 d-block"
-                  style={{ fontSize: '14px' }}
-                >
-                  Xem trước phối màu giao diện (Color Mockup)
-                </label>
-                <div
-                  className="p-3 rounded border shadow-xs"
-                  style={{
-                    backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
-                    minHeight: '260px',
-                  }}
-                >
-                  <div
-                    className="p-3 rounded mb-3 text-white fw-bold d-flex justify-content-between align-items-center shadow-xs"
-                    style={{ backgroundColor: editingTheme?.colors?.secondary || '#ffb716' }}
-                  >
-                    <span>Menu / Header Topbar</span>
-                    <span
-                      className="badge px-2.5 py-1.5 fw-bold"
-                      style={{ backgroundColor: editingTheme?.colors?.accent || '#e30019' }}
+              {/* Cột phải: Xem trước phối màu giao diện tương tác */}
+              <CCol lg={7} md={12}>
+                <div className="d-flex flex-column h-100">
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <label
+                      className="form-label fw-bold text-dark mb-0 d-block"
+                      style={{ fontSize: '13.5px' }}
                     >
-                      HOT SALE -50%
-                    </span>
+                      Xem trước
+                    </label>
+                    <div className="d-flex gap-1 flex-wrap">
+                      {[
+                        { id: 'all', label: 'Tất cả' },
+                        { id: 'category_menu', label: 'Danh mục & Hotline' },
+                        { id: 'cart_btn', label: 'Nút Thêm vào giỏ' },
+                        { id: 'primary', label: 'Nút Mua ngay' },
+                        { id: 'active_border', label: 'Viền khi chọn' },
+                        { id: 'secondary', label: 'Menu Topbar' },
+                        { id: 'accent', label: 'Màu nhấn' },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          className={`btn btn-xs py-1 px-2 rounded-2 fw-semibold transition-all ${
+                            activeColorPreviewTab === tab.id
+                              ? 'btn-primary text-white shadow-2xs'
+                              : 'btn-outline-secondary border-light-subtle bg-white text-secondary'
+                          }`}
+                          style={{ fontSize: '11.5px' }}
+                          onClick={() => {
+                            if (tab.id !== 'all') {
+                              selectAndScrollToColor(tab.id)
+                            } else {
+                              setActiveColorPreviewTab('all')
+                            }
+                          }}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="p-3 bg-white rounded border shadow-xs mb-2">
-                    <h6
-                      className="fw-bold mb-1"
-                      style={{ color: editingTheme?.colors?.text || '#222222' }}
-                    >
-                      Tiêu đề sản phẩm mẫu
-                    </h6>
-                    <p
-                      className="small mb-3"
-                      style={{ color: editingTheme?.colors?.text || '#555555' }}
-                    >
-                      Mô tả chi tiết sản phẩm hiển thị trên nền website với màu sắc phối chuẩn.
-                    </p>
-                    <div className="d-flex align-items-center gap-2">
-                      <button
-                        type="button"
-                        className="btn btn-sm text-white fw-bold px-3 py-1.5 rounded"
-                        style={{ backgroundColor: editingTheme?.colors?.primary || '#2356c4' }}
+                  <div
+                    className="p-3.5 rounded-3 border shadow-xs d-flex flex-column gap-3 flex-grow-1"
+                    style={{
+                      backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
+                      minHeight: '340px',
+                      transition: 'background-color 0.2s',
+                    }}
+                    title="Nhấp vùng nền để chuyển tới cấu hình Màu nền website"
+                    onClick={() => selectAndScrollToColor('background')}
+                  >
+                    {/* KHỐI 1: THANH MENU TOPBAR & SUB-HEADER (Màu secondary, category_menu, hotline) */}
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'secondary' ||
+                      activeColorPreviewTab === 'category_menu') && (
+                      <div className="rounded-2 overflow-hidden border shadow-xs bg-white">
+                        {/* Thanh Menu Topbar (Màu secondary) */}
+                        <div
+                          className="p-2 px-3 text-white d-flex justify-content-end align-items-center position-relative"
+                          style={{
+                            backgroundColor: editingTheme?.colors?.secondary || '#ffb716',
+                            border:
+                              activeColorPreviewTab === 'secondary'
+                                ? '2px dashed #ffffff'
+                                : undefined,
+                            transition: 'all 0.2s',
+                            cursor: 'pointer',
+                          }}
+                          title="Nhấp để chuyển tới cấu hình Màu thanh Menu Topbar"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            selectAndScrollToColor('secondary')
+                          }}
+                        >
+                          <span className="fw-medium opacity-90" style={{ fontSize: '12px' }}>
+                            {
+                              'Thông tin hữu ích  |  Hệ thống showroom  |  Tra cứu đơn hàng  |  Hỗ trợ'
+                            }
+                          </span>
+                        </div>
+
+                        {/* Thanh Sub-header: Danh mục sản phẩm & Hotline */}
+                        <div
+                          className="p-2 px-3 bg-white d-flex align-items-center justify-content-start gap-3 border-top"
+                          style={{
+                            outline:
+                              activeColorPreviewTab === 'category_menu'
+                                ? '2px dashed #2563eb'
+                                : undefined,
+                            outlineOffset: '-2px',
+                            transition: 'all 0.2s',
+                            cursor: 'pointer',
+                          }}
+                          title="Nhấp để chuyển tới cấu hình Màu Danh mục sản phẩm & Hotline"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            selectAndScrollToColor('category_menu')
+                          }}
+                        >
+                          <div
+                            className="d-flex align-items-center gap-2 pe-3 border-end fw-semibold py-1 rounded px-1.5 shrink-0"
+                            style={{
+                              color:
+                                editingTheme?.colors?.category_menu ||
+                                editingTheme?.colors?.hotline ||
+                                '#222222',
+                              fontSize: '13px',
+                              transition: 'all 0.2s',
+                            }}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <line x1="4" x2="20" y1="12" y2="12" />
+                              <line x1="4" x2="20" y1="6" y2="6" />
+                              <line x1="4" x2="20" y1="18" y2="18" />
+                            </svg>
+                            <span>Danh mục sản phẩm</span>
+                          </div>
+
+                          <div
+                            className="d-flex align-items-center gap-1.5 py-1 rounded px-1.5 flex-wrap"
+                            style={{
+                              fontSize: '12.5px',
+                              color: '#222222',
+                              transition: 'all 0.2s',
+                            }}
+                          >
+                            <span className="fw-medium">Hotline:</span>
+                            <strong
+                              className="fw-bold px-1 rounded"
+                              style={{
+                                color:
+                                  editingTheme?.colors?.category_menu ||
+                                  editingTheme?.colors?.hotline ||
+                                  '#222222',
+                                transition: 'all 0.2s',
+                              }}
+                            >
+                              1900 6739
+                            </strong>
+                            <span className="text-secondary" style={{ fontSize: '12px' }}>
+                              (8h - 17h45, T2 - T7)
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* KHỐI 2: TAB DANH MỤC & THƯƠNG HIỆU (Màu active_border khi chọn) */}
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'active_border') && (
+                      <div
+                        className="p-3 bg-white rounded-2 border shadow-2xs d-flex flex-column gap-3"
+                        style={{
+                          borderColor:
+                            activeColorPreviewTab === 'active_border' ? '#3b82f6' : '#e2e8f0',
+                          cursor: 'pointer',
+                        }}
+                        title="Nhấp để chuyển tới cấu hình Màu viền khi chọn"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          selectAndScrollToColor('active_border')
+                        }}
                       >
-                        Thêm vào giỏ hàng
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-secondary fw-semibold px-3 py-1.5 rounded"
-                      >
-                        Xem chi tiết
-                      </button>
-                    </div>
+                        <div className="d-flex align-items-center justify-content-between">
+                          <span
+                            className="text-uppercase fw-bold"
+                            style={{ fontSize: '11px', color: '#64748b', letterSpacing: '0.5px' }}
+                          >
+                            Danh mục chọn &amp; Thương hiệu (Màu viền khi chọn active)
+                          </span>
+                          {activeColorPreviewTab === 'active_border' && (
+                            <span
+                              className="badge bg-primary-subtle text-primary"
+                              style={{ fontSize: '10px' }}
+                            >
+                              Đang xem viền khi chọn
+                            </span>
+                          )}
+                        </div>
+
+                        {/* 1. Thanh danh mục cha dạng Tab có dải phân cách (Ảnh 1) */}
+                        <div className="rounded-2 border bg-white p-2 shadow-2xs">
+                          <div className="d-flex align-items-center gap-1.5 flex-wrap">
+                            {/* Active: Laptop */}
+                            <div
+                              className="d-inline-flex align-items-center gap-2 rounded-2 px-3 py-1.5 fw-semibold"
+                              style={{
+                                border: `1.5px solid ${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }`,
+                                backgroundColor: `${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }15`,
+                                color:
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb',
+                                fontSize: '12px',
+                              }}
+                            >
+                              <span
+                                className="rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style={{
+                                  width: '24px',
+                                  height: '24px',
+                                  backgroundColor: `${
+                                    editingTheme?.colors?.active_border ||
+                                    editingTheme?.colors?.primary ||
+                                    '#2563eb'
+                                  }25`,
+                                  fontSize: '12px',
+                                }}
+                              >
+                                💻
+                              </span>
+                              <span>Laptop</span>
+                            </div>
+
+                            <div
+                              style={{
+                                width: '1px',
+                                height: '18px',
+                                backgroundColor: '#e2e8f0',
+                                margin: '0 6px',
+                              }}
+                            />
+
+                            {[
+                              { icon: '🖥', label: 'Máy tính để bàn' },
+                              { icon: '🖧', label: 'Server' },
+                              { icon: '🖨', label: 'Máy in / Máy Scan' },
+                              { icon: '🖥', label: 'Màn hình máy tính' },
+                            ].map((cat, idx, arr) => (
+                              <React.Fragment key={cat.label}>
+                                <div
+                                  className="d-inline-flex align-items-center gap-2 px-2 py-1 text-dark opacity-90"
+                                  style={{ fontSize: '12px' }}
+                                >
+                                  <span
+                                    className="rounded-circle d-inline-flex align-items-center justify-content-center bg-light border"
+                                    style={{
+                                      width: '24px',
+                                      height: '24px',
+                                      fontSize: '11px',
+                                      borderColor: '#e2e8f0',
+                                    }}
+                                  >
+                                    {cat.icon}
+                                  </span>
+                                  <span className="text-secondary fw-medium">{cat.label}</span>
+                                </div>
+                                {idx < arr.length - 1 && (
+                                  <div
+                                    style={{
+                                      width: '1px',
+                                      height: '18px',
+                                      backgroundColor: '#e2e8f0',
+                                      margin: '0 6px',
+                                    }}
+                                  />
+                                )}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 2. Chọn theo thương hiệu (Ảnh 2) */}
+                        <div>
+                          <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
+                            Chọn theo thương hiệu
+                          </div>
+                          <div className="d-flex gap-1.5 flex-wrap">
+                            <div
+                              className="px-3 py-1 rounded-2 fw-bold text-center d-flex align-items-center justify-content-center"
+                              style={{
+                                border: `1.5px solid ${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }`,
+                                backgroundColor: `${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }12`,
+                                color: '#65a30d',
+                                fontSize: '12px',
+                                minWidth: '58px',
+                                height: '28px',
+                              }}
+                            >
+                              <span style={{ fontStyle: 'italic', fontWeight: '800' }}>acer</span>
+                            </div>
+                            {[
+                              { name: 'ASUS', color: '#1e3a8a' },
+                              { name: 'DELL', color: '#0284c7' },
+                              { name: 'hp', color: '#0369a1' },
+                              { name: 'lenovo', color: '#dc2626' },
+                              { name: 'msi', color: '#111827' },
+                              { name: 'intel', color: '#0284c7' },
+                              { name: ' Apple', color: '#64748b' },
+                            ].map((b) => (
+                              <div
+                                key={b.name}
+                                className="px-3 py-1 rounded-2 border bg-white text-center d-flex align-items-center justify-content-center"
+                                style={{
+                                  fontSize: '11.5px',
+                                  borderColor: '#e2e8f0',
+                                  minWidth: '54px',
+                                  height: '28px',
+                                  fontWeight: '600',
+                                  color: b.color,
+                                }}
+                              >
+                                {b.name}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 3. Chọn theo nhu cầu (Ảnh 2) */}
+                        <div>
+                          <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
+                            Chọn theo nhu cầu
+                          </div>
+                          <div className="d-flex gap-2 flex-wrap">
+                            {[
+                              { name: 'Laptop AI', bg: '#8b5cf6', icon: '🤖' },
+                              { name: 'Gaming', bg: '#ef4444', icon: '🎮' },
+                              { name: 'Đồ họa', bg: '#eab308', icon: '🎨' },
+                              { name: 'Văn phòng', bg: '#f97316', icon: '💼' },
+                              { name: 'Cảm ứng 2 in 1', bg: '#14b8a6', icon: '📱' },
+                              { name: 'Workstation', bg: '#64748b', icon: '⚙️' },
+                            ].map((item) => (
+                              <div
+                                key={item.name}
+                                className="p-1.5 px-2 rounded-2 border bg-white d-flex flex-column align-items-center justify-content-center text-center shadow-2xs"
+                                style={{ minWidth: '70px', borderColor: '#e2e8f0' }}
+                              >
+                                <div
+                                  className="rounded-2 d-flex align-items-center justify-content-center text-white mb-1"
+                                  style={{
+                                    width: '32px',
+                                    height: '26px',
+                                    backgroundColor: item.bg,
+                                    fontSize: '13px',
+                                  }}
+                                >
+                                  {item.icon}
+                                </div>
+                                <span
+                                  className="fw-medium text-dark"
+                                  style={{ fontSize: '10.5px' }}
+                                >
+                                  {item.name}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 4. Chọn theo tiêu chí (Thanh bộ lọc - Ảnh 2) */}
+                        <div>
+                          <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
+                            Chọn theo tiêu chí
+                          </div>
+                          <div className="d-flex gap-2 flex-wrap align-items-center">
+                            <div
+                              className="px-3 py-1.5 rounded-2 d-flex align-items-center gap-2 fw-semibold"
+                              style={{
+                                border: `1.5px solid ${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }`,
+                                backgroundColor: `${
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb'
+                                }15`,
+                                color:
+                                  editingTheme?.colors?.active_border ||
+                                  editingTheme?.colors?.primary ||
+                                  '#2563eb',
+                                fontSize: '12px',
+                              }}
+                            >
+                              <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ flexShrink: 0 }}
+                              >
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                              </svg>
+                              <span>Bộ lọc</span>
+                            </div>
+                            {[
+                              'Xem theo giá ▾',
+                              'Kích thước màn hình ▾',
+                              'Màn hình Cảm ứng ▾',
+                              'Tần số quét ▾',
+                              'Dung lượng card đồ họa ▾',
+                              'Màu sắc ▾',
+                              'Dung lượng RAM ▾',
+                              'Dung lượng Ổ cứng ▾',
+                              'Hệ điều hành ▾',
+                              'Chip xử lí (CPU) ▾',
+                            ].map((f) => (
+                              <span
+                                key={f}
+                                className="px-2.5 py-1.5 rounded-2 border bg-light text-secondary"
+                                style={{ fontSize: '11.5px', borderColor: '#e2e8f0' }}
+                              >
+                                {f}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* KHỐI 3: NÚT THÊM VÀO GIỎ & MUA NGAY (Màu chính & Nút bấm) */}
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'primary' ||
+                      activeColorPreviewTab === 'cart_btn' ||
+                      activeColorPreviewTab === 'background') && (
+                      <div className="p-3 bg-white rounded-2 border shadow-2xs">
+                        <div className="d-flex align-items-center gap-3">
+                          <button
+                            type="button"
+                            className="btn fw-bold py-2.5 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-2 shadow-2xs border-0"
+                            style={{
+                              backgroundColor: editingTheme?.colors?.cart_btn || '#ffb716',
+                              color: '#111827',
+                              fontSize: '13px',
+                              outline:
+                                activeColorPreviewTab === 'cart_btn'
+                                  ? '2px dashed #2563eb'
+                                  : undefined,
+                              outlineOffset: '2px',
+                              cursor: 'pointer',
+                            }}
+                            title="Nhấp để chuyển tới cấu hình Màu nút Thêm vào giỏ"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('cart_btn')
+                            }}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="8" cy="21" r="1" />
+                              <circle cx="19" cy="21" r="1" />
+                              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                            </svg>
+                            <span>Thêm vào giỏ</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="btn text-white fw-bold py-2.5 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-2 shadow-2xs border-0"
+                            style={{
+                              backgroundColor: editingTheme?.colors?.primary || '#2356c4',
+                              fontSize: '13px',
+                              outline:
+                                activeColorPreviewTab === 'primary'
+                                  ? '2px dashed #2563eb'
+                                  : undefined,
+                              outlineOffset: '2px',
+                              cursor: 'pointer',
+                            }}
+                            title="Nhấp để chuyển tới cấu hình Màu chính (Nút Mua ngay & Viền)"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('primary')
+                            }}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+                            </svg>
+                            <span>Mua ngay</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CCol>
