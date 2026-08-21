@@ -1536,14 +1536,68 @@ function AddThemeConfig() {
 
                             {/* Mockup Container */}
                             <div
-                              className="position-relative border rounded p-3 bg-white"
+                              className="position-relative border rounded p-3 bg-white shadow-xs"
                               style={{
-                                minHeight: '260px',
-                                backgroundColor: '#fafafa',
-                                fontSize: '10.5px',
+                                minHeight: '340px',
+                                backgroundColor: '#ffffff',
+                                fontSize: '11px',
                                 color: '#444',
+                                fontFamily: 'system-ui, -apple-system, sans-serif',
                               }}
                             >
+                              {/* FLOATING ACTION BUTTONS (LEFT) */}
+                              <div
+                                className="position-absolute start-0 top-50 translate-middle-y d-flex flex-column gap-1.5 ms-1"
+                                style={{ zIndex: 12 }}
+                              >
+                                <div
+                                  className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-xs"
+                                  style={{ width: '24px', height: '24px', fontSize: '11px' }}
+                                  title="Messenger"
+                                >
+                                  💬
+                                </div>
+                                <div
+                                  className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-xs"
+                                  style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    fontSize: '8.5px',
+                                    backgroundColor: '#0068ff',
+                                  }}
+                                  title="Zalo"
+                                >
+                                  Zalo
+                                </div>
+                                <div
+                                  className="rounded-circle text-white d-flex align-items-center justify-content-center shadow-xs"
+                                  style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    fontSize: '10px',
+                                    backgroundColor: '#eab308',
+                                  }}
+                                  title="Hotline"
+                                >
+                                  🎧
+                                </div>
+                              </div>
+
+                              {/* FLOATING BACK TO TOP (BOTTOM RIGHT) */}
+                              <div
+                                className="position-absolute end-0 bottom-0 m-2 rounded-circle text-white d-flex align-items-center justify-content-center shadow-xs"
+                                style={{
+                                  width: '24px',
+                                  height: '24px',
+                                  fontSize: '10px',
+                                  backgroundColor: '#eab308',
+                                  zIndex: 12,
+                                }}
+                                title="Lên đầu trang"
+                              >
+                                ▲
+                              </div>
+
                               {/* OVERLAY ORNAMENT LAYERS */}
                               {newTheme?.decorations?.footerOrnamentUrl && (
                                 <>
@@ -1635,18 +1689,19 @@ function AddThemeConfig() {
                               )}
 
                               {/* FOOTER REALISTIC CONTENT */}
-                              <div className="position-relative" style={{ zIndex: 2 }}>
-                                {/* Top Section */}
-                                <CRow className="g-2 mb-2.5">
+                              <div className="position-relative px-2 py-1" style={{ zIndex: 2 }}>
+                                {/* TOP ROW: 4 COLUMNS */}
+                                <CRow className="g-3 mb-3">
+                                  {/* Cột 1: Về Nguyên Kim */}
                                   <CCol md={3} xs={6}>
-                                    <h6
-                                      className="fw-bold text-dark mb-1"
-                                      style={{ fontSize: '11px' }}
+                                    <div
+                                      className="fw-bold mb-2"
+                                      style={{ color: '#d97706', fontSize: '11.5px' }}
                                     >
                                       Về Nguyên Kim
-                                    </h6>
+                                    </div>
                                     <div
-                                      className="text-muted d-flex flex-column gap-0.5"
+                                      className="d-flex flex-column gap-1 text-secondary"
                                       style={{ fontSize: '9.5px', lineHeight: '1.4' }}
                                     >
                                       <span>Giới thiệu công ty</span>
@@ -1656,192 +1711,324 @@ function AddThemeConfig() {
                                     </div>
                                   </CCol>
 
+                                  {/* Cột 2: Chính sách & Điều khoản */}
                                   <CCol md={3} xs={6}>
-                                    <h6
-                                      className="fw-bold text-dark mb-1"
-                                      style={{ fontSize: '11px' }}
-                                    >
-                                      Chính sách & Điều khoản
-                                    </h6>
                                     <div
-                                      className="text-muted d-flex flex-column gap-0.5"
+                                      className="fw-bold mb-2"
+                                      style={{ color: '#d97706', fontSize: '11.5px' }}
+                                    >
+                                      Chính sách &amp; Điều khoản
+                                    </div>
+                                    <div
+                                      className="d-flex flex-column gap-1 text-secondary"
                                       style={{ fontSize: '9.5px', lineHeight: '1.4' }}
                                     >
                                       <span>Hướng dẫn gửi bảo hành</span>
                                       <span>Chính sách bảo mật TT cá nhân</span>
                                       <span>Chính sách giao hàng</span>
+                                      <span>Chính sách bảo hành</span>
                                       <span>Quy định thanh toán</span>
+                                      <span>Chính sách hoàn tiền</span>
+                                      <span>Chính sách đổi sản phẩm</span>
+                                      <span>Chính sách kiểm hàng</span>
                                     </div>
                                   </CCol>
 
+                                  {/* Cột 3: Tổng đài hỗ trợ */}
                                   <CCol md={3} xs={6}>
-                                    <h6
-                                      className="fw-bold text-dark mb-1"
-                                      style={{ fontSize: '11px' }}
+                                    <div
+                                      className="fw-bold mb-2"
+                                      style={{ color: '#d97706', fontSize: '11.5px' }}
                                     >
                                       Tổng đài hỗ trợ
-                                    </h6>
-                                    <div className="d-flex align-items-center gap-1.5 mb-1">
+                                    </div>
+                                    <div className="d-flex align-items-center gap-1.5 mb-2">
                                       <span
-                                        className="badge bg-danger px-1.5 py-0.5"
-                                        style={{ fontSize: '9px' }}
+                                        className="d-inline-flex align-items-center justify-content-center text-white rounded"
+                                        style={{
+                                          backgroundColor: '#cc181e',
+                                          width: '22px',
+                                          height: '22px',
+                                          fontSize: '9px',
+                                        }}
                                       >
-                                        YouTube
+                                        ▶
                                       </span>
                                       <span
-                                        className="badge bg-primary px-1.5 py-0.5"
-                                        style={{ fontSize: '9px' }}
+                                        className="d-inline-flex align-items-center justify-content-center text-white rounded fw-bold"
+                                        style={{
+                                          backgroundColor: '#1877f2',
+                                          width: '22px',
+                                          height: '22px',
+                                          fontSize: '11px',
+                                        }}
                                       >
-                                        Facebook
+                                        f
                                       </span>
                                     </div>
                                     <div
-                                      className="border rounded bg-white p-1"
-                                      style={{ fontSize: '9px' }}
+                                      className="border rounded bg-white p-1.5 shadow-xs"
+                                      style={{ fontSize: '9px', maxWidth: '140px' }}
                                     >
-                                      <div className="fw-bold text-dark">Vi Tính Nguyên Kim</div>
-                                      <span className="text-muted" style={{ fontSize: '8px' }}>
+                                      <div className="d-flex align-items-center gap-1 mb-1">
+                                        <span
+                                          className="rounded-circle border d-inline-block"
+                                          style={{
+                                            width: '14px',
+                                            height: '14px',
+                                            backgroundColor: '#d97706',
+                                          }}
+                                        />
+                                        <span
+                                          className="fw-bold text-dark"
+                                          style={{ fontSize: '8.5px' }}
+                                        >
+                                          Vi Tính Nguyên Kim
+                                        </span>
+                                      </div>
+                                      <div
+                                        className="text-muted mb-1"
+                                        style={{ fontSize: '7.5px' }}
+                                      >
                                         25K người theo dõi
-                                      </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        className="btn btn-sm btn-light border py-0 px-1 w-100 fw-semibold"
+                                        style={{ fontSize: '8px' }}
+                                      >
+                                        f Theo dõi Trang
+                                      </button>
                                     </div>
                                   </CCol>
 
+                                  {/* Cột 4: Vị trí của chúng tôi */}
                                   <CCol md={3} xs={6}>
-                                    <h6
-                                      className="fw-bold text-dark mb-1"
-                                      style={{ fontSize: '11px' }}
+                                    <div
+                                      className="fw-bold mb-2"
+                                      style={{ color: '#d97706', fontSize: '11.5px' }}
                                     >
                                       Vị trí của chúng tôi
-                                    </h6>
+                                    </div>
                                     <div
-                                      className="border rounded bg-white p-1 text-center text-muted"
-                                      style={{ height: '52px', fontSize: '9px' }}
+                                      className="border rounded bg-light p-1.5 position-relative overflow-hidden text-center"
+                                      style={{
+                                        height: '80px',
+                                        background:
+                                          'linear-gradient(135deg, #e0f2fe 0%, #fef3c7 100%)',
+                                      }}
                                     >
                                       <span
-                                        className="d-block text-primary fw-semibold"
+                                        className="badge bg-white text-primary border position-absolute top-0 start-0 m-1"
+                                        style={{ fontSize: '7.5px' }}
+                                      >
+                                        Maps ↗
+                                      </span>
+                                      <div
+                                        className="mt-3 text-danger fw-bold"
                                         style={{ fontSize: '8.5px' }}
                                       >
-                                        📍 Maps Tân Định
-                                      </span>
-                                      <span style={{ fontSize: '8px' }}>
-                                        245B Trần Quang Khải, Q.1
-                                      </span>
+                                        📍 Công Ty TNHH TTNA
+                                      </div>
+                                      <small
+                                        className="text-muted d-block"
+                                        style={{ fontSize: '7.5px' }}
+                                      >
+                                        Nhà Thờ Giáo Xứ Tân Định
+                                      </small>
                                     </div>
                                   </CCol>
                                 </CRow>
 
-                                <hr className="my-2 border-secondary opacity-25" />
-
-                                {/* Bottom Section */}
-                                <CRow className="g-2 align-items-center">
-                                  {/* Left: Info */}
-                                  <CCol md={5} sm={12}>
-                                    <div className="d-flex align-items-center gap-1.5 mb-1">
-                                      <img
-                                        src={newTheme?.decorations?.logoUrl || logoNk}
-                                        alt="Nguyen Kim Logo"
-                                        style={{ height: '24px', objectFit: 'contain' }}
-                                      />
-                                      <span
-                                        className="fw-bold text-dark"
-                                        style={{ fontSize: '10px' }}
+                                {/* BOTTOM ROW: COMPANY INFO & CERTIFICATES */}
+                                <CRow className="g-3 align-items-center pt-2">
+                                  {/* Thông tin công ty & Logo */}
+                                  <CCol md={4} sm={12}>
+                                    <div className="mb-1.5">
+                                      <div className="lh-1 mb-1">
+                                        <span
+                                          className="fw-bold"
+                                          style={{ color: '#e11d48', fontSize: '15px' }}
+                                        >
+                                          nguyên kim
+                                        </span>
+                                        <br />
+                                        <span
+                                          className="fw-bold"
+                                          style={{ color: '#2563eb', fontSize: '13px' }}
+                                        >
+                                          computer
+                                        </span>
+                                        <small
+                                          className="d-block text-danger fw-semibold"
+                                          style={{ fontSize: '7.5px' }}
+                                        >
+                                          Since 2004
+                                        </small>
+                                      </div>
+                                      <div
+                                        className="fw-bold"
+                                        style={{ color: '#2563eb', fontSize: '10.5px' }}
                                       >
                                         Công ty TNHH Vi tính Nguyên Kim
-                                      </span>
+                                      </div>
                                     </div>
+
                                     <div
-                                      className="text-muted"
-                                      style={{ fontSize: '9px', lineHeight: '1.35' }}
+                                      className="text-secondary d-flex flex-column gap-0.5"
+                                      style={{ fontSize: '8.5px', lineHeight: '1.35' }}
                                     >
-                                      <div>📍 245B Trần Quang Khải, P. Tân Định, TP. HCM</div>
+                                      <div>
+                                        📍 245B Trần Quang Khải, khu phố 9, Phường Tân Định, TP. Hồ
+                                        Chí Minh
+                                      </div>
                                       <div>
                                         📞 CSKH: <strong className="text-dark">1800 6739</strong> -
-                                        MST: 0303753468
+                                        Mã Số Thuế: 0303753468
                                       </div>
                                       <div>✉ cskh@nguyenkimvn.vn</div>
+                                      <div>
+                                        🕒 8h - 17h45 (Từ thứ Hai đến thứ Sáu), Thứ 7: 8h - 16h
+                                      </div>
                                     </div>
-                                    <div className="mt-1">
+
+                                    <div className="mt-1.5">
                                       <span
-                                        className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle"
-                                        style={{ fontSize: '8px' }}
+                                        className="badge px-1.5 py-1 text-primary border"
+                                        style={{
+                                          fontSize: '7.5px',
+                                          backgroundColor: '#eff6ff',
+                                          borderColor: '#bfdbfe',
+                                        }}
                                       >
                                         ✔ ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
                                       </span>
                                     </div>
                                   </CCol>
 
-                                  {/* Center: Certificates */}
-                                  <CCol md={3} sm={6}>
+                                  {/* Nhà phân phối uy tín */}
+                                  <CCol md={4} sm={6}>
                                     <div className="text-center">
-                                      <span
-                                        className="fw-bold text-dark d-block mb-1"
-                                        style={{ fontSize: '8.5px' }}
+                                      <div
+                                        className="fw-bold mb-2"
+                                        style={{ color: '#d97706', fontSize: '9px' }}
                                       >
-                                        NHÀ PHÂN PHỐI UY TÍN HÀNG ĐẦU
-                                      </span>
-                                      <div className="d-flex flex-wrap align-items-center justify-content-center gap-1">
-                                        <span
-                                          className="border rounded px-1 py-0.5 bg-white small fw-bold"
-                                          style={{ fontSize: '7.5px' }}
+                                        NHÀ PHÂN PHỐI UY TÍN CHẤT LƯỢNG HÀNG ĐẦU
+                                      </div>
+                                      <div className="d-flex flex-wrap align-items-center justify-content-center gap-1.5">
+                                        <div
+                                          className="border rounded p-1 bg-white text-center shadow-xs"
+                                          style={{ width: '46px', height: '46px' }}
                                         >
-                                          TRUST
-                                        </span>
-                                        <span
-                                          className="border rounded px-1 py-0.5 bg-white small fw-bold text-danger"
-                                          style={{ fontSize: '7.5px' }}
+                                          <div style={{ fontSize: '7px', color: '#b45309' }}>
+                                            🏛
+                                          </div>
+                                          <span style={{ fontSize: '6px', fontWeight: 'bold' }}>
+                                            TRUST
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white text-center shadow-xs"
+                                          style={{ width: '46px', height: '46px' }}
                                         >
-                                          FAST500
-                                        </span>
-                                        <span
-                                          className="border rounded px-1 py-0.5 bg-white small fw-bold text-warning"
-                                          style={{ fontSize: '7.5px' }}
+                                          <div style={{ fontSize: '7px', color: '#d97706' }}>
+                                            🏆
+                                          </div>
+                                          <span style={{ fontSize: '6px', fontWeight: 'bold' }}>
+                                            TOP BRAND
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white text-center shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '46px', height: '46px' }}
                                         >
-                                          VNR500
-                                        </span>
+                                          <span
+                                            className="fw-bold text-success"
+                                            style={{ fontSize: '7px' }}
+                                          >
+                                            FAST500
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white text-center shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '46px', height: '46px' }}
+                                        >
+                                          <span
+                                            className="fw-bold text-danger"
+                                            style={{ fontSize: '7px' }}
+                                          >
+                                            VNR500
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
                                   </CCol>
 
-                                  {/* Right: Partner Certifications */}
+                                  {/* Chứng nhận đối tác */}
                                   <CCol md={4} sm={6}>
                                     <div className="text-center">
-                                      <span
-                                        className="fw-bold text-dark d-block mb-1"
-                                        style={{ fontSize: '8.5px' }}
+                                      <div
+                                        className="fw-bold mb-2"
+                                        style={{ color: '#d97706', fontSize: '9px' }}
                                       >
                                         CHỨNG NHẬN ĐỐI TÁC
-                                      </span>
-                                      <div className="d-flex flex-wrap align-items-center justify-content-center gap-1">
-                                        <span
-                                          className="border rounded px-1.5 py-0.5 bg-white fw-bold text-primary"
-                                          style={{ fontSize: '8px' }}
+                                      </div>
+                                      <div className="d-flex flex-wrap align-items-center justify-content-center gap-1.5">
+                                        <div
+                                          className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '48px', height: '36px' }}
                                         >
-                                          hp
-                                        </span>
-                                        <span
-                                          className="border rounded px-1.5 py-0.5 bg-white fw-bold text-dark"
-                                          style={{ fontSize: '8px' }}
+                                          <span
+                                            className="fw-bold text-primary"
+                                            style={{ fontSize: '11px' }}
+                                          >
+                                            hp
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '48px', height: '36px' }}
                                         >
-                                          ASUS
-                                        </span>
-                                        <span
-                                          className="border rounded px-1.5 py-0.5 bg-white fw-bold text-info"
-                                          style={{ fontSize: '8px' }}
+                                          <span
+                                            className="fw-bold text-dark"
+                                            style={{ fontSize: '9px' }}
+                                          >
+                                            ASUS
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '56px', height: '36px' }}
                                         >
-                                          DELL
-                                        </span>
-                                        <span
-                                          className="border rounded px-1.5 py-0.5 bg-white fw-bold text-danger"
-                                          style={{ fontSize: '8px' }}
+                                          <span
+                                            className="fw-bold text-info"
+                                            style={{ fontSize: '8px' }}
+                                          >
+                                            DELL
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '52px', height: '36px' }}
                                         >
-                                          Lenovo
-                                        </span>
-                                        <span
-                                          className="border rounded px-1.5 py-0.5 bg-white fw-bold text-primary"
-                                          style={{ fontSize: '8px' }}
+                                          <span
+                                            className="badge bg-danger text-white p-0.5"
+                                            style={{ fontSize: '7.5px' }}
+                                          >
+                                            Lenovo
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="border rounded p-1 bg-white shadow-xs d-flex align-items-center justify-content-center"
+                                          style={{ width: '56px', height: '36px' }}
                                         >
-                                          SAMSUNG
-                                        </span>
+                                          <span
+                                            className="fw-bold text-primary"
+                                            style={{ fontSize: '7.5px' }}
+                                          >
+                                            SAMSUNG
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
                                   </CCol>
