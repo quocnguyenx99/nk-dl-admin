@@ -291,7 +291,8 @@ function AddThemeConfig() {
     if (key === 'contact_btn') targetKey = 'contact_btn'
     if (key === 'header_menu') targetKey = 'header_menu'
     if (key === 'detail_cart') targetKey = 'detail_cart'
-    if (key === 'hover_title' || key === 'hover_spec' || key === 'hover_card') targetKey = 'hover_title'
+    if (key === 'hover_title' || key === 'hover_spec' || key === 'hover_card')
+      targetKey = 'hover_title'
     if (key === 'footer') targetKey = 'footer'
     const el = document.getElementById(`color-item-${targetKey}`)
     if (el) {
@@ -1158,9 +1159,7 @@ function AddThemeConfig() {
                           : undefined) ||
                         item.defaultBg
 
-                      const currentText =
-                        newTheme?.colors?.[item.textKey] ||
-                        item.defaultText
+                      const currentText = newTheme?.colors?.[item.textKey] || item.defaultText
 
                       return (
                         <div
@@ -1244,7 +1243,9 @@ function AddThemeConfig() {
                                     const newCols = {
                                       ...(newTheme?.colors || {}),
                                       [item.bgKey]: val,
-                                      ...(item.bgKey === 'header_menu_bg' ? { secondary: val } : {}),
+                                      ...(item.bgKey === 'header_menu_bg'
+                                        ? { secondary: val }
+                                        : {}),
                                     }
                                     setNewTheme((prev) => ({ ...prev, colors: newCols }))
                                   }}
@@ -1260,7 +1261,9 @@ function AddThemeConfig() {
                                     const newCols = {
                                       ...(newTheme?.colors || {}),
                                       [item.bgKey]: val,
-                                      ...(item.bgKey === 'header_menu_bg' ? { secondary: val } : {}),
+                                      ...(item.bgKey === 'header_menu_bg'
+                                        ? { secondary: val }
+                                        : {}),
                                     }
                                     setNewTheme((prev) => ({ ...prev, colors: newCols }))
                                   }}
@@ -1541,9 +1544,7 @@ function AddThemeConfig() {
                           }}
                         >
                           <span className="fw-medium opacity-90" style={{ fontSize: '12px' }}>
-                            {
-                              'Tin khuyến mãi  |  Hệ thống showroom  |  Tra cứu đơn hàng  |  Hỗ trợ'
-                            }
+                            {'Tin khuyến mãi  |  Hệ thống showroom  |  Tra cứu đơn hàng  |  Hỗ trợ'}
                           </span>
                         </div>
 
@@ -1771,10 +1772,8 @@ function AddThemeConfig() {
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor:
-                                newTheme?.colors?.cart_btn_bg || '#F1F8FE',
-                              color:
-                                newTheme?.colors?.cart_btn_text || '#2a83e9',
+                              backgroundColor: newTheme?.colors?.cart_btn_bg || '#F1F8FE',
+                              color: newTheme?.colors?.cart_btn_text || '#2a83e9',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'cart_btn'
@@ -1797,10 +1796,8 @@ function AddThemeConfig() {
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor:
-                                newTheme?.colors?.contact_btn_bg || '#E5E7EB',
-                              color:
-                                newTheme?.colors?.contact_btn_text || '#6b7280',
+                              backgroundColor: newTheme?.colors?.contact_btn_bg || '#E5E7EB',
+                              color: newTheme?.colors?.contact_btn_text || '#6b7280',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'contact_btn'
@@ -1823,10 +1820,8 @@ function AddThemeConfig() {
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor:
-                                newTheme?.colors?.detail_cart_bg || '#ffb716',
-                              color:
-                                newTheme?.colors?.detail_cart_text || '#111827',
+                              backgroundColor: newTheme?.colors?.detail_cart_bg || '#ffb716',
+                              color: newTheme?.colors?.detail_cart_text || '#111827',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'detail_cart'
@@ -1898,10 +1893,8 @@ function AddThemeConfig() {
                         <div
                           className="px-3 py-2 fw-bold text-uppercase d-flex align-items-center justify-content-between"
                           style={{
-                            backgroundColor:
-                              newTheme?.colors?.hover_title_bg || '#2356c4',
-                            color:
-                              newTheme?.colors?.hover_title_text || '#ffffff',
+                            backgroundColor: newTheme?.colors?.hover_title_bg || '#2356c4',
+                            color: newTheme?.colors?.hover_title_text || '#ffffff',
                             fontSize: '12px',
                           }}
                           title="Nhấp để cấu hình Tiêu đề Popup hover"
@@ -1927,10 +1920,8 @@ function AddThemeConfig() {
                             type="button"
                             className="btn w-100 py-1.5 px-3 rounded-2 fw-bold d-flex align-items-center justify-content-center gap-1.5 border-0 shadow-2xs"
                             style={{
-                              backgroundColor:
-                                newTheme?.colors?.hover_spec_bg || '#ffd51c',
-                              color:
-                                newTheme?.colors?.hover_spec_text || '#ffffff',
+                              backgroundColor: newTheme?.colors?.hover_spec_bg || '#ffd51c',
+                              color: newTheme?.colors?.hover_spec_text || '#ffffff',
                               fontSize: '12px',
                             }}
                             title="Nhấp để cấu hình Nút Thông số sản phẩm trên Popup"
@@ -1946,16 +1937,13 @@ function AddThemeConfig() {
                     )}
 
                     {/* KHỐI 5: FOOTER WEBSITE */}
-                    {(activeColorPreviewTab === 'all' ||
-                      activeColorPreviewTab === 'footer') && (
+                    {(activeColorPreviewTab === 'all' || activeColorPreviewTab === 'footer') && (
                       <div
                         className="p-3 rounded-2 border shadow-2xs d-flex flex-column gap-2"
                         style={{
                           backgroundColor: newTheme?.colors?.footer_bg || '#ffffff',
                           outline:
-                            activeColorPreviewTab === 'footer'
-                              ? '2px dashed #2563eb'
-                              : undefined,
+                            activeColorPreviewTab === 'footer' ? '2px dashed #2563eb' : undefined,
                           outlineOffset: '2px',
                           cursor: 'pointer',
                         }}
@@ -1976,8 +1964,7 @@ function AddThemeConfig() {
                               key={col}
                               className="fw-bold"
                               style={{
-                                color:
-                                  newTheme?.colors?.footer_heading || '#FFA500',
+                                color: newTheme?.colors?.footer_heading || '#FFA500',
                                 fontSize: '11px',
                               }}
                             >
