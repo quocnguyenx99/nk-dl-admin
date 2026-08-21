@@ -871,9 +871,9 @@ function AddThemeConfig() {
                   {[
                     {
                       type: 'dual',
-                      label: 'Màu chính (Nút Mua ngay, Thanh toán & Đặt hàng)',
+                      label: 'Màu chính (Mua ngay, Thanh toán & Xem tất cả)',
                       key: 'primary',
-                      desc: 'Màu nền & màu chữ nút Mua ngay, Đặt hàng, Thanh toán',
+                      desc: 'Màu nền & màu chữ nút Mua ngay, Đặt hàng, Thanh toán, Xem tất cả',
                       bgKey: 'primary',
                       textKey: 'primary_text',
                       defaultBg: '#2356c4',
@@ -1856,6 +1856,30 @@ function AddThemeConfig() {
                             }}
                           >
                             <span>⚡ Mua ngay / Thanh toán</span>
+                          </button>
+
+                          {/* Nút Xem tất cả */}
+                          <button
+                            type="button"
+                            className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
+                            style={{
+                              backgroundColor: newTheme?.colors?.primary || '#2356c4',
+                              color: newTheme?.colors?.primary_text || '#ffffff',
+                              fontSize: '12.5px',
+                              outline:
+                                activeColorPreviewTab === 'primary'
+                                  ? '2px dashed #2563eb'
+                                  : undefined,
+                              outlineOffset: '2px',
+                              cursor: 'pointer',
+                            }}
+                            title="Nhấp để cấu hình Màu nút Xem tất cả"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('primary')
+                            }}
+                          >
+                            <span>Xem tất cả →</span>
                           </button>
                         </div>
                       </div>
