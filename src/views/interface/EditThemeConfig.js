@@ -1811,12 +1811,7 @@ function EditThemeConfig() {
         <CCard className="mb-4 shadow-xs border">
           <CCardHeader className="bg-white py-3 fw-bold text-dark border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
-              <span className="fs-6 fw-bold text-dark">
-                Bảng màu tổng thể Website (Color Scheme &amp; Design Tokens)
-              </span>
-              <small className="text-muted d-block mt-0.5" style={{ fontSize: '12px' }}>
-                Tùy chỉnh màu sắc nhận diện thương hiệu và các thành phần tương tác trên website
-              </small>
+              <span className="fs-6 fw-bold text-dark">Bảng màu tổng thể Website</span>
             </div>
             <button
               type="button"
