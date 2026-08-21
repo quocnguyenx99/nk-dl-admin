@@ -1278,136 +1278,63 @@ function EditThemeConfig() {
                 {/* SUB-TAB 2: FOOTER */}
                 {activeOrnamentTab === 'footer' && (
                   <CRow className="g-4 align-items-start">
-                    {/* Cột trái: Tải ảnh & Cấu hình vị trí */}
+                    {/* Cột trái: Tải ảnh */}
                     <CCol lg={4} md={12}>
-                      <div className="d-flex flex-column gap-3">
-                        {/* Khối 1: Tải ảnh */}
-                        <div className="p-3 bg-light rounded border shadow-xs">
-                          <label
-                            className="form-label fw-bold text-dark mb-1 d-block"
-                            style={{ fontSize: '13.5px' }}
-                          >
-                            Tải ảnh trang trí Chân trang
-                          </label>
-                          <CFormInput
-                            type="file"
-                            accept="image/png,image/webp,image/svg+xml,image/*"
-                            size="sm"
-                            className="mb-2"
-                            onChange={handleFooterOrnamentUpload}
-                          />
-                          <small
-                            className="text-muted d-block mb-2"
-                            style={{ fontSize: '11.5px', lineHeight: '1.4' }}
-                          >
-                            Khuyên dùng ảnh PNG / WEBP tách nền trong suốt
-                          </small>
+                      <div className="p-3 bg-light rounded border shadow-xs">
+                        <label
+                          className="form-label fw-bold text-dark mb-1 d-block"
+                          style={{ fontSize: '13.5px' }}
+                        >
+                          Tải ảnh trang trí Chân trang
+                        </label>
+                        <CFormInput
+                          type="file"
+                          accept="image/png,image/webp,image/svg+xml,image/*"
+                          size="sm"
+                          className="mb-2"
+                          onChange={handleFooterOrnamentUpload}
+                        />
+                        <small
+                          className="text-muted d-block mb-2"
+                          style={{ fontSize: '11.5px', lineHeight: '1.4' }}
+                        >
+                          Khuyên dùng ảnh PNG / WEBP tách nền trong suốt
+                        </small>
 
-                          {editingTheme?.decorations?.footerOrnamentUrl && (
-                            <div className="d-flex align-items-center justify-content-between p-2 bg-white rounded border mt-2">
-                              <div className="d-flex align-items-center gap-2">
-                                <img
-                                  src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Ornament"
-                                  style={{ width: '36px', height: '36px', objectFit: 'contain' }}
-                                  className="rounded border p-0.5 bg-light"
-                                />
-                                <span
-                                  className="text-success small fw-semibold"
-                                  style={{ fontSize: '12px' }}
-                                >
-                                  Đã gắn hình trang trí
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-outline-danger py-0.5 px-2"
-                                style={{ fontSize: '11.5px' }}
-                                onClick={() =>
-                                  setEditingTheme((prev) => ({
-                                    ...prev,
-                                    decorations: {
-                                      ...(prev?.decorations || {}),
-                                      footerOrnamentUrl: '',
-                                    },
-                                  }))
-                                }
+                        {editingTheme?.decorations?.footerOrnamentUrl && (
+                          <div className="d-flex align-items-center justify-content-between p-2 bg-white rounded border mt-2">
+                            <div className="d-flex align-items-center gap-2">
+                              <img
+                                src={editingTheme.decorations.footerOrnamentUrl}
+                                alt="Footer Ornament"
+                                style={{ width: '36px', height: '36px', objectFit: 'contain' }}
+                                className="rounded border p-0.5 bg-light"
+                              />
+                              <span
+                                className="text-success small fw-semibold"
+                                style={{ fontSize: '12px' }}
                               >
-                                Gỡ hình
-                              </button>
+                                Đã gắn hình trang trí
+                              </span>
                             </div>
-                          )}
-                        </div>
-
-                        {/* Khối 2: Vị trí hiển thị */}
-                        <div className="p-3 bg-light rounded border shadow-xs">
-                          <label
-                            className="form-label fw-bold text-dark mb-1 d-block"
-                            style={{ fontSize: '13.5px' }}
-                          >
-                            Vị trí hiển thị trên Chân trang
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={
-                              editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
-                            }
-                            onChange={(e) =>
-                              setEditingTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  footerOrnamentPosition: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="both-corners">
-                              Hai bên góc Chân trang (Both Corners)
-                            </option>
-                            <option value="top">Dải viền trên đầu Chân trang (Top Strip)</option>
-                            <option value="left-only">Chỉ góc bên trái Chân trang</option>
-                            <option value="right-only">Chỉ góc bên phải Chân trang</option>
-                            <option value="full">
-                              Phủ nền chìm toàn bộ Chân trang (Watermark)
-                            </option>
-                          </CFormSelect>
-                          <small
-                            className="text-muted d-block mt-2"
-                            style={{ fontSize: '11.5px', lineHeight: '1.4' }}
-                          >
-                            Hình ảnh trang trí sẽ tự động đè lên vị trí tương ứng trên Chân trang
-                          </small>
-                        </div>
-
-                        {/* Khối 3: Kích thước */}
-                        <div className="p-3 bg-light rounded border shadow-xs">
-                          <label
-                            className="form-label fw-bold text-dark mb-1 d-block"
-                            style={{ fontSize: '13.5px' }}
-                          >
-                            Kích thước hình trang trí
-                          </label>
-                          <CFormSelect
-                            size="sm"
-                            value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
-                            onChange={(e) =>
-                              setEditingTheme((prev) => ({
-                                ...prev,
-                                decorations: {
-                                  ...(prev?.decorations || {}),
-                                  footerOrnamentSize: e.target.value,
-                                },
-                              }))
-                            }
-                          >
-                            <option value="36px">Nhỏ (36px)</option>
-                            <option value="48px">Tiêu chuẩn (48px)</option>
-                            <option value="64px">Lớn (64px)</option>
-                            <option value="80px">Rất lớn (80px)</option>
-                            <option value="110px">Cực lớn (110px)</option>
-                          </CFormSelect>
-                        </div>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-danger py-0.5 px-2"
+                              style={{ fontSize: '11.5px' }}
+                              onClick={() =>
+                                setEditingTheme((prev) => ({
+                                  ...prev,
+                                  decorations: {
+                                    ...(prev?.decorations || {}),
+                                    footerOrnamentUrl: '',
+                                  },
+                                }))
+                              }
+                            >
+                              Gỡ hình
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </CCol>
 
@@ -1490,94 +1417,17 @@ function EditThemeConfig() {
                             ▲
                           </div>
 
-                          {/* OVERLAY ORNAMENT LAYERS */}
+                          {/* OVERLAY ORNAMENT FRAME (Căn vừa 4 góc chân trang) */}
                           {editingTheme?.decorations?.footerOrnamentUrl && (
-                            <>
-                              {/* Position: TOP STRIP */}
-                              {editingTheme.decorations.footerOrnamentPosition === 'top' && (
-                                <img
-                                  src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Ornament Top"
-                                  className="position-absolute start-0 end-0 top-0 w-100 pointer-events-none"
-                                  style={{
-                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
-                                    objectFit: 'cover',
-                                    zIndex: 10,
-                                  }}
-                                />
-                              )}
-
-                              {/* Position: BOTH CORNERS */}
-                              {(editingTheme.decorations.footerOrnamentPosition ===
-                                'both-corners' ||
-                                !editingTheme.decorations.footerOrnamentPosition) && (
-                                <>
-                                  <img
-                                    src={editingTheme.decorations.footerOrnamentUrl}
-                                    alt="Footer Corner Left"
-                                    className="position-absolute start-0 top-0 pointer-events-none p-1"
-                                    style={{
-                                      height: editingTheme.decorations.footerOrnamentSize || '48px',
-                                      objectFit: 'contain',
-                                      zIndex: 10,
-                                    }}
-                                  />
-                                  <img
-                                    src={editingTheme.decorations.footerOrnamentUrl}
-                                    alt="Footer Corner Right"
-                                    className="position-absolute end-0 top-0 pointer-events-none p-1"
-                                    style={{
-                                      height: editingTheme.decorations.footerOrnamentSize || '48px',
-                                      objectFit: 'contain',
-                                      zIndex: 10,
-                                      transform: 'scaleX(-1)',
-                                    }}
-                                  />
-                                </>
-                              )}
-
-                              {/* Position: LEFT ONLY */}
-                              {editingTheme.decorations.footerOrnamentPosition === 'left-only' && (
-                                <img
-                                  src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Left Only"
-                                  className="position-absolute start-0 bottom-0 pointer-events-none p-1.5"
-                                  style={{
-                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
-                                    objectFit: 'contain',
-                                    zIndex: 10,
-                                  }}
-                                />
-                              )}
-
-                              {/* Position: RIGHT ONLY */}
-                              {editingTheme.decorations.footerOrnamentPosition === 'right-only' && (
-                                <img
-                                  src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Right Only"
-                                  className="position-absolute end-0 bottom-0 pointer-events-none p-1.5"
-                                  style={{
-                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
-                                    objectFit: 'contain',
-                                    zIndex: 10,
-                                  }}
-                                />
-                              )}
-
-                              {/* Position: FULL WATERMARK OVERLAY */}
-                              {editingTheme.decorations.footerOrnamentPosition === 'full' && (
-                                <img
-                                  src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Full Overlay"
-                                  className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
-                                  style={{
-                                    objectFit: 'cover',
-                                    opacity: 0.18,
-                                    zIndex: 0,
-                                  }}
-                                />
-                              )}
-                            </>
+                            <img
+                              src={editingTheme.decorations.footerOrnamentUrl}
+                              alt="Footer Ornament Frame"
+                              className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
+                              style={{
+                                objectFit: 'fill',
+                                zIndex: 10,
+                              }}
+                            />
                           )}
 
                           {/* FOOTER REALISTIC CONTENT */}

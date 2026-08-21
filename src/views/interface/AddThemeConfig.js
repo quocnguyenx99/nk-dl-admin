@@ -1443,79 +1443,6 @@ function AddThemeConfig() {
                                 </div>
                               )}
                             </div>
-
-                            {/* Khối 2: Vị trí hiển thị */}
-                            <div className="p-3 bg-light rounded border shadow-xs">
-                              <label
-                                className="form-label fw-bold text-dark mb-1 d-block"
-                                style={{ fontSize: '13.5px' }}
-                              >
-                                Vị trí hiển thị trên Chân trang
-                              </label>
-                              <CFormSelect
-                                size="sm"
-                                value={
-                                  newTheme?.decorations?.footerOrnamentPosition || 'both-corners'
-                                }
-                                onChange={(e) =>
-                                  setNewTheme((prev) => ({
-                                    ...prev,
-                                    decorations: {
-                                      ...(prev?.decorations || {}),
-                                      footerOrnamentPosition: e.target.value,
-                                    },
-                                  }))
-                                }
-                              >
-                                <option value="both-corners">
-                                  Hai bên góc Chân trang (Both Corners)
-                                </option>
-                                <option value="top">
-                                  Dải viền trên đầu Chân trang (Top Strip)
-                                </option>
-                                <option value="left-only">Chỉ góc bên trái Chân trang</option>
-                                <option value="right-only">Chỉ góc bên phải Chân trang</option>
-                                <option value="full">
-                                  Phủ nền chìm toàn bộ Chân trang (Watermark)
-                                </option>
-                              </CFormSelect>
-                              <small
-                                className="text-muted d-block mt-2"
-                                style={{ fontSize: '11.5px', lineHeight: '1.4' }}
-                              >
-                                Hình ảnh trang trí sẽ tự động đè lên vị trí tương ứng trên Chân
-                                trang
-                              </small>
-                            </div>
-
-                            {/* Khối 3: Kích thước */}
-                            <div className="p-3 bg-light rounded border shadow-xs">
-                              <label
-                                className="form-label fw-bold text-dark mb-1 d-block"
-                                style={{ fontSize: '13.5px' }}
-                              >
-                                Kích thước hình trang trí
-                              </label>
-                              <CFormSelect
-                                size="sm"
-                                value={newTheme?.decorations?.footerOrnamentSize || '48px'}
-                                onChange={(e) =>
-                                  setNewTheme((prev) => ({
-                                    ...prev,
-                                    decorations: {
-                                      ...(prev?.decorations || {}),
-                                      footerOrnamentSize: e.target.value,
-                                    },
-                                  }))
-                                }
-                              >
-                                <option value="36px">Nhỏ (36px)</option>
-                                <option value="48px">Tiêu chuẩn (48px)</option>
-                                <option value="64px">Lớn (64px)</option>
-                                <option value="80px">Rất lớn (80px)</option>
-                                <option value="110px">Cực lớn (110px)</option>
-                              </CFormSelect>
-                            </div>
                           </div>
                         </CCol>
 
@@ -1598,94 +1525,17 @@ function AddThemeConfig() {
                                 ▲
                               </div>
 
-                              {/* OVERLAY ORNAMENT LAYERS */}
+                              {/* OVERLAY ORNAMENT FRAME (Căn vừa 4 góc chân trang) */}
                               {newTheme?.decorations?.footerOrnamentUrl && (
-                                <>
-                                  {/* Position: TOP STRIP */}
-                                  {newTheme.decorations.footerOrnamentPosition === 'top' && (
-                                    <img
-                                      src={newTheme.decorations.footerOrnamentUrl}
-                                      alt="Footer Ornament Top"
-                                      className="position-absolute start-0 end-0 top-0 w-100 pointer-events-none"
-                                      style={{
-                                        height: newTheme.decorations.footerOrnamentSize || '48px',
-                                        objectFit: 'cover',
-                                        zIndex: 10,
-                                      }}
-                                    />
-                                  )}
-
-                                  {/* Position: BOTH CORNERS */}
-                                  {(newTheme.decorations.footerOrnamentPosition ===
-                                    'both-corners' ||
-                                    !newTheme.decorations.footerOrnamentPosition) && (
-                                    <>
-                                      <img
-                                        src={newTheme.decorations.footerOrnamentUrl}
-                                        alt="Footer Corner Left"
-                                        className="position-absolute start-0 top-0 pointer-events-none p-1"
-                                        style={{
-                                          height: newTheme.decorations.footerOrnamentSize || '48px',
-                                          objectFit: 'contain',
-                                          zIndex: 10,
-                                        }}
-                                      />
-                                      <img
-                                        src={newTheme.decorations.footerOrnamentUrl}
-                                        alt="Footer Corner Right"
-                                        className="position-absolute end-0 top-0 pointer-events-none p-1"
-                                        style={{
-                                          height: newTheme.decorations.footerOrnamentSize || '48px',
-                                          objectFit: 'contain',
-                                          zIndex: 10,
-                                          transform: 'scaleX(-1)',
-                                        }}
-                                      />
-                                    </>
-                                  )}
-
-                                  {/* Position: LEFT ONLY */}
-                                  {newTheme.decorations.footerOrnamentPosition === 'left-only' && (
-                                    <img
-                                      src={newTheme.decorations.footerOrnamentUrl}
-                                      alt="Footer Left Only"
-                                      className="position-absolute start-0 bottom-0 pointer-events-none p-1.5"
-                                      style={{
-                                        height: newTheme.decorations.footerOrnamentSize || '48px',
-                                        objectFit: 'contain',
-                                        zIndex: 10,
-                                      }}
-                                    />
-                                  )}
-
-                                  {/* Position: RIGHT ONLY */}
-                                  {newTheme.decorations.footerOrnamentPosition === 'right-only' && (
-                                    <img
-                                      src={newTheme.decorations.footerOrnamentUrl}
-                                      alt="Footer Right Only"
-                                      className="position-absolute end-0 bottom-0 pointer-events-none p-1.5"
-                                      style={{
-                                        height: newTheme.decorations.footerOrnamentSize || '48px',
-                                        objectFit: 'contain',
-                                        zIndex: 10,
-                                      }}
-                                    />
-                                  )}
-
-                                  {/* Position: FULL WATERMARK OVERLAY */}
-                                  {newTheme.decorations.footerOrnamentPosition === 'full' && (
-                                    <img
-                                      src={newTheme.decorations.footerOrnamentUrl}
-                                      alt="Footer Full Overlay"
-                                      className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
-                                      style={{
-                                        objectFit: 'cover',
-                                        opacity: 0.18,
-                                        zIndex: 0,
-                                      }}
-                                    />
-                                  )}
-                                </>
+                                <img
+                                  src={newTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Ornament Frame"
+                                  className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
+                                  style={{
+                                    objectFit: 'fill',
+                                    zIndex: 10,
+                                  }}
+                                />
                               )}
 
                               {/* FOOTER REALISTIC CONTENT */}
