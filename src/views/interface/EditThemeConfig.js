@@ -285,6 +285,8 @@ const DEFAULT_THEME_COLORS = {
   hover_spec_text: '#ffffff',
   footer_bg: '#ffffff',
   footer_heading: '#FFA500',
+  float_btn_bg: '#ffb716',
+  float_btn_text: '#ffffff',
   active_border: '#2563eb',
   category_menu: '#222222',
   hotline: '#222222',
@@ -315,6 +317,7 @@ function EditThemeConfig() {
     if (key === 'hover_title' || key === 'hover_spec' || key === 'hover_card')
       targetKey = 'hover_title'
     if (key === 'footer') targetKey = 'footer'
+    if (key === 'float_btn') targetKey = 'float_btn'
     const el = document.getElementById(`color-item-${targetKey}`)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -2054,6 +2057,31 @@ function EditThemeConfig() {
                       ),
                     },
                     {
+                      type: 'dual',
+                      label: 'Nút nổi (Hỗ trợ CSKH & Cuộn lên đầu trang)',
+                      key: 'float_btn',
+                      desc: 'Màu nền & biểu tượng nút nổi Hỗ trợ (Headset) và Cuộn lên đầu trang (^)',
+                      bgKey: 'float_btn_bg',
+                      textKey: 'float_btn_text',
+                      defaultBg: '#ffb716',
+                      defaultText: '#ffffff',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                          <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                        </svg>
+                      ),
+                    },
+                    {
                       type: 'single',
                       label: 'Màu viền khi chọn',
                       key: 'active_border',
@@ -2454,6 +2482,7 @@ function EditThemeConfig() {
                         { id: 'detail_cart', label: 'Nút Chi tiết' },
                         { id: 'primary', label: 'Nút Mua ngay' },
                         { id: 'footer', label: 'Footer' },
+                        { id: 'float_btn', label: 'Nút nổi' },
                         { id: 'active_border', label: 'Viền khi chọn' },
                       ].map((tab) => (
                         <button
@@ -2969,6 +2998,80 @@ function EditThemeConfig() {
                               {col}
                             </span>
                           ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* KHỐI 6: NÚT NỔI HỖ TRỢ & CUỘN LÊN ĐẦU TRANG */}
+                    {(activeColorPreviewTab === 'all' || activeColorPreviewTab === 'float_btn') && (
+                      <div
+                        className="p-2.5 rounded-2 border bg-white shadow-2xs d-flex align-items-center justify-content-between"
+                        style={{
+                          outline:
+                            activeColorPreviewTab === 'float_btn'
+                              ? '2px dashed #2563eb'
+                              : undefined,
+                          outlineOffset: '2px',
+                          cursor: 'pointer',
+                        }}
+                        title="Nhấp để cấu hình Màu Nút nổi (Hỗ trợ & Cuộn lên đầu trang)"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          selectAndScrollToColor('float_btn')
+                        }}
+                      >
+                        <span className="fw-semibold text-secondary" style={{ fontSize: '11.5px' }}>
+                          NÚT NỔI HỖ TRỢ (HEADSET) &amp; CUỘN LÊN ĐẦU TRANG:
+                        </span>
+                        <div className="d-flex align-items-center gap-2">
+                          {/* Nút Headset */}
+                          <div
+                            className="rounded-circle d-flex align-items-center justify-content-center shadow-xs"
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              backgroundColor: editingTheme?.colors?.float_btn_bg || '#ffb716',
+                              color: editingTheme?.colors?.float_btn_text || '#ffffff',
+                            }}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                            </svg>
+                          </div>
+
+                          {/* Nút Cuộn lên */}
+                          <div
+                            className="rounded-circle d-flex align-items-center justify-content-center shadow-xs"
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              backgroundColor: editingTheme?.colors?.float_btn_bg || '#ffb716',
+                              color: editingTheme?.colors?.float_btn_text || '#ffffff',
+                            }}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="m18 15-6-6-6 6" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
                     )}
