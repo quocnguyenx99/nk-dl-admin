@@ -562,6 +562,17 @@ function EditThemeConfig() {
   const handleFooterOrnamentUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Immediately show local preview
+    const localUrl = URL.createObjectURL(file)
+    setEditingTheme((prev) => ({
+      ...prev,
+      decorations: {
+        ...(prev?.decorations || {}),
+        footerOrnamentUrl: localUrl,
+      },
+    }))
+
     try {
       const uploadedUrl = await uploadFileToServer(file)
       if (uploadedUrl) {
@@ -572,10 +583,13 @@ function EditThemeConfig() {
             footerOrnamentUrl: uploadedUrl,
           },
         }))
-        toast.success('Đã tải ảnh trang trí Chân trang Footer thành công!')
+        toast.success('Đã tải ảnh trang trí Chân trang thành công!')
+      } else {
+        toast.warn('Đã chọn hình trang trí, vui lòng nhấn Lưu để hoàn tất!')
       }
     } catch (err) {
-      toast.error('Lỗi upload ảnh trang trí Footer: ' + err.message)
+      console.error('Upload footer ornament error:', err)
+      toast.warn('Hình trang trí đã được gắn, hãy nhấn Lưu Thay Đổi để lưu lại.')
     }
   }
 
@@ -897,7 +911,7 @@ function EditThemeConfig() {
                   {[
                     { key: 'product_image', title: 'Hình ảnh sản phẩm' },
                     { key: 'header_logo', title: 'Logo Header' },
-                    { key: 'footer', title: 'Chân trang Footer' },
+                    { key: 'footer', title: 'Chân trang' },
                   ].map((subTab) => {
                     const isActive = activeOrnamentTab === subTab.key
                     return (
@@ -1263,141 +1277,361 @@ function EditThemeConfig() {
 
                 {/* SUB-TAB 2: FOOTER */}
                 {activeOrnamentTab === 'footer' && (
-                  <div>
-                    <CRow className="g-4 align-items-center">
-                      <CCol md={7}>
-                        {/* Upload Box */}
-                        <div className="p-3 bg-light rounded border text-center mb-3">
+                  <CRow className="g-4 align-items-start">
+                    {/* Cột trái: Tải ảnh & Cấu hình vị trí */}
+                    <CCol lg={4} md={12}>
+                      <div className="d-flex flex-column gap-3">
+                        {/* Khối 1: Tải ảnh */}
+                        <div className="p-3 bg-light rounded border shadow-xs">
                           <label
-                            className="form-label fw-bold text-dark mb-2 d-block"
-                            style={{ fontSize: '14px' }}
+                            className="form-label fw-bold text-dark mb-1 d-block"
+                            style={{ fontSize: '13.5px' }}
                           >
-                            Tải ảnh trang trí Chân trang Footer từ máy tính
+                            Tải ảnh trang trí Chân trang
                           </label>
                           <CFormInput
                             type="file"
-                            accept="image/*"
-                            className="mb-1"
+                            accept="image/png,image/webp,image/svg+xml,image/*"
+                            size="sm"
+                            className="mb-2"
                             onChange={handleFooterOrnamentUpload}
                           />
-                          <small className="text-muted d-block">
-                            Khuyên dùng ảnh PNG / WEBP tách nền
+                          <small
+                            className="text-muted d-block mb-2"
+                            style={{ fontSize: '11.5px', lineHeight: '1.4' }}
+                          >
+                            Khuyên dùng ảnh PNG / WEBP tách nền trong suốt
+                          </small>
+
+                          {editingTheme?.decorations?.footerOrnamentUrl && (
+                            <div className="d-flex align-items-center justify-content-between p-2 bg-white rounded border mt-2">
+                              <div className="d-flex align-items-center gap-2">
+                                <img
+                                  src={editingTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Ornament"
+                                  style={{ width: '36px', height: '36px', objectFit: 'contain' }}
+                                  className="rounded border p-0.5 bg-light"
+                                />
+                                <span
+                                  className="text-success small fw-semibold"
+                                  style={{ fontSize: '12px' }}
+                                >
+                                  Đã gắn hình trang trí
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-danger py-0.5 px-2"
+                                style={{ fontSize: '11.5px' }}
+                                onClick={() =>
+                                  setEditingTheme((prev) => ({
+                                    ...prev,
+                                    decorations: {
+                                      ...(prev?.decorations || {}),
+                                      footerOrnamentUrl: '',
+                                    },
+                                  }))
+                                }
+                              >
+                                Gỡ hình
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Khối 2: Vị trí hiển thị */}
+                        <div className="p-3 bg-light rounded border shadow-xs">
+                          <label
+                            className="form-label fw-bold text-dark mb-1 d-block"
+                            style={{ fontSize: '13.5px' }}
+                          >
+                            Vị trí hiển thị trên Chân trang
+                          </label>
+                          <CFormSelect
+                            size="sm"
+                            value={
+                              editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
+                            }
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  footerOrnamentPosition: e.target.value,
+                                },
+                              }))
+                            }
+                          >
+                            <option value="both-corners">Hai bên góc Chân trang (Both Corners)</option>
+                            <option value="top">Dải viền trên đầu Chân trang (Top Strip)</option>
+                            <option value="left-only">Chỉ góc bên trái Chân trang</option>
+                            <option value="right-only">Chỉ góc bên phải Chân trang</option>
+                            <option value="full">Phủ nền chìm toàn bộ Chân trang (Watermark)</option>
+                          </CFormSelect>
+                          <small
+                            className="text-muted d-block mt-2"
+                            style={{ fontSize: '11.5px', lineHeight: '1.4' }}
+                          >
+                            Hình ảnh trang trí sẽ tự động đè lên vị trí tương ứng trên Chân trang
                           </small>
                         </div>
 
-                        {/* Position & Size */}
-                        <CRow className="g-3">
-                          <CCol md={6}>
-                            <label
-                              className="form-label fw-bold text-dark mb-1"
-                              style={{ fontSize: '13.5px' }}
-                            >
-                              Vị trí hiển thị trên Footer
-                            </label>
-                            <CFormSelect
-                              value={
-                                editingTheme?.decorations?.footerOrnamentPosition || 'both-corners'
-                              }
-                              onChange={(e) =>
-                                setEditingTheme((prev) => ({
-                                  ...prev,
-                                  decorations: {
-                                    ...(prev?.decorations || {}),
-                                    footerOrnamentPosition: e.target.value,
-                                  },
-                                }))
-                              }
-                            >
-                              <option value="both-corners">
-                                Hai bên góc lề Footer (Tiêu chuẩn)
-                              </option>
-                              <option value="left-only">Chỉ góc bên trái Footer</option>
-                              <option value="right-only">Chỉ góc bên phía phải Footer</option>
-                            </CFormSelect>
-                          </CCol>
-                          <CCol md={6}>
-                            <label
-                              className="form-label fw-bold text-dark mb-1"
-                              style={{ fontSize: '13.5px' }}
-                            >
-                              Kích thước hình trang trí
-                            </label>
-                            <CFormSelect
-                              value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
-                              onChange={(e) =>
-                                setEditingTheme((prev) => ({
-                                  ...prev,
-                                  decorations: {
-                                    ...(prev?.decorations || {}),
-                                    footerOrnamentSize: e.target.value,
-                                  },
-                                }))
-                              }
-                            >
-                              <option value="32px">Nhỏ (32px)</option>
-                              <option value="48px">Vừa tiêu chuẩn (48px)</option>
-                              <option value="64px">Lớn (64px)</option>
-                              <option value="80px">Rất lớn (80px)</option>
-                            </CFormSelect>
-                          </CCol>
-                        </CRow>
-                      </CCol>
-
-                      {/* Live Footer Preview Box */}
-                      <CCol md={5}>
-                        <div className="p-3 bg-light rounded border text-center">
+                        {/* Khối 3: Kích thước */}
+                        <div className="p-3 bg-light rounded border shadow-xs">
                           <label
-                            className="form-label fw-bold text-dark mb-2 d-block"
+                            className="form-label fw-bold text-dark mb-1 d-block"
                             style={{ fontSize: '13.5px' }}
                           >
-                            Xem trước trực tiếp Chân trang Footer
+                            Kích thước hình trang trí
                           </label>
-                          <div
-                            className="p-3 bg-white rounded border shadow-xs d-flex align-items-center justify-content-between overflow-hidden"
-                            style={{ height: '140px' }}
+                          <CFormSelect
+                            size="sm"
+                            value={editingTheme?.decorations?.footerOrnamentSize || '48px'}
+                            onChange={(e) =>
+                              setEditingTheme((prev) => ({
+                                ...prev,
+                                decorations: {
+                                  ...(prev?.decorations || {}),
+                                  footerOrnamentSize: e.target.value,
+                                },
+                              }))
+                            }
                           >
-                            <div className="d-flex align-items-center gap-2">
-                              {editingTheme?.decorations?.footerOrnamentUrl ? (
+                            <option value="36px">Nhỏ (36px)</option>
+                            <option value="48px">Tiêu chuẩn (48px)</option>
+                            <option value="64px">Lớn (64px)</option>
+                            <option value="80px">Rất lớn (80px)</option>
+                            <option value="110px">Cực lớn (110px)</option>
+                          </CFormSelect>
+                        </div>
+                      </div>
+                    </CCol>
+
+                    {/* Cột phải: Realistic Nguyen Kim Footer Mockup */}
+                    <CCol lg={8} md={12}>
+                      <div className="p-3 border rounded bg-white shadow-xs position-relative overflow-hidden">
+                        <div className="d-flex align-items-center justify-content-between mb-2">
+                          <span className="text-dark fw-bold" style={{ fontSize: '12px' }}>
+                            Xem trước Chân trang Website (Live Footer Preview)
+                          </span>
+                          <span className="badge bg-light text-muted border" style={{ fontSize: '10.5px' }}>
+                            Khớp 100% giao diện thực tế
+                          </span>
+                        </div>
+
+                        {/* Mockup Container */}
+                        <div
+                          className="position-relative border rounded p-3 bg-white"
+                          style={{
+                            minHeight: '260px',
+                            backgroundColor: '#fafafa',
+                            fontSize: '10.5px',
+                            color: '#444',
+                          }}
+                        >
+                          {/* OVERLAY ORNAMENT LAYERS */}
+                          {editingTheme?.decorations?.footerOrnamentUrl && (
+                            <>
+                              {/* Position: TOP STRIP */}
+                              {editingTheme.decorations.footerOrnamentPosition === 'top' && (
                                 <img
                                   src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Left"
+                                  alt="Footer Ornament Top"
+                                  className="position-absolute start-0 end-0 top-0 w-100 pointer-events-none"
                                   style={{
-                                    height: editingTheme?.decorations?.footerOrnamentSize || '48px',
-                                    objectFit: 'contain',
+                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
+                                    objectFit: 'cover',
+                                    zIndex: 10,
                                   }}
                                 />
-                              ) : (
-                                <span className="text-muted text-xs fst-italic">
-                                  [Hình trang trí]
-                                </span>
                               )}
-                            </div>
 
-                            <span className="text-muted text-xs fw-semibold">
-                              © 2026 VI TÍNH NGUYÊN KIM
-                            </span>
+                              {/* Position: BOTH CORNERS */}
+                              {(editingTheme.decorations.footerOrnamentPosition === 'both-corners' ||
+                                !editingTheme.decorations.footerOrnamentPosition) && (
+                                <>
+                                  <img
+                                    src={editingTheme.decorations.footerOrnamentUrl}
+                                    alt="Footer Corner Left"
+                                    className="position-absolute start-0 top-0 pointer-events-none p-1"
+                                    style={{
+                                      height: editingTheme.decorations.footerOrnamentSize || '48px',
+                                      objectFit: 'contain',
+                                      zIndex: 10,
+                                    }}
+                                  />
+                                  <img
+                                    src={editingTheme.decorations.footerOrnamentUrl}
+                                    alt="Footer Corner Right"
+                                    className="position-absolute end-0 top-0 pointer-events-none p-1"
+                                    style={{
+                                      height: editingTheme.decorations.footerOrnamentSize || '48px',
+                                      objectFit: 'contain',
+                                      zIndex: 10,
+                                      transform: 'scaleX(-1)',
+                                    }}
+                                  />
+                                </>
+                              )}
 
-                            <div className="d-flex align-items-center gap-2">
-                              {editingTheme?.decorations?.footerOrnamentUrl ? (
+                              {/* Position: LEFT ONLY */}
+                              {editingTheme.decorations.footerOrnamentPosition === 'left-only' && (
                                 <img
                                   src={editingTheme.decorations.footerOrnamentUrl}
-                                  alt="Footer Right"
+                                  alt="Footer Left Only"
+                                  className="position-absolute start-0 bottom-0 pointer-events-none p-1.5"
                                   style={{
-                                    height: editingTheme?.decorations?.footerOrnamentSize || '48px',
+                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
                                     objectFit: 'contain',
+                                    zIndex: 10,
                                   }}
                                 />
-                              ) : (
-                                <span className="text-muted text-xs fst-italic">
-                                  [Hình trang trí]
-                                </span>
                               )}
-                            </div>
+
+                              {/* Position: RIGHT ONLY */}
+                              {editingTheme.decorations.footerOrnamentPosition === 'right-only' && (
+                                <img
+                                  src={editingTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Right Only"
+                                  className="position-absolute end-0 bottom-0 pointer-events-none p-1.5"
+                                  style={{
+                                    height: editingTheme.decorations.footerOrnamentSize || '48px',
+                                    objectFit: 'contain',
+                                    zIndex: 10,
+                                  }}
+                                />
+                              )}
+
+                              {/* Position: FULL WATERMARK OVERLAY */}
+                              {editingTheme.decorations.footerOrnamentPosition === 'full' && (
+                                <img
+                                  src={editingTheme.decorations.footerOrnamentUrl}
+                                  alt="Footer Full Overlay"
+                                  className="position-absolute start-0 top-0 w-100 h-100 pointer-events-none"
+                                  style={{
+                                    objectFit: 'cover',
+                                    opacity: 0.18,
+                                    zIndex: 0,
+                                  }}
+                                />
+                              )}
+                            </>
+                          )}
+
+                          {/* FOOTER REALISTIC CONTENT */}
+                          <div className="position-relative" style={{ zIndex: 2 }}>
+                            {/* Top Section */}
+                            <CRow className="g-2 mb-2.5">
+                              <CCol md={3} xs={6}>
+                                <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '11px' }}>
+                                  Về Nguyên Kim
+                                </h6>
+                                <div className="text-muted d-flex flex-column gap-0.5" style={{ fontSize: '9.5px', lineHeight: '1.4' }}>
+                                  <span>Giới thiệu công ty</span>
+                                  <span>Tư vấn hỏi đáp</span>
+                                  <span>Liên hệ và góp ý</span>
+                                  <span>Yêu cầu báo giá</span>
+                                </div>
+                              </CCol>
+
+                              <CCol md={3} xs={6}>
+                                <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '11px' }}>
+                                  Chính sách & Điều khoản
+                                </h6>
+                                <div className="text-muted d-flex flex-column gap-0.5" style={{ fontSize: '9.5px', lineHeight: '1.4' }}>
+                                  <span>Hướng dẫn gửi bảo hành</span>
+                                  <span>Chính sách bảo mật TT cá nhân</span>
+                                  <span>Chính sách giao hàng</span>
+                                  <span>Quy định thanh toán</span>
+                                </div>
+                              </CCol>
+
+                              <CCol md={3} xs={6}>
+                                <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '11px' }}>
+                                  Tổng đài hỗ trợ
+                                </h6>
+                                <div className="d-flex align-items-center gap-1.5 mb-1">
+                                  <span className="badge bg-danger px-1.5 py-0.5" style={{ fontSize: '9px' }}>YouTube</span>
+                                  <span className="badge bg-primary px-1.5 py-0.5" style={{ fontSize: '9px' }}>Facebook</span>
+                                </div>
+                                <div className="border rounded bg-white p-1" style={{ fontSize: '9px' }}>
+                                  <div className="fw-bold text-dark">Vi Tính Nguyên Kim</div>
+                                  <span className="text-muted" style={{ fontSize: '8px' }}>25K người theo dõi</span>
+                                </div>
+                              </CCol>
+
+                              <CCol md={3} xs={6}>
+                                <h6 className="fw-bold text-dark mb-1" style={{ fontSize: '11px' }}>
+                                  Vị trí của chúng tôi
+                                </h6>
+                                <div className="border rounded bg-white p-1 text-center text-muted" style={{ height: '52px', fontSize: '9px' }}>
+                                  <span className="d-block text-primary fw-semibold" style={{ fontSize: '8.5px' }}>📍 Maps Tân Định</span>
+                                  <span style={{ fontSize: '8px' }}>245B Trần Quang Khải, Q.1</span>
+                                </div>
+                              </CCol>
+                            </CRow>
+
+                            <hr className="my-2 border-secondary opacity-25" />
+
+                            {/* Bottom Section */}
+                            <CRow className="g-2 align-items-center">
+                              {/* Left: Info */}
+                              <CCol md={5} sm={12}>
+                                <div className="d-flex align-items-center gap-1.5 mb-1">
+                                  <img
+                                    src={editingTheme?.decorations?.logoUrl || logoNk}
+                                    alt="Nguyen Kim Logo"
+                                    style={{ height: '24px', objectFit: 'contain' }}
+                                  />
+                                  <span className="fw-bold text-dark" style={{ fontSize: '10px' }}>
+                                    Công ty TNHH Vi tính Nguyên Kim
+                                  </span>
+                                </div>
+                                <div className="text-muted" style={{ fontSize: '9px', lineHeight: '1.35' }}>
+                                  <div>📍 245B Trần Quang Khải, P. Tân Định, TP. HCM</div>
+                                  <div>📞 CSKH: <strong className="text-dark">1800 6739</strong> - MST: 0303753468</div>
+                                  <div>✉ cskh@nguyenkimvn.vn</div>
+                                </div>
+                                <div className="mt-1">
+                                  <span className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle" style={{ fontSize: '8px' }}>
+                                    ✔ ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
+                                  </span>
+                                </div>
+                              </CCol>
+
+                              {/* Center: Certificates */}
+                              <CCol md={3} sm={6}>
+                                <div className="text-center">
+                                  <span className="fw-bold text-dark d-block mb-1" style={{ fontSize: '8.5px' }}>
+                                    NHÀ PHÂN PHỐI UY TÍN HÀNG ĐẦU
+                                  </span>
+                                  <div className="d-flex flex-wrap align-items-center justify-content-center gap-1">
+                                    <span className="border rounded px-1 py-0.5 bg-white small fw-bold" style={{ fontSize: '7.5px' }}>TRUST</span>
+                                    <span className="border rounded px-1 py-0.5 bg-white small fw-bold text-danger" style={{ fontSize: '7.5px' }}>FAST500</span>
+                                    <span className="border rounded px-1 py-0.5 bg-white small fw-bold text-warning" style={{ fontSize: '7.5px' }}>VNR500</span>
+                                  </div>
+                                </div>
+                              </CCol>
+
+                              {/* Right: Partner Certifications */}
+                              <CCol md={4} sm={6}>
+                                <div className="text-center">
+                                  <span className="fw-bold text-dark d-block mb-1" style={{ fontSize: '8.5px' }}>
+                                    CHỨNG NHẬN ĐỐI TÁC
+                                  </span>
+                                  <div className="d-flex flex-wrap align-items-center justify-content-center gap-1">
+                                    <span className="border rounded px-1.5 py-0.5 bg-white fw-bold text-primary" style={{ fontSize: '8px' }}>hp</span>
+                                    <span className="border rounded px-1.5 py-0.5 bg-white fw-bold text-dark" style={{ fontSize: '8px' }}>ASUS</span>
+                                    <span className="border rounded px-1.5 py-0.5 bg-white fw-bold text-info" style={{ fontSize: '8px' }}>DELL</span>
+                                    <span className="border rounded px-1.5 py-0.5 bg-white fw-bold text-danger" style={{ fontSize: '8px' }}>Lenovo</span>
+                                    <span className="border rounded px-1.5 py-0.5 bg-white fw-bold text-primary" style={{ fontSize: '8px' }}>SAMSUNG</span>
+                                  </div>
+                                </div>
+                              </CCol>
+                            </CRow>
                           </div>
                         </div>
-                      </CCol>
-                    </CRow>
-                  </div>
+                      </div>
                 )}
               </CCol>
             </CRow>
