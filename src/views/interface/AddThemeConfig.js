@@ -1470,7 +1470,9 @@ function AddThemeConfig() {
                                 <option value="both-corners">
                                   Hai bên góc Chân trang (Both Corners)
                                 </option>
-                                <option value="top">Dải viền trên đầu Chân trang (Top Strip)</option>
+                                <option value="top">
+                                  Dải viền trên đầu Chân trang (Top Strip)
+                                </option>
                                 <option value="left-only">Chỉ góc bên trái Chân trang</option>
                                 <option value="right-only">Chỉ góc bên phải Chân trang</option>
                                 <option value="full">
@@ -1481,7 +1483,8 @@ function AddThemeConfig() {
                                 className="text-muted d-block mt-2"
                                 style={{ fontSize: '11.5px', lineHeight: '1.4' }}
                               >
-                                Hình ảnh trang trí sẽ tự động đè lên vị trí tương ứng trên Chân trang
+                                Hình ảnh trang trí sẽ tự động đè lên vị trí tương ứng trên Chân
+                                trang
                               </small>
                             </div>
 
@@ -1559,7 +1562,8 @@ function AddThemeConfig() {
                                   )}
 
                                   {/* Position: BOTH CORNERS */}
-                                  {(newTheme.decorations.footerOrnamentPosition === 'both-corners' ||
+                                  {(newTheme.decorations.footerOrnamentPosition ===
+                                    'both-corners' ||
                                     !newTheme.decorations.footerOrnamentPosition) && (
                                     <>
                                       <img
@@ -1567,8 +1571,7 @@ function AddThemeConfig() {
                                         alt="Footer Corner Left"
                                         className="position-absolute start-0 top-0 pointer-events-none p-1"
                                         style={{
-                                          height:
-                                            newTheme.decorations.footerOrnamentSize || '48px',
+                                          height: newTheme.decorations.footerOrnamentSize || '48px',
                                           objectFit: 'contain',
                                           zIndex: 10,
                                         }}
@@ -1578,8 +1581,7 @@ function AddThemeConfig() {
                                         alt="Footer Corner Right"
                                         className="position-absolute end-0 top-0 pointer-events-none p-1"
                                         style={{
-                                          height:
-                                            newTheme.decorations.footerOrnamentSize || '48px',
+                                          height: newTheme.decorations.footerOrnamentSize || '48px',
                                           objectFit: 'contain',
                                           zIndex: 10,
                                           transform: 'scaleX(-1)',
@@ -1595,8 +1597,7 @@ function AddThemeConfig() {
                                       alt="Footer Left Only"
                                       className="position-absolute start-0 bottom-0 pointer-events-none p-1.5"
                                       style={{
-                                        height:
-                                          newTheme.decorations.footerOrnamentSize || '48px',
+                                        height: newTheme.decorations.footerOrnamentSize || '48px',
                                         objectFit: 'contain',
                                         zIndex: 10,
                                       }}
@@ -1610,8 +1611,7 @@ function AddThemeConfig() {
                                       alt="Footer Right Only"
                                       className="position-absolute end-0 bottom-0 pointer-events-none p-1.5"
                                       style={{
-                                        height:
-                                          newTheme.decorations.footerOrnamentSize || '48px',
+                                        height: newTheme.decorations.footerOrnamentSize || '48px',
                                         objectFit: 'contain',
                                         zIndex: 10,
                                       }}
@@ -1755,9 +1755,8 @@ function AddThemeConfig() {
                                     >
                                       <div>📍 245B Trần Quang Khải, P. Tân Định, TP. HCM</div>
                                       <div>
-                                        📞 CSKH:{' '}
-                                        <strong className="text-dark">1800 6739</strong> - MST:
-                                        0303753468
+                                        📞 CSKH: <strong className="text-dark">1800 6739</strong> -
+                                        MST: 0303753468
                                       </div>
                                       <div>✉ cskh@nguyenkimvn.vn</div>
                                     </div>
