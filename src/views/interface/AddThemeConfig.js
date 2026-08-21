@@ -860,6 +860,7 @@ function AddThemeConfig() {
                 <div className="d-flex flex-column gap-2.5">
                   {[
                     {
+                      type: 'single',
                       label: 'Màu chính (Nút Mua ngay & Viền)',
                       key: 'primary',
                       desc: 'Nút Mua ngay & nhận diện thương hiệu',
@@ -882,10 +883,14 @@ function AddThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu nền nút Thêm vào giỏ',
-                      key: 'cart_btn_bg',
-                      desc: 'Màu nền của nút "Thêm vào giỏ" trên thẻ sản phẩm & chi tiết',
-                      defaultVal: '#F1F8FE',
+                      type: 'dual',
+                      label: 'Nút Thêm vào giỏ',
+                      key: 'cart_btn',
+                      desc: 'Màu nền & màu chữ nút Thêm vào giỏ',
+                      bgKey: 'cart_btn_bg',
+                      textKey: 'cart_btn_text',
+                      defaultBg: '#F1F8FE',
+                      defaultText: '#2a83e9',
                       icon: (
                         <svg
                           width="18"
@@ -904,32 +909,14 @@ function AddThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu chữ nút Thêm vào giỏ',
-                      key: 'cart_btn_text',
-                      desc: 'Màu chữ và icon của nút "Thêm vào giỏ"',
-                      defaultVal: '#2a83e9',
-                      icon: (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="4 7 4 4 20 4 20 7" />
-                          <line x1="9" x2="15" y1="20" y2="20" />
-                          <line x1="12" x2="12" y1="4" y2="20" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      label: 'Màu nền nút Liên hệ (Hết hàng)',
-                      key: 'contact_btn_bg',
-                      desc: 'Màu nền của nút "Liên hệ" khi sản phẩm hết hàng hoặc giá liên hệ',
-                      defaultVal: '#E5E7EB',
+                      type: 'dual',
+                      label: 'Nút Liên hệ (Hết hàng)',
+                      key: 'contact_btn',
+                      desc: 'Màu nền & màu chữ nút Liên hệ khi hết hàng',
+                      bgKey: 'contact_btn_bg',
+                      textKey: 'contact_btn_text',
+                      defaultBg: '#E5E7EB',
+                      defaultText: '#6b7280',
                       icon: (
                         <svg
                           width="18"
@@ -946,28 +933,7 @@ function AddThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu chữ nút Liên hệ (Hết hàng)',
-                      key: 'contact_btn_text',
-                      desc: 'Màu chữ và icon của nút "Liên hệ" khi sản phẩm hết hàng',
-                      defaultVal: '#6b7280',
-                      icon: (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="4 7 4 4 20 4 20 7" />
-                          <line x1="9" x2="15" y1="20" y2="20" />
-                          <line x1="12" x2="12" y1="4" y2="20" />
-                        </svg>
-                      ),
-                    },
-                    {
+                      type: 'single',
                       label: 'Màu viền khi chọn',
                       key: 'active_border',
                       desc: 'Viền khi click chọn Danh mục, Brand, Filter',
@@ -989,6 +955,7 @@ function AddThemeConfig() {
                       ),
                     },
                     {
+                      type: 'single',
                       label: 'Màu thanh Menu Topbar',
                       key: 'secondary',
                       desc: 'Thanh menu điều hướng chính & topbar',
@@ -1011,6 +978,7 @@ function AddThemeConfig() {
                       ),
                     },
                     {
+                      type: 'single',
                       label: 'Màu Danh mục sản phẩm & Hotline (Header)',
                       key: 'category_menu',
                       desc: 'Màu chữ "☰ Danh mục sản phẩm" và số điện thoại Hotline trên header',
@@ -1033,6 +1001,7 @@ function AddThemeConfig() {
                       ),
                     },
                     {
+                      type: 'single',
                       label: 'Màu nền website',
                       key: 'background',
                       desc: 'Màu phông nền toàn trang web',
@@ -1057,6 +1026,186 @@ function AddThemeConfig() {
                     },
                   ].map((item) => {
                     const isFocus = activeColorPreviewTab === item.key
+
+                    if (item.type === 'dual') {
+                      const currentBg =
+                        newTheme?.colors?.[item.bgKey] ||
+                        (newTheme?.colors?.[item.key]
+                          ? `${newTheme.colors[item.key]}18`
+                          : item.defaultBg)
+                      const currentText =
+                        newTheme?.colors?.[item.textKey] ||
+                        newTheme?.colors?.[item.key] ||
+                        item.defaultText
+
+                      return (
+                        <div
+                          id={`color-item-${item.key}`}
+                          key={item.key}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => selectAndScrollToColor(item.key)}
+                          onKeyDown={(e) => e.key === 'Enter' && selectAndScrollToColor(item.key)}
+                          className="p-3 rounded-3 border d-flex align-items-center justify-content-between position-relative transition-all"
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: isFocus ? '#f0f7ff' : '#ffffff',
+                            borderColor: isFocus ? '#3b82f6' : '#e2e8f0',
+                            borderWidth: isFocus ? '2px' : '1px',
+                            boxShadow: isFocus
+                              ? '0 4px 12px rgba(37, 99, 235, 0.15)'
+                              : '0 1px 2px rgba(0, 0, 0, 0.02)',
+                            transition: 'all 0.2s ease-in-out',
+                          }}
+                        >
+                          <div className="d-flex align-items-center gap-3">
+                            <div
+                              className="d-flex align-items-center justify-content-center rounded-2 border"
+                              style={{
+                                width: '36px',
+                                height: '36px',
+                                flexShrink: 0,
+                                backgroundColor: isFocus ? '#eff6ff' : '#f8fafc',
+                                borderColor: isFocus ? '#bfdbfe' : '#e2e8f0',
+                                color: isFocus ? '#2563eb' : '#64748b',
+                              }}
+                            >
+                              {item.icon}
+                            </div>
+                            <div>
+                              <div
+                                className="fw-bold"
+                                style={{
+                                  fontSize: '13.5px',
+                                  lineHeight: '1.2',
+                                  color: isFocus ? '#1d4ed8' : '#1e293b',
+                                }}
+                              >
+                                {item.label}
+                              </div>
+                              <small
+                                className="d-block"
+                                style={{
+                                  fontSize: '11px',
+                                  marginTop: '2px',
+                                  color: isFocus ? '#3b82f6' : '#64748b',
+                                }}
+                              >
+                                {item.desc}
+                              </small>
+                            </div>
+                          </div>
+
+                          <div
+                            className="d-flex align-items-center gap-2"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {/* Cụm màu Nền */}
+                            <div className="d-flex flex-column align-items-center gap-0.5">
+                              <span
+                                className="text-secondary fw-bold"
+                                style={{ fontSize: '9.5px', letterSpacing: '0.5px' }}
+                              >
+                                NỀN
+                              </span>
+                              <div className="d-flex align-items-center gap-1">
+                                <input
+                                  type="color"
+                                  value={currentBg}
+                                  className="form-control form-control-color border-0 p-0 rounded cursor-pointer shadow-2xs"
+                                  style={{ width: '28px', height: '28px', flexShrink: 0 }}
+                                  onChange={(e) => {
+                                    setActiveColorPreviewTab(item.key)
+                                    const val = e.target.value
+                                    const newCols = {
+                                      ...(newTheme?.colors || {}),
+                                      [item.bgKey]: val,
+                                    }
+                                    setNewTheme((prev) => ({ ...prev, colors: newCols }))
+                                  }}
+                                />
+                                <CFormInput
+                                  size="sm"
+                                  value={currentBg}
+                                  className="font-monospace text-uppercase shadow-2xs p-1"
+                                  style={{ width: '68px', fontSize: '11px', textAlign: 'center' }}
+                                  onChange={(e) => {
+                                    setActiveColorPreviewTab(item.key)
+                                    const val = e.target.value
+                                    const newCols = {
+                                      ...(newTheme?.colors || {}),
+                                      [item.bgKey]: val,
+                                    }
+                                    setNewTheme((prev) => ({ ...prev, colors: newCols }))
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Cụm màu Chữ */}
+                            <div className="d-flex flex-column align-items-center gap-0.5">
+                              <span
+                                className="text-secondary fw-bold"
+                                style={{ fontSize: '9.5px', letterSpacing: '0.5px' }}
+                              >
+                                CHỮ
+                              </span>
+                              <div className="d-flex align-items-center gap-1">
+                                <input
+                                  type="color"
+                                  value={currentText}
+                                  className="form-control form-control-color border-0 p-0 rounded cursor-pointer shadow-2xs"
+                                  style={{ width: '28px', height: '28px', flexShrink: 0 }}
+                                  onChange={(e) => {
+                                    setActiveColorPreviewTab(item.key)
+                                    const val = e.target.value
+                                    const newCols = {
+                                      ...(newTheme?.colors || {}),
+                                      [item.textKey]: val,
+                                    }
+                                    setNewTheme((prev) => ({ ...prev, colors: newCols }))
+                                  }}
+                                />
+                                <CFormInput
+                                  size="sm"
+                                  value={currentText}
+                                  className="font-monospace text-uppercase shadow-2xs p-1"
+                                  style={{ width: '68px', fontSize: '11px', textAlign: 'center' }}
+                                  onChange={(e) => {
+                                    setActiveColorPreviewTab(item.key)
+                                    const val = e.target.value
+                                    const newCols = {
+                                      ...(newTheme?.colors || {}),
+                                      [item.textKey]: val,
+                                    }
+                                    setNewTheme((prev) => ({ ...prev, colors: newCols }))
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke={isFocus ? '#3b82f6' : '#94a3b8'}
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{
+                                transform: isFocus ? 'translateX(2px)' : 'none',
+                                transition: 'transform 0.2s',
+                                marginLeft: '2px',
+                              }}
+                            >
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                          </div>
+                        </div>
+                      )
+                    }
+
                     const currentColor =
                       item.key === 'category_menu'
                         ? newTheme?.colors?.category_menu ||
@@ -1132,7 +1281,7 @@ function AddThemeConfig() {
                             className="form-control form-control-color border-0 p-0 rounded cursor-pointer shadow-2xs"
                             style={{ width: '32px', height: '32px', flexShrink: 0 }}
                             onChange={(e) => {
-                              selectAndScrollToColor(item.key)
+                              setActiveColorPreviewTab(item.key)
                               const val = e.target.value
                               const newCols = {
                                 ...(newTheme?.colors || {}),
@@ -1148,7 +1297,7 @@ function AddThemeConfig() {
                             className="font-monospace text-uppercase shadow-2xs"
                             style={{ width: '80px', fontSize: '11.5px', textAlign: 'center' }}
                             onChange={(e) => {
-                              selectAndScrollToColor(item.key)
+                              setActiveColorPreviewTab(item.key)
                               const val = e.target.value
                               const newCols = {
                                 ...(newTheme?.colors || {}),
