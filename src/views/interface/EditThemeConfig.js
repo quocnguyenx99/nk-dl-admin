@@ -270,12 +270,22 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
 
 const DEFAULT_THEME_COLORS = {
   primary: '#2356c4',
+  primary_text: '#ffffff',
+  header_menu_bg: '#ffb716',
+  header_menu_text: '#ffffff',
   cart_btn_bg: '#F1F8FE',
   cart_btn_text: '#2a83e9',
   contact_btn_bg: '#E5E7EB',
   contact_btn_text: '#6b7280',
+  detail_cart_bg: '#ffb716',
+  detail_cart_text: '#111827',
+  hover_title_bg: '#2356c4',
+  hover_title_text: '#ffffff',
+  hover_spec_bg: '#ffd51c',
+  hover_spec_text: '#ffffff',
+  footer_bg: '#ffffff',
+  footer_heading: '#FFA500',
   active_border: '#2563eb',
-  secondary: '#ffb716',
   category_menu: '#222222',
   hotline: '#222222',
   background: '#f7f7f7',
@@ -298,8 +308,12 @@ function EditThemeConfig() {
   const selectAndScrollToColor = (key) => {
     setActiveColorPreviewTab(key)
     let targetKey = key
-    if (key === 'cart_btn') targetKey = 'cart_btn_bg'
-    if (key === 'contact_btn') targetKey = 'contact_btn_bg'
+    if (key === 'cart_btn') targetKey = 'cart_btn'
+    if (key === 'contact_btn') targetKey = 'contact_btn'
+    if (key === 'header_menu') targetKey = 'header_menu'
+    if (key === 'detail_cart') targetKey = 'detail_cart'
+    if (key === 'hover_title' || key === 'hover_spec' || key === 'hover_card') targetKey = 'hover_title'
+    if (key === 'footer') targetKey = 'footer'
     const el = document.getElementById(`color-item-${targetKey}`)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -1839,11 +1853,14 @@ function EditThemeConfig() {
                 <div className="d-flex flex-column gap-2.5">
                   {[
                     {
-                      type: 'single',
-                      label: 'Màu chính (Nút Mua ngay & Viền)',
+                      type: 'dual',
+                      label: 'Màu chính (Nút Mua ngay, Thanh toán & Đặt hàng)',
                       key: 'primary',
-                      desc: 'Nút Mua ngay & nhận diện thương hiệu',
-                      defaultVal: '#2356c4',
+                      desc: 'Màu nền & màu chữ nút Mua ngay, Đặt hàng, Thanh toán',
+                      bgKey: 'primary',
+                      textKey: 'primary_text',
+                      defaultBg: '#2356c4',
+                      defaultText: '#ffffff',
                       icon: (
                         <svg
                           width="18"
@@ -1855,17 +1872,41 @@ function EditThemeConfig() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-                          <circle cx="9" cy="9" r="2" />
-                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                          <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
                         </svg>
                       ),
                     },
                     {
                       type: 'dual',
-                      label: 'Nút Thêm vào giỏ',
+                      label: 'Thanh Header Topbar (Tin khuyến mãi, Showroom...)',
+                      key: 'header_menu',
+                      desc: 'Màu nền & màu chữ thanh điều hướng topbar trên cùng',
+                      bgKey: 'header_menu_bg',
+                      textKey: 'header_menu_text',
+                      defaultBg: '#ffb716',
+                      defaultText: '#ffffff',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="3" x2="21" y1="6" y2="6" />
+                          <line x1="3" x2="21" y1="12" y2="12" />
+                          <line x1="3" x2="21" y1="18" y2="18" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: 'dual',
+                      label: 'Nút Thêm vào giỏ (Card sản phẩm)',
                       key: 'cart_btn',
-                      desc: 'Màu nền & màu chữ nút Thêm vào giỏ',
+                      desc: 'Màu nền & màu chữ nút Thêm vào giỏ trên thẻ danh sách',
                       bgKey: 'cart_btn_bg',
                       textKey: 'cart_btn_text',
                       defaultBg: '#F1F8FE',
@@ -1889,9 +1930,9 @@ function EditThemeConfig() {
                     },
                     {
                       type: 'dual',
-                      label: 'Nút Liên hệ (Hết hàng)',
+                      label: 'Nút Liên hệ (Card sản phẩm hết hàng)',
                       key: 'contact_btn',
-                      desc: 'Màu nền & màu chữ nút Liên hệ khi hết hàng',
+                      desc: 'Màu nền & màu chữ nút Liên hệ khi hết hàng trên thẻ SP',
                       bgKey: 'contact_btn_bg',
                       textKey: 'contact_btn_text',
                       defaultBg: '#E5E7EB',
@@ -1908,6 +1949,111 @@ function EditThemeConfig() {
                           strokeLinejoin="round"
                         >
                           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: 'dual',
+                      label: 'Nút Thêm vào giỏ (Trang chi tiết SP)',
+                      key: 'detail_cart',
+                      desc: 'Màu nền & màu chữ nút Thêm vào giỏ lớn trang chi tiết SP',
+                      bgKey: 'detail_cart_bg',
+                      textKey: 'detail_cart_text',
+                      defaultBg: '#ffb716',
+                      defaultText: '#111827',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="9" cy="21" r="1" />
+                          <circle cx="20" cy="21" r="1" />
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: 'dual',
+                      label: 'Tiêu đề Popup xem nhanh (Card SP)',
+                      key: 'hover_title',
+                      desc: 'Màu nền & màu chữ thanh tiêu đề trên Popup hover xem nhanh',
+                      bgKey: 'hover_title_bg',
+                      textKey: 'hover_title_text',
+                      defaultBg: '#2356c4',
+                      defaultText: '#ffffff',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="18" height="18" x="3" y="3" rx="2" />
+                          <path d="M3 9h18" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: 'dual',
+                      label: 'Thanh Thông số Popup xem nhanh (Card SP)',
+                      key: 'hover_spec',
+                      desc: 'Màu nền & màu chữ nút "Thông số sản phẩm" trên Popup hover',
+                      bgKey: 'hover_spec_bg',
+                      textKey: 'hover_spec_text',
+                      defaultBg: '#ffd51c',
+                      defaultText: '#ffffff',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="8" x2="21" y1="6" y2="6" />
+                          <line x1="8" x2="21" y1="12" y2="12" />
+                          <line x1="8" x2="21" y1="18" y2="18" />
+                          <line x1="3" x2="3.01" y1="6" y2="6" />
+                          <line x1="3" x2="3.01" y1="12" y2="12" />
+                          <line x1="3" x2="3.01" y1="18" y2="18" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: 'dual',
+                      label: 'Footer website (Nền & Chữ tiêu đề)',
+                      key: 'footer',
+                      desc: 'Màu nền footer & màu các tiêu đề (Về Nguyên Kim, Đối tác...)',
+                      bgKey: 'footer_bg',
+                      textKey: 'footer_heading',
+                      defaultBg: '#ffffff',
+                      defaultText: '#FFA500',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="20" height="16" x="2" y="4" rx="2" />
+                          <path d="M2 14h20" />
                         </svg>
                       ),
                     },
@@ -1930,29 +2076,6 @@ function EditThemeConfig() {
                         >
                           <rect width="18" height="18" x="3" y="3" rx="3" />
                           <path d="m9 12 2 2 4-4" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      type: 'single',
-                      label: 'Màu thanh Menu Topbar',
-                      key: 'secondary',
-                      desc: 'Thanh menu điều hướng chính & topbar',
-                      defaultVal: '#ffb716',
-                      icon: (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <line x1="3" x2="21" y1="6" y2="6" />
-                          <line x1="3" x2="21" y1="12" y2="12" />
-                          <line x1="3" x2="21" y1="18" y2="18" />
                         </svg>
                       ),
                     },
@@ -2009,12 +2132,13 @@ function EditThemeConfig() {
                     if (item.type === 'dual') {
                       const currentBg =
                         editingTheme?.colors?.[item.bgKey] ||
-                        (editingTheme?.colors?.[item.key]
-                          ? `${editingTheme.colors[item.key]}18`
-                          : item.defaultBg)
+                        (item.bgKey === 'header_menu_bg'
+                          ? editingTheme?.colors?.secondary
+                          : undefined) ||
+                        item.defaultBg
+
                       const currentText =
                         editingTheme?.colors?.[item.textKey] ||
-                        editingTheme?.colors?.[item.key] ||
                         item.defaultText
 
                       return (
@@ -2099,6 +2223,7 @@ function EditThemeConfig() {
                                     const newCols = {
                                       ...(editingTheme?.colors || {}),
                                       [item.bgKey]: val,
+                                      ...(item.bgKey === 'header_menu_bg' ? { secondary: val } : {}),
                                     }
                                     setEditingTheme((prev) => ({ ...prev, colors: newCols }))
                                   }}
@@ -2114,6 +2239,7 @@ function EditThemeConfig() {
                                     const newCols = {
                                       ...(editingTheme?.colors || {}),
                                       [item.bgKey]: val,
+                                      ...(item.bgKey === 'header_menu_bg' ? { secondary: val } : {}),
                                     }
                                     setEditingTheme((prev) => ({ ...prev, colors: newCols }))
                                   }}
@@ -2318,17 +2444,19 @@ function EditThemeConfig() {
                       className="form-label fw-bold text-dark mb-0 d-block"
                       style={{ fontSize: '13.5px' }}
                     >
-                      Xem trước
+                      Xem trước phối màu
                     </label>
                     <div className="d-flex gap-1 flex-wrap">
                       {[
                         { id: 'all', label: 'Tất cả' },
+                        { id: 'header_menu', label: 'Header Topbar' },
                         { id: 'category_menu', label: 'Danh mục & Hotline' },
-                        { id: 'cart_btn', label: 'Nút Thêm vào giỏ' },
-                        { id: 'contact_btn', label: 'Nút Liên hệ' },
+                        { id: 'cart_btn', label: 'Nút Card SP' },
+                        { id: 'hover_card', label: 'Popup xem nhanh' },
+                        { id: 'detail_cart', label: 'Nút Chi tiết' },
                         { id: 'primary', label: 'Nút Mua ngay' },
+                        { id: 'footer', label: 'Footer' },
                         { id: 'active_border', label: 'Viền khi chọn' },
-                        { id: 'secondary', label: 'Menu Topbar' },
                       ].map((tab) => (
                         <button
                           key={tab.id}
@@ -2363,32 +2491,37 @@ function EditThemeConfig() {
                     title="Nhấp vùng nền để chuyển tới cấu hình Màu nền website"
                     onClick={() => selectAndScrollToColor('background')}
                   >
-                    {/* KHỐI 1: THANH MENU TOPBAR & SUB-HEADER (Màu secondary, category_menu, hotline) */}
+                    {/* KHỐI 1: THANH MENU TOPBAR & SUB-HEADER */}
                     {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'header_menu' ||
                       activeColorPreviewTab === 'secondary' ||
                       activeColorPreviewTab === 'category_menu') && (
                       <div className="rounded-2 overflow-hidden border shadow-xs bg-white">
-                        {/* Thanh Menu Topbar (Màu secondary) */}
+                        {/* Thanh Menu Topbar */}
                         <div
-                          className="p-2 px-3 text-white d-flex justify-content-end align-items-center position-relative"
+                          className="p-2 px-3 d-flex justify-content-end align-items-center position-relative"
                           style={{
-                            backgroundColor: editingTheme?.colors?.secondary || '#ffb716',
+                            backgroundColor:
+                              editingTheme?.colors?.header_menu_bg ||
+                              editingTheme?.colors?.secondary ||
+                              '#ffb716',
+                            color: editingTheme?.colors?.header_menu_text || '#ffffff',
                             border:
-                              activeColorPreviewTab === 'secondary'
+                              activeColorPreviewTab === 'header_menu'
                                 ? '2px dashed #ffffff'
                                 : undefined,
                             transition: 'all 0.2s',
                             cursor: 'pointer',
                           }}
-                          title="Nhấp để chuyển tới cấu hình Màu thanh Menu Topbar"
+                          title="Nhấp để chuyển tới cấu hình Thanh Header Topbar"
                           onClick={(e) => {
                             e.stopPropagation()
-                            selectAndScrollToColor('secondary')
+                            selectAndScrollToColor('header_menu')
                           }}
                         >
                           <span className="fw-medium opacity-90" style={{ fontSize: '12px' }}>
                             {
-                              'Thông tin hữu ích  |  Hệ thống showroom  |  Tra cứu đơn hàng  |  Hỗ trợ'
+                              'Tin khuyến mãi  |  Hệ thống showroom  |  Tra cứu đơn hàng  |  Hỗ trợ'
                             }
                           </span>
                         </div>
@@ -2501,10 +2634,9 @@ function EditThemeConfig() {
                           )}
                         </div>
 
-                        {/* 1. Thanh danh mục cha dạng Tab có dải phân cách (Ảnh 1) */}
+                        {/* Thanh danh mục cha */}
                         <div className="rounded-2 border bg-white p-2 shadow-2xs">
                           <div className="d-flex align-items-center gap-1.5 flex-wrap">
-                            {/* Active: Laptop */}
                             <div
                               className="d-inline-flex align-items-center gap-2 rounded-2 px-3 py-1.5 fw-semibold"
                               style={{
@@ -2525,22 +2657,7 @@ function EditThemeConfig() {
                                 fontSize: '12px',
                               }}
                             >
-                              <span
-                                className="rounded-circle d-inline-flex align-items-center justify-content-center"
-                                style={{
-                                  width: '24px',
-                                  height: '24px',
-                                  backgroundColor: `${
-                                    editingTheme?.colors?.active_border ||
-                                    editingTheme?.colors?.primary ||
-                                    '#2563eb'
-                                  }25`,
-                                  fontSize: '12px',
-                                }}
-                              >
-                                💻
-                              </span>
-                              <span>Laptop</span>
+                              <span>💻 Laptop</span>
                             </div>
 
                             <div
@@ -2552,46 +2669,19 @@ function EditThemeConfig() {
                               }}
                             />
 
-                            {[
-                              { icon: '🖥', label: 'Máy tính để bàn' },
-                              { icon: '🖧', label: 'Server' },
-                              { icon: '🖨', label: 'Máy in / Máy Scan' },
-                              { icon: '🖥', label: 'Màn hình máy tính' },
-                            ].map((cat, idx, arr) => (
-                              <React.Fragment key={cat.label}>
-                                <div
-                                  className="d-inline-flex align-items-center gap-2 px-2 py-1 text-dark opacity-90"
-                                  style={{ fontSize: '12px' }}
-                                >
-                                  <span
-                                    className="rounded-circle d-inline-flex align-items-center justify-content-center bg-light border"
-                                    style={{
-                                      width: '24px',
-                                      height: '24px',
-                                      fontSize: '11px',
-                                      borderColor: '#e2e8f0',
-                                    }}
-                                  >
-                                    {cat.icon}
-                                  </span>
-                                  <span className="text-secondary fw-medium">{cat.label}</span>
-                                </div>
-                                {idx < arr.length - 1 && (
-                                  <div
-                                    style={{
-                                      width: '1px',
-                                      height: '18px',
-                                      backgroundColor: '#e2e8f0',
-                                      margin: '0 6px',
-                                    }}
-                                  />
-                                )}
-                              </React.Fragment>
+                            {['Máy tính để bàn', 'Server', 'Màn hình'].map((cat, idx) => (
+                              <span
+                                key={cat}
+                                className="px-2 py-1 text-secondary"
+                                style={{ fontSize: '12px' }}
+                              >
+                                {cat}
+                              </span>
                             ))}
                           </div>
                         </div>
 
-                        {/* 2. Chọn theo thương hiệu (Ảnh 2) */}
+                        {/* Chọn theo thương hiệu */}
                         <div>
                           <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
                             Chọn theo thương hiệu
@@ -2623,9 +2713,6 @@ function EditThemeConfig() {
                               { name: 'DELL', color: '#0284c7' },
                               { name: 'hp', color: '#0369a1' },
                               { name: 'lenovo', color: '#dc2626' },
-                              { name: 'msi', color: '#111827' },
-                              { name: 'intel', color: '#0284c7' },
-                              { name: ' Apple', color: '#64748b' },
                             ].map((b) => (
                               <div
                                 key={b.name}
@@ -2644,136 +2731,29 @@ function EditThemeConfig() {
                             ))}
                           </div>
                         </div>
-
-                        {/* 3. Chọn theo nhu cầu (Ảnh 2) */}
-                        <div>
-                          <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
-                            Chọn theo nhu cầu
-                          </div>
-                          <div className="d-flex gap-2 flex-wrap">
-                            {[
-                              { name: 'Laptop AI', bg: '#8b5cf6', icon: '🤖' },
-                              { name: 'Gaming', bg: '#ef4444', icon: '🎮' },
-                              { name: 'Đồ họa', bg: '#eab308', icon: '🎨' },
-                              { name: 'Văn phòng', bg: '#f97316', icon: '💼' },
-                              { name: 'Cảm ứng 2 in 1', bg: '#14b8a6', icon: '📱' },
-                              { name: 'Workstation', bg: '#64748b', icon: '⚙️' },
-                            ].map((item) => (
-                              <div
-                                key={item.name}
-                                className="p-1.5 px-2 rounded-2 border bg-white d-flex flex-column align-items-center justify-content-center text-center shadow-2xs"
-                                style={{ minWidth: '70px', borderColor: '#e2e8f0' }}
-                              >
-                                <div
-                                  className="rounded-2 d-flex align-items-center justify-content-center text-white mb-1"
-                                  style={{
-                                    width: '32px',
-                                    height: '26px',
-                                    backgroundColor: item.bg,
-                                    fontSize: '13px',
-                                  }}
-                                >
-                                  {item.icon}
-                                </div>
-                                <span
-                                  className="fw-medium text-dark"
-                                  style={{ fontSize: '10.5px' }}
-                                >
-                                  {item.name}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* 4. Chọn theo tiêu chí (Thanh bộ lọc - Ảnh 2) */}
-                        <div>
-                          <div className="fw-bold text-dark mb-1.5" style={{ fontSize: '12px' }}>
-                            Chọn theo tiêu chí
-                          </div>
-                          <div className="d-flex gap-2 flex-wrap align-items-center">
-                            <div
-                              className="px-3 py-1.5 rounded-2 d-flex align-items-center gap-2 fw-semibold"
-                              style={{
-                                border: `1.5px solid ${
-                                  editingTheme?.colors?.active_border ||
-                                  editingTheme?.colors?.primary ||
-                                  '#2563eb'
-                                }`,
-                                backgroundColor: `${
-                                  editingTheme?.colors?.active_border ||
-                                  editingTheme?.colors?.primary ||
-                                  '#2563eb'
-                                }15`,
-                                color:
-                                  editingTheme?.colors?.active_border ||
-                                  editingTheme?.colors?.primary ||
-                                  '#2563eb',
-                                fontSize: '12px',
-                              }}
-                            >
-                              <svg
-                                width="13"
-                                height="13"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                style={{ flexShrink: 0 }}
-                              >
-                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                              </svg>
-                              <span>Bộ lọc</span>
-                            </div>
-                            {[
-                              'Xem theo giá ▾',
-                              'Kích thước màn hình ▾',
-                              'Màn hình Cảm ứng ▾',
-                              'Tần số quét ▾',
-                              'Dung lượng card đồ họa ▾',
-                              'Màu sắc ▾',
-                              'Dung lượng RAM ▾',
-                              'Dung lượng Ổ cứng ▾',
-                              'Hệ điều hành ▾',
-                              'Chip xử lí (CPU) ▾',
-                            ].map((f) => (
-                              <span
-                                key={f}
-                                className="px-2.5 py-1.5 rounded-2 border bg-light text-secondary"
-                                style={{ fontSize: '11.5px', borderColor: '#e2e8f0' }}
-                              >
-                                {f}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
                       </div>
                     )}
 
-                    {/* KHỐI 3: NÚT THÊM VÀO GIỎ, LIÊN HỆ & MUA NGAY (Màu chính & Nút bấm) */}
+                    {/* KHỐI 3: NÚT CARD SP & CHI TIẾT SP */}
                     {(activeColorPreviewTab === 'all' ||
-                      activeColorPreviewTab === 'primary' ||
                       activeColorPreviewTab === 'cart_btn' ||
                       activeColorPreviewTab === 'contact_btn' ||
-                      activeColorPreviewTab === 'background') && (
-                      <div className="p-3 bg-white rounded-2 border shadow-2xs">
+                      activeColorPreviewTab === 'detail_cart' ||
+                      activeColorPreviewTab === 'primary') && (
+                      <div className="p-3 bg-white rounded-2 border shadow-2xs d-flex flex-column gap-2.5">
+                        <div className="fw-bold text-secondary" style={{ fontSize: '11.5px' }}>
+                          NÚT BẤM CARD SẢN PHẨM &amp; TRANG CHI TIẾT
+                        </div>
                         <div className="d-flex align-items-center gap-2 flex-wrap">
-                          {/* Nút Thêm vào giỏ (Thẻ sản phẩm) */}
+                          {/* Nút Thêm vào giỏ Card */}
                           <button
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
                               backgroundColor:
-                                editingTheme?.colors?.cart_btn_bg ||
-                                (editingTheme?.colors?.cart_btn
-                                  ? `${editingTheme.colors.cart_btn}18`
-                                  : '#F1F8FE'),
+                                editingTheme?.colors?.cart_btn_bg || '#F1F8FE',
                               color:
-                                editingTheme?.colors?.cart_btn_text ||
-                                editingTheme?.colors?.cart_btn ||
-                                '#2a83e9',
+                                editingTheme?.colors?.cart_btn_text || '#2a83e9',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'cart_btn'
@@ -2782,43 +2762,24 @@ function EditThemeConfig() {
                               outlineOffset: '2px',
                               cursor: 'pointer',
                             }}
-                            title="Nhấp để chuyển tới cấu hình Màu nút Thêm vào giỏ"
+                            title="Nhấp để cấu hình Nút Thêm vào giỏ (Card)"
                             onClick={(e) => {
                               e.stopPropagation()
                               selectAndScrollToColor('cart_btn')
                             }}
                           >
-                            <svg
-                              width="15"
-                              height="15"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="8" cy="21" r="1" />
-                              <circle cx="19" cy="21" r="1" />
-                              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                            </svg>
-                            <span>Thêm vào giỏ</span>
+                            <span>🛒 Thêm vào giỏ (Card)</span>
                           </button>
 
-                          {/* Nút Liên hệ (Thẻ sản phẩm hết hàng) */}
+                          {/* Nút Liên hệ Card */}
                           <button
                             type="button"
                             className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
                               backgroundColor:
-                                editingTheme?.colors?.contact_btn_bg ||
-                                (editingTheme?.colors?.contact_btn
-                                  ? `${editingTheme.colors.contact_btn}18`
-                                  : '#E5E7EB'),
+                                editingTheme?.colors?.contact_btn_bg || '#E5E7EB',
                               color:
-                                editingTheme?.colors?.contact_btn_text ||
-                                editingTheme?.colors?.contact_btn ||
-                                '#6b7280',
+                                editingTheme?.colors?.contact_btn_text || '#6b7280',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'contact_btn'
@@ -2827,33 +2788,48 @@ function EditThemeConfig() {
                               outlineOffset: '2px',
                               cursor: 'pointer',
                             }}
-                            title="Nhấp để chuyển tới cấu hình Màu nút Liên hệ"
+                            title="Nhấp để cấu hình Nút Liên hệ (Card)"
                             onClick={(e) => {
                               e.stopPropagation()
                               selectAndScrollToColor('contact_btn')
                             }}
                           >
-                            <svg
-                              width="15"
-                              height="15"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                            </svg>
-                            <span>Liên hệ</span>
+                            <span>📞 Liên hệ (Card)</span>
                           </button>
 
-                          {/* Nút Mua ngay */}
+                          {/* Nút Thêm vào giỏ Chi tiết */}
                           <button
                             type="button"
-                            className="btn text-white fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
+                            className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
+                            style={{
+                              backgroundColor:
+                                editingTheme?.colors?.detail_cart_bg || '#ffb716',
+                              color:
+                                editingTheme?.colors?.detail_cart_text || '#111827',
+                              fontSize: '12.5px',
+                              outline:
+                                activeColorPreviewTab === 'detail_cart'
+                                  ? '2px dashed #2563eb'
+                                  : undefined,
+                              outlineOffset: '2px',
+                              cursor: 'pointer',
+                            }}
+                            title="Nhấp để cấu hình Nút Thêm vào giỏ (Chi tiết SP)"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('detail_cart')
+                            }}
+                          >
+                            <span>🛒 Thêm vào giỏ (Chi tiết)</span>
+                          </button>
+
+                          {/* Nút Mua ngay / Thanh toán */}
+                          <button
+                            type="button"
+                            className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
                               backgroundColor: editingTheme?.colors?.primary || '#2356c4',
+                              color: editingTheme?.colors?.primary_text || '#ffffff',
                               fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'primary'
@@ -2862,26 +2838,131 @@ function EditThemeConfig() {
                               outlineOffset: '2px',
                               cursor: 'pointer',
                             }}
-                            title="Nhấp để chuyển tới cấu hình Màu chính (Nút Mua ngay & Viền)"
+                            title="Nhấp để cấu hình Màu chính (Mua ngay / Thanh toán)"
                             onClick={(e) => {
                               e.stopPropagation()
                               selectAndScrollToColor('primary')
                             }}
                           >
-                            <svg
-                              width="15"
-                              height="15"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-                            </svg>
-                            <span>Mua ngay</span>
+                            <span>⚡ Mua ngay / Thanh toán</span>
                           </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* KHỐI 4: POPUP HOVER XEM NHANH (CARD SP) */}
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'hover_card' ||
+                      activeColorPreviewTab === 'hover_title' ||
+                      activeColorPreviewTab === 'hover_spec') && (
+                      <div
+                        className="rounded-2 border bg-white shadow-sm overflow-hidden"
+                        style={{
+                          maxWidth: '380px',
+                          outline:
+                            activeColorPreviewTab === 'hover_card' ||
+                            activeColorPreviewTab === 'hover_title' ||
+                            activeColorPreviewTab === 'hover_spec'
+                              ? '2px dashed #2563eb'
+                              : undefined,
+                          outlineOffset: '2px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          selectAndScrollToColor('hover_title')
+                        }}
+                      >
+                        {/* Header Popup */}
+                        <div
+                          className="px-3 py-2 fw-bold text-uppercase d-flex align-items-center justify-content-between"
+                          style={{
+                            backgroundColor:
+                              editingTheme?.colors?.hover_title_bg || '#2356c4',
+                            color:
+                              editingTheme?.colors?.hover_title_text || '#ffffff',
+                            fontSize: '12px',
+                          }}
+                          title="Nhấp để cấu hình Tiêu đề Popup hover"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            selectAndScrollToColor('hover_title')
+                          }}
+                        >
+                          <span>[U3225QE] LCD DELL 32-INCH UHD</span>
+                        </div>
+
+                        {/* Thân Popup */}
+                        <div className="p-2.5">
+                          <div className="d-flex align-items-baseline gap-2 mb-2">
+                            <span className="fw-bold text-danger" style={{ fontSize: '15px' }}>
+                              20.400.000 đ
+                            </span>
+                            <span className="badge bg-danger text-white">-9%</span>
+                          </div>
+
+                          {/* Nút Thông số sản phẩm */}
+                          <button
+                            type="button"
+                            className="btn w-100 py-1.5 px-3 rounded-2 fw-bold d-flex align-items-center justify-content-center gap-1.5 border-0 shadow-2xs"
+                            style={{
+                              backgroundColor:
+                                editingTheme?.colors?.hover_spec_bg || '#ffd51c',
+                              color:
+                                editingTheme?.colors?.hover_spec_text || '#ffffff',
+                              fontSize: '12px',
+                            }}
+                            title="Nhấp để cấu hình Nút Thông số sản phẩm trên Popup"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('hover_spec')
+                            }}
+                          >
+                            <span>☰ Thông số sản phẩm</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* KHỐI 5: FOOTER WEBSITE */}
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'footer') && (
+                      <div
+                        className="p-3 rounded-2 border shadow-2xs d-flex flex-column gap-2"
+                        style={{
+                          backgroundColor: editingTheme?.colors?.footer_bg || '#ffffff',
+                          outline:
+                            activeColorPreviewTab === 'footer'
+                              ? '2px dashed #2563eb'
+                              : undefined,
+                          outlineOffset: '2px',
+                          cursor: 'pointer',
+                        }}
+                        title="Nhấp để cấu hình Màu Footer website"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          selectAndScrollToColor('footer')
+                        }}
+                      >
+                        <div className="d-flex justify-content-between flex-wrap gap-2">
+                          {[
+                            'VỀ NGUYÊN KIM',
+                            'CHÍNH SÁCH & ĐIỀU KHOẢN',
+                            'TỔNG ĐÀI HỖ TRỢ',
+                            'ĐỐI TÁC HÀNG ĐẦU',
+                          ].map((col) => (
+                            <span
+                              key={col}
+                              className="fw-bold"
+                              style={{
+                                color:
+                                  editingTheme?.colors?.footer_heading || '#FFA500',
+                                fontSize: '11px',
+                              }}
+                            >
+                              {col}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
