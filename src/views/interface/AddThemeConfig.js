@@ -615,7 +615,7 @@ function AddThemeConfig() {
   const MAIN_BUILDER_TABS = [
     { key: 'overview', label: 'Tổng quan' },
     { key: 'colors', label: 'Màu sắc' },
-    { key: 'resources', label: 'Banner & Tài nguyên' },
+    { key: 'resources', label: 'Biểu tượng' },
     { key: 'effects', label: 'Hiệu ứng' },
   ]
 
@@ -2001,14 +2001,14 @@ function AddThemeConfig() {
         </CCard>
       )}
 
-      {/* TAB 4: BANNER & TÀI NGUYÊN (KHUNG SẢN PHẨM, LOGO & FOOTER) */}
+      {/* TAB 4: BIỂU TƯỢNG (KHUNG SẢN PHẨM, LOGO & FOOTER) */}
       {activeMainTab === 'resources' && (
         <CRow className="mb-4">
           <CCol md={12}>
             <CCard className="shadow-xs border">
               <CCardHeader className="bg-white py-3 border-bottom">
                 <h5 className="fw-bold text-dark mb-0">
-                  {'Cấu hình Banner & Tài nguyên (Khung sản phẩm, Logo & Chân trang)'}
+                  {'Cấu hình Biểu tượng (Khung sản phẩm, Logo & Chân trang)'}
                 </h5>
               </CCardHeader>
 
