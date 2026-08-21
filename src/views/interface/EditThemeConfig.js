@@ -270,14 +270,13 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
 
 const DEFAULT_THEME_COLORS = {
   primary: '#2356c4',
-  cart_btn: '#ffb716',
+  cart_btn: '#2a83e9',
+  contact_btn: '#6b7280',
   active_border: '#2563eb',
   secondary: '#ffb716',
   category_menu: '#222222',
   hotline: '#222222',
-  accent: '#e30019',
   background: '#f7f7f7',
-  text: '#222222',
 }
 
 function EditThemeConfig() {
@@ -1859,8 +1858,8 @@ function EditThemeConfig() {
                     {
                       label: 'Màu nút Thêm vào giỏ',
                       key: 'cart_btn',
-                      desc: 'Nút "Thêm vào giỏ" trên trang chi tiết sản phẩm',
-                      defaultVal: '#ffb716',
+                      desc: 'Nút "Thêm vào giỏ" trên thẻ sản phẩm & chi tiết',
+                      defaultVal: '#2a83e9',
                       icon: (
                         <svg
                           width="18"
@@ -1875,6 +1874,26 @@ function EditThemeConfig() {
                           <circle cx="8" cy="21" r="1" />
                           <circle cx="19" cy="21" r="1" />
                           <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      label: 'Màu nút Liên hệ (Hết hàng)',
+                      key: 'contact_btn',
+                      desc: 'Nút "Liên hệ" khi sản phẩm hết hàng hoặc giá liên hệ',
+                      defaultVal: '#6b7280',
+                      icon: (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                         </svg>
                       ),
                     },
@@ -2108,6 +2127,7 @@ function EditThemeConfig() {
                         { id: 'all', label: 'Tất cả' },
                         { id: 'category_menu', label: 'Danh mục & Hotline' },
                         { id: 'cart_btn', label: 'Nút Thêm vào giỏ' },
+                        { id: 'contact_btn', label: 'Nút Liên hệ' },
                         { id: 'primary', label: 'Nút Mua ngay' },
                         { id: 'active_border', label: 'Viền khi chọn' },
                         { id: 'secondary', label: 'Menu Topbar' },
@@ -2534,20 +2554,22 @@ function EditThemeConfig() {
                       </div>
                     )}
 
-                    {/* KHỐI 3: NÚT THÊM VÀO GIỎ & MUA NGAY (Màu chính & Nút bấm) */}
+                    {/* KHỐI 3: NÚT THÊM VÀO GIỎ, LIÊN HỆ & MUA NGAY (Màu chính & Nút bấm) */}
                     {(activeColorPreviewTab === 'all' ||
                       activeColorPreviewTab === 'primary' ||
                       activeColorPreviewTab === 'cart_btn' ||
+                      activeColorPreviewTab === 'contact_btn' ||
                       activeColorPreviewTab === 'background') && (
                       <div className="p-3 bg-white rounded-2 border shadow-2xs">
-                        <div className="d-flex align-items-center gap-3">
+                        <div className="d-flex align-items-center gap-2 flex-wrap">
+                          {/* Nút Thêm vào giỏ (Thẻ sản phẩm) */}
                           <button
                             type="button"
-                            className="btn fw-bold py-2.5 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-2 shadow-2xs border-0"
+                            className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
-                              backgroundColor: editingTheme?.colors?.cart_btn || '#ffb716',
-                              color: '#111827',
-                              fontSize: '13px',
+                              backgroundColor: `${editingTheme?.colors?.cart_btn || '#2a83e9'}18`,
+                              color: editingTheme?.colors?.cart_btn || '#2a83e9',
+                              fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'cart_btn'
                                   ? '2px dashed #2563eb'
@@ -2562,8 +2584,8 @@ function EditThemeConfig() {
                             }}
                           >
                             <svg
-                              width="16"
-                              height="16"
+                              width="15"
+                              height="15"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
@@ -2577,12 +2599,50 @@ function EditThemeConfig() {
                             </svg>
                             <span>Thêm vào giỏ</span>
                           </button>
+
+                          {/* Nút Liên hệ (Thẻ sản phẩm hết hàng) */}
                           <button
                             type="button"
-                            className="btn text-white fw-bold py-2.5 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-2 shadow-2xs border-0"
+                            className="btn fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
+                            style={{
+                              backgroundColor: `${editingTheme?.colors?.contact_btn || '#6b7280'}18`,
+                              color: editingTheme?.colors?.contact_btn || '#6b7280',
+                              fontSize: '12.5px',
+                              outline:
+                                activeColorPreviewTab === 'contact_btn'
+                                  ? '2px dashed #2563eb'
+                                  : undefined,
+                              outlineOffset: '2px',
+                              cursor: 'pointer',
+                            }}
+                            title="Nhấp để chuyển tới cấu hình Màu nút Liên hệ"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              selectAndScrollToColor('contact_btn')
+                            }}
+                          >
+                            <svg
+                              width="15"
+                              height="15"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                            </svg>
+                            <span>Liên hệ</span>
+                          </button>
+
+                          {/* Nút Mua ngay */}
+                          <button
+                            type="button"
+                            className="btn text-white fw-bold py-2 px-3 rounded-2 flex-grow-1 d-flex align-items-center justify-content-center gap-1.5 shadow-2xs border-0"
                             style={{
                               backgroundColor: editingTheme?.colors?.primary || '#2356c4',
-                              fontSize: '13px',
+                              fontSize: '12.5px',
                               outline:
                                 activeColorPreviewTab === 'primary'
                                   ? '2px dashed #2563eb'
@@ -2597,8 +2657,8 @@ function EditThemeConfig() {
                             }}
                           >
                             <svg
-                              width="16"
-                              height="16"
+                              width="15"
+                              height="15"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
