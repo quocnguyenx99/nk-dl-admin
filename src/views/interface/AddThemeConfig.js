@@ -965,26 +965,6 @@ function AddThemeConfig() {
                       ),
                     },
                     {
-                      label: 'Màu nhấn (Sale & Hotline)',
-                      key: 'accent',
-                      desc: 'Huy hiệu giảm giá, giá sale & hotline',
-                      defaultVal: '#e30019',
-                      icon: (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                      ),
-                    },
-                    {
                       label: 'Màu nền website',
                       key: 'background',
                       desc: 'Màu phông nền toàn trang web',
@@ -1004,28 +984,6 @@ function AddThemeConfig() {
                           <path d="M2 14h20" />
                           <path d="M6 18h2" />
                           <path d="M12 18h6" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      label: 'Màu chữ văn bản',
-                      key: 'text',
-                      desc: 'Màu chữ tiêu đề & nội dung bài viết',
-                      defaultVal: '#222222',
-                      icon: (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="4 7 4 4 20 4 20 7" />
-                          <line x1="9" x2="15" y1="20" y2="20" />
-                          <line x1="12" x2="12" y1="4" y2="20" />
                         </svg>
                       ),
                     },
@@ -1174,7 +1132,6 @@ function AddThemeConfig() {
                         { id: 'primary', label: 'Nút Mua ngay' },
                         { id: 'active_border', label: 'Viền khi chọn' },
                         { id: 'secondary', label: 'Menu Topbar' },
-                        { id: 'accent', label: 'Màu nhấn' },
                       ].map((tab) => (
                         <button
                           key={tab.id}
