@@ -52,11 +52,11 @@ function HireCategory() {
   const [selectedCheckbox, setSelectedCheckbox] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
 
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     title: '',
     name: '',
     visible: 1,
-  }
+  })
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Tiêu đề danh mục không được để trống.'),
@@ -78,18 +78,56 @@ function HireCategory() {
       .replace(/^-+|-+$/g, '')
   }
 
+  const fetchDataById = useCallback(async () => {
+    if (!id || sub !== 'edit') {
+      setInitialValues({
+        title: '',
+        name: '',
+        visible: 1,
+      })
+      return
+    }
+    try {
+      const response = await axiosClient.get(`admin/hire-category/${id}/edit`)
+      const data = response.data.data
+      if (data) {
+        setInitialValues({
+          title: data?.title || '',
+          name: data?.name || '',
+          visible: data?.status !== undefined ? data?.status : 1,
+        })
+      }
+      if (response.data.status === false && response.data.mess === 'no permission') {
+        toast.warn('Bạn không có quyền thực hiện tác vụ này!')
+      }
+    } catch (error) {
+      console.error('Fetch data hire category by ID error', error)
+    }
+  }, [id, sub])
+
   useEffect(() => {
     if (sub === 'add') {
       setIsEditing(false)
+      setInitialValues({
+        title: '',
+        name: '',
+        visible: 1,
+      })
       if (titleInputRef.current) {
         titleInputRef.current.focus()
       }
     } else if (sub === 'edit' && id) {
       setIsEditing(true)
+      fetchDataById()
     } else {
       setIsEditing(false)
+      setInitialValues({
+        title: '',
+        name: '',
+        visible: 1,
+      })
     }
-  }, [location.search, sub, id])
+  }, [location.search, sub, id, fetchDataById])
 
   const fetchDataHireCategory = useCallback(async () => {
     try {
@@ -117,29 +155,6 @@ function HireCategory() {
   useEffect(() => {
     fetchDataHireCategory()
   }, [fetchDataHireCategory])
-
-  const fetchDataById = useCallback(
-    async (setValues) => {
-      if (!id || sub !== 'edit') return
-      try {
-        const response = await axiosClient.get(`admin/hire-category/${id}/edit`)
-        const data = response.data.data
-        if (data) {
-          setValues({
-            title: data?.title || '',
-            name: data?.name || '',
-            visible: data?.status !== undefined ? data?.status : 1,
-          })
-        }
-        if (response.data.status === false && response.data.mess === 'no permission') {
-          toast.warn('Bạn không có quyền thực hiện tác vụ này!')
-        }
-      } catch (error) {
-        console.error('Fetch data hire category by ID error', error)
-      }
-    },
-    [id, sub],
-  )
 
   const handleSubmit = async (values, { resetForm }) => {
     if (isEditing) {
@@ -333,11 +348,7 @@ function HireCategory() {
                     onSubmit={handleSubmit}
                     enableReinitialize
                   >
-                    {({ setFieldValue, setValues, resetForm, values }) => {
-                      useEffect(() => {
-                        fetchDataById(setValues)
-                      }, [setValues])
-
+                    {({ setFieldValue, resetForm, values }) => {
                       return (
                         <Form>
                           {/* Title */}

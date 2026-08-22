@@ -34,7 +34,7 @@ function EditHirePost() {
   const [selectedFile, setSelectedFile] = useState('')
   const [file, setFile] = useState([])
 
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     title: '',
     startDate: new Date(),
     salary: '',
@@ -49,7 +49,7 @@ function EditHirePost() {
     metaDesc: '',
     hire_cate: '',
     visible: 1,
-  }
+  })
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Tiêu đề bài đăng là bắt buộc.'),
@@ -77,10 +77,6 @@ function EditHirePost() {
     }
   }
 
-  useEffect(() => {
-    fetchHireCategory()
-  }, [])
-
   const parseDeadlineDate = (deadlineVal) => {
     if (!deadlineVal) return new Date()
     if (
@@ -93,51 +89,53 @@ function EditHirePost() {
     return isNaN(d.getTime()) ? new Date() : d
   }
 
-  const fetchDataById = useCallback(
-    async (setValues) => {
-      if (!id) {
-        setIsFetchingData(false)
-        return
+  const fetchDataById = useCallback(async () => {
+    if (!id) {
+      setIsFetchingData(false)
+      return
+    }
+    try {
+      setIsFetchingData(true)
+      const response = await axiosClient.get(`admin/hire-post/${id}/edit`)
+      const data = response.data.data
+      if (data && response.data.status === true) {
+        setInitialValues({
+          title: data?.name || '',
+          startDate: parseDeadlineDate(data?.deadline),
+          salary: data?.salary || '',
+          address: data?.address || '',
+          exp: data?.experience || '',
+          level: data?.rank || '',
+          quantity: data?.number || '',
+          work_mode: data?.form || '',
+          required_degree: data?.degree || '',
+          friendlyUrl: data?.slug || '',
+          metaKeyword: data?.meta_keywords || '',
+          metaDesc: data?.meta_description || '',
+          hire_cate: data?.hire_cate_id ? String(data.hire_cate_id) : '',
+          visible: data?.display !== undefined ? Number(data?.display) : 1,
+        })
+        setSelectedFile(data?.image || '')
+        setEditorData(data?.information || '')
+      } else {
+        toast.error('Không tìm thấy dữ liệu bài đăng!')
       }
-      try {
-        setIsFetchingData(true)
-        const response = await axiosClient.get(`admin/hire-post/${id}/edit`)
-        const data = response.data.data
-        if (data && response.data.status === true) {
-          setValues({
-            title: data?.name || '',
-            startDate: parseDeadlineDate(data?.deadline),
-            salary: data?.salary || '',
-            address: data?.address || '',
-            exp: data?.experience || '',
-            level: data?.rank || '',
-            quantity: data?.number || '',
-            work_mode: data?.form || '',
-            required_degree: data?.degree || '',
-            friendlyUrl: data?.slug || '',
-            metaKeyword: data?.meta_keywords || '',
-            metaDesc: data?.meta_description || '',
-            hire_cate: data?.hire_cate_id || '',
-            visible: data?.display !== undefined ? Number(data?.display) : 1,
-          })
-          setSelectedFile(data?.image || '')
-          setEditorData(data?.information || '')
-        } else {
-          toast.error('Không tìm thấy dữ liệu bài đăng!')
-        }
 
-        if (response.data.status === false && response.data.mess === 'no permission') {
-          setIsPermissionCheck(false)
-        }
-      } catch (error) {
-        console.error('Fetch hire post detail error', error)
-        toast.error('Lỗi khi tải chi tiết bài tuyển dụng!')
-      } finally {
-        setIsFetchingData(false)
+      if (response.data.status === false && response.data.mess === 'no permission') {
+        setIsPermissionCheck(false)
       }
-    },
-    [id],
-  )
+    } catch (error) {
+      console.error('Fetch hire post detail error', error)
+      toast.error('Lỗi khi tải chi tiết bài tuyển dụng!')
+    } finally {
+      setIsFetchingData(false)
+    }
+  }, [id])
+
+  useEffect(() => {
+    fetchHireCategory()
+    fetchDataById()
+  }, [fetchDataById])
 
   const handleSubmit = async (values) => {
     try {
@@ -245,11 +243,7 @@ function EditHirePost() {
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ setFieldValue, setValues, values }) => {
-              useEffect(() => {
-                fetchDataById(setValues)
-              }, [setValues])
-
+            {({ setFieldValue, values }) => {
               return (
                 <Form>
                   {isFetchingData ? (

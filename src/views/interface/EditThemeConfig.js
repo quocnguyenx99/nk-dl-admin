@@ -3003,7 +3003,8 @@ function EditThemeConfig() {
                     )}
 
                     {/* KHỐI 6: NÚT NỔI HỖ TRỢ & CUỘN LÊN ĐẦU TRANG */}
-                    {(activeColorPreviewTab === 'all' || activeColorPreviewTab === 'float_btn') && (
+                    {(activeColorPreviewTab === 'all' ||
+                      activeColorPreviewTab === 'float_btn') && (
                       <div
                         className="p-2.5 rounded-2 border bg-white shadow-2xs d-flex align-items-center justify-content-between"
                         style={{
