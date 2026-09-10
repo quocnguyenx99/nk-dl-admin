@@ -1,22 +1,31 @@
 import React, { useEffect, useRef } from 'react'
 import { CKEditor } from 'ckeditor4-react'
 
-function CKedtiorCustom({ data, onChangeData }) {
+function CKedtiorCustom({ data, onChangeData, name }) {
   const editorInstance = useRef(null)
   const dataRef = useRef(data)
+  const isSettingData = useRef(false)
 
   useEffect(() => {
     dataRef.current = data
-    if (editorInstance.current) {
+    if (editorInstance.current && !isSettingData.current) {
       const currentData = editorInstance.current.getData()
       if (data !== undefined && data !== null && currentData !== data) {
-        editorInstance.current.setData(data)
+        isSettingData.current = true
+        editorInstance.current.setData(data, {
+          callback: () => {
+            setTimeout(() => {
+              isSettingData.current = false
+            }, 50)
+          },
+        })
       }
     }
   }, [data])
 
   return (
     <CKEditor
+      name={name}
       config={{
         versionCheck: false,
         extraPlugins: ['justify', 'colorbutton', 'font'],
@@ -30,15 +39,27 @@ function CKedtiorCustom({ data, onChangeData }) {
       }}
       initData={data}
       onChange={(event) => {
+        if (isSettingData.current) return
         const newData = event.editor.getData()
         if (newData !== dataRef.current) {
+          dataRef.current = newData
           onChangeData(newData)
         }
       }}
       onInstanceReady={(event) => {
         editorInstance.current = event.editor
         if (dataRef.current) {
-          event.editor.setData(dataRef.current)
+          const currentData = event.editor.getData()
+          if (currentData !== dataRef.current) {
+            isSettingData.current = true
+            event.editor.setData(dataRef.current, {
+              callback: () => {
+                setTimeout(() => {
+                  isSettingData.current = false
+                }, 50)
+              },
+            })
+          }
         }
       }}
     />

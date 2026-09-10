@@ -85,6 +85,7 @@ function AddProductDetail() {
     marketPrice: 0,
     brand: '',
     stock: 0,
+    expected_delivery: '',
     visible: 0,
     star: 5,
   }
@@ -258,6 +259,7 @@ function AddProductDetail() {
       brand_id: values.brand,
       status: selectedStatus,
       stock: values.stock,
+      expected_delivery: values.expected_delivery,
       display: values.visible,
       picture: selectedFile,
       technologies: tech,
@@ -417,6 +419,7 @@ function AddProductDetail() {
                   <CCol md={12}>
                     <label htmlFor="visible-select">Bài viết mô tả sản phẩm</label>
                     <CKedtiorCustom
+                      name="editorData"
                       data={editorData}
                       onChangeData={(data) => setEditorData(data)}
                     />
@@ -426,29 +429,15 @@ function AddProductDetail() {
                     <div className="tabs">
                       <button
                         type="button"
+                        style={{ width: '50%', textAlign: 'center' }}
                         className={activeTab === 'tab1' ? 'active' : ''}
                         onClick={() => handleTabClick('tab1')}
                       >
-                        Mô tả
+                        Mô tả ngắn
                       </button>
                       <button
                         type="button"
-                        className={activeTab === 'tab2' ? 'active' : ''}
-                        onClick={() => handleTabClick('tab2')}
-                      >
-                        Thông tin khuyến mãi
-                      </button>
-
-                      <button
-                        type="button"
-                        className={activeTab === 'tab3' ? 'active' : ''}
-                        onClick={() => handleTabClick('tab3')}
-                      >
-                        Video
-                      </button>
-
-                      <button
-                        type="button"
+                        style={{ width: '50%', textAlign: 'center' }}
                         className={activeTab === 'tab4' ? 'active' : ''}
                         onClick={() => handleTabClick('tab4')}
                       >
@@ -459,24 +448,9 @@ function AddProductDetail() {
                       <div className={`tab-content ${activeTab === 'tab1' ? 'active' : ''}`}>
                         <CCol md={12}>
                           <CKedtiorCustom
+                            name="descEditor"
                             data={descEditor}
                             onChangeData={(data) => setDescEditor(data)}
-                          />
-                        </CCol>
-                      </div>
-                      <div className={`tab-content ${activeTab === 'tab2' ? 'active' : ''}`}>
-                        <CCol md={12}>
-                          <CKedtiorCustom
-                            data={promotionEditor}
-                            onChangeData={(data) => setPromotionEditor(data)}
-                          />
-                        </CCol>
-                      </div>
-                      <div className={`tab-content ${activeTab === 'tab3' ? 'active' : ''}`}>
-                        <CCol md={12}>
-                          <CKedtiorCustom
-                            data={videoEditor}
-                            onChangeData={(data) => setVideoEditor(data)}
                           />
                         </CCol>
                       </div>
@@ -930,6 +904,23 @@ function AddProductDetail() {
                       ]}
                     />
                     <ErrorMessage name="stock" component="div" className="text-danger" />
+                  </CCol>
+                  <br />
+
+                  <CCol md={12}>
+                    <label htmlFor="expected_delivery-input">Dự kiến hàng về</label>
+                    <Field
+                      name="expected_delivery"
+                      type="text"
+                      as={CFormInput}
+                      id="expected_delivery-input"
+                      placeholder="Ví dụ: Dự kiến về hàng ngày 15/10"
+                    />
+                    <ErrorMessage
+                      name="expected_delivery"
+                      component="div"
+                      className="text-danger"
+                    />
                   </CCol>
                   <br />
 

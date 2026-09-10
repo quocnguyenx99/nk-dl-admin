@@ -250,6 +250,10 @@ function ProductDetail() {
 
   // deleted all checkbox
   const handleDeleteSelectedCheckbox = async () => {
+    if (!selectedCheckbox || selectedCheckbox.length === 0) {
+      toast.warning('Vui lòng chọn ít nhất một sản phẩm để xóa!')
+      return
+    }
     try {
       const response = await axiosClient.post('admin/delete-all-product', {
         data: selectedCheckbox,
@@ -721,44 +725,22 @@ function ProductDetail() {
             </CCol>
           </CRow>
 
-          <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <div className="d-flex flex-wrap align-items-center gap-2 mt-3 mb-2">
             <CButton
               onClick={handleDeleteSelectedCheckbox}
               color="danger"
               size="sm"
-              className="fw-semibold"
+              className="d-inline-flex align-items-center gap-2 px-3 py-2 fw-semibold text-white shadow-sm rounded-2"
+              style={{
+                fontSize: '13px',
+                letterSpacing: '0.2px',
+                boxShadow: '0 2px 4px rgba(220, 53, 69, 0.25)',
+              }}
             >
-              Xóa vĩnh viễn
-            </CButton>
-            <CButton
-              onClick={handleExportExcelByCategoryAndBrand}
-              color="primary"
-              size="sm"
-              className="fw-semibold"
-              disabled={isLoadingButton.excelCategoryButton}
-            >
-              {isLoadingButton.excelCategoryButton ? (
-                <>
-                  Đang tải xuống <CSpinner size="sm" />
-                </>
-              ) : (
-                'Xuất excel sản phẩm theo danh mục, thương hiệu'
-              )}
-            </CButton>
-            <CButton
-              onClick={handleExportExcelAllProductByCategoryAndBrand}
-              color="primary"
-              size="sm"
-              className="fw-semibold"
-              disabled={isLoadingButton.excelAllButton}
-            >
-              {isLoadingButton.excelAllButton ? (
-                <>
-                  Đang tải xuống <CSpinner size="sm" />
-                </>
-              ) : (
-                'Xuất excel toàn bộ thông tin sản phẩm'
-              )}
+              <CIcon icon={cilTrash} size="sm" className="text-white" />
+              <span>
+                Xóa vĩnh viễn {selectedCheckbox?.length > 0 ? `(${selectedCheckbox.length})` : ''}
+              </span>
             </CButton>
           </div>
           <CRow>

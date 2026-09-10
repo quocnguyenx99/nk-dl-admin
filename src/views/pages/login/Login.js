@@ -56,12 +56,19 @@ const Login = () => {
         localStorage.setItem('username', res.data.username)
         navigate('/')
       } else {
-        if (res.data.mess === 'username') toast.error('Sai tên đăng nhập!')
-        else if (res.data.mess === 'pass') toast.error('Sai mật khẩu!')
-        else toast.error('Đăng nhập thất bại!')
+        const errorMsg =
+          res.data.message ||
+          (res.data.mess === 'username'
+            ? 'Sai tên đăng nhập!'
+            : res.data.mess === 'pass'
+            ? 'Sai mật khẩu!'
+            : 'Đăng nhập thất bại!')
+        toast.error(errorMsg)
       }
     } catch (e) {
-      toast.error('Có lỗi xảy ra, vui lòng thử lại!')
+      const errorMsg =
+        e.response?.data?.message || e.response?.data?.mess || 'Có lỗi xảy ra, vui lòng thử lại!'
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }

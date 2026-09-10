@@ -40,6 +40,7 @@ function EditProductDetail() {
 
   // Properties loading state
   const [isPropertiesLoading, setIsPropertiesLoading] = useState(false)
+  const [isProductLoaded, setIsProductLoaded] = useState(false)
 
   const [descEditor, setDescEditor] = useState('')
   const [promotionEditor, setPromotionEditor] = useState('')
@@ -137,6 +138,7 @@ function EditProductDetail() {
     marketPrice: 0,
     brand: '',
     stock: 0,
+    expected_delivery: '',
     visible: 0,
     star: 5,
   }
@@ -225,12 +227,14 @@ function EditProductDetail() {
           marketPrice: data?.price_old,
           brand: data?.brand_id,
           stock: data?.stock,
+          expected_delivery: data?.expected_delivery || '',
           visible: data?.display,
           star: data?.votes ? data.votes : 5,
         })
 
-        setEditorData(data?.product_desc?.description)
-        setDescEditor(data?.product_desc?.short)
+        setEditorData(data?.product_desc?.description || '')
+        setDescEditor(data?.product_desc?.short || '')
+        setIsProductLoaded(true)
         setIndustryCategory(industryCategory)
         setParentCategories(parentCategories)
         setChildCategories(childCategories)
@@ -454,6 +458,7 @@ function EditProductDetail() {
       brand_id: values.brand,
       status: selectedStatus,
       stock: values.stock,
+      expected_delivery: values.expected_delivery,
       display: values.visible,
       picture: selectedFile,
       technology: tech,
@@ -784,39 +789,32 @@ function EditProductDetail() {
 
                         <CCol md={12}>
                           <label htmlFor="visible-select">Bài viết mô tả sản phẩm</label>
-                          <CKedtiorCustom
-                            data={editorData}
-                            onChangeData={(data) => setEditorData(data)}
-                          />
+                          {isProductLoaded ? (
+                            <CKedtiorCustom
+                              name="editorData"
+                              data={editorData}
+                              onChangeData={(data) => setEditorData(data)}
+                            />
+                          ) : (
+                            <div className="py-4 text-center">
+                              <Loading />
+                            </div>
+                          )}
                         </CCol>
 
                         <CCol md={12}>
                           <div className="tabs">
                             <button
                               type="button"
+                              style={{ width: '50%', textAlign: 'center' }}
                               className={activeTab === 'tab1' ? 'active' : ''}
                               onClick={() => handleTabClick('tab1')}
                             >
-                              Mô tả
+                              Mô tả ngắn
                             </button>
                             <button
                               type="button"
-                              className={activeTab === 'tab2' ? 'active' : ''}
-                              onClick={() => handleTabClick('tab2')}
-                            >
-                              Thông tin khuyến mãi
-                            </button>
-
-                            <button
-                              type="button"
-                              className={activeTab === 'tab3' ? 'active' : ''}
-                              onClick={() => handleTabClick('tab3')}
-                            >
-                              Video
-                            </button>
-
-                            <button
-                              type="button"
+                              style={{ width: '50%', textAlign: 'center' }}
                               className={activeTab === 'tab4' ? 'active' : ''}
                               onClick={() => handleTabClick('tab4')}
                             >
@@ -826,26 +824,17 @@ function EditProductDetail() {
                           <div className="tab-contents">
                             <div className={`tab-content ${activeTab === 'tab1' ? 'active' : ''}`}>
                               <CCol md={12}>
-                                <CKedtiorCustom
-                                  data={descEditor}
-                                  onChangeData={(data) => setDescEditor(data)}
-                                />
-                              </CCol>
-                            </div>
-                            <div className={`tab-content ${activeTab === 'tab2' ? 'active' : ''}`}>
-                              <CCol md={12}>
-                                <CKedtiorCustom
-                                  data={promotionEditor}
-                                  onChangeData={(data) => setPromotionEditor(data)}
-                                />
-                              </CCol>
-                            </div>
-                            <div className={`tab-content ${activeTab === 'tab3' ? 'active' : ''}`}>
-                              <CCol md={12}>
-                                <CKedtiorCustom
-                                  data={videoEditor}
-                                  onChangeData={(data) => setVideoEditor(data)}
-                                />
+                                {isProductLoaded ? (
+                                  <CKedtiorCustom
+                                    name="descEditor"
+                                    data={descEditor}
+                                    onChangeData={(data) => setDescEditor(data)}
+                                  />
+                                ) : (
+                                  <div className="py-4 text-center">
+                                    <Loading />
+                                  </div>
+                                )}
                               </CCol>
                             </div>
                             <div className={`tab-content ${activeTab === 'tab4' ? 'active' : ''}`}>
@@ -937,338 +926,162 @@ function EditProductDetail() {
                         </CCol>
                         <br />
 
-                        <CCol>
-                          <div className="combo-list">
-                            {comboList.map((product, index) => (
-                              <div key={product.productId} className="border p-2 mb-3 bg-white">
-                                <div className="d-flex justify-content-between">
-                                  <div className="d-flex align-items-center gap-3">
-                                    <h5 className="text-danger">Combo giảm giá {index + 1}</h5>
-                                    <CButton
-                                      onClick={() => handleDeleteCombo(product.productId)}
-                                      style={{
-                                        fontSize: 13,
-                                        color: 'white',
-                                        fontWeight: 500,
-                                      }}
-                                      color="danger"
-                                      size="sm"
-                                    >
-                                      Xóa combo
-                                    </CButton>
-                                  </div>
-                                  <span
-                                    className="toggle-pointer"
-                                    onClick={() => handleToggleComboCollapse(index)}
-                                  >
-                                    {comboCollapseStates[index] ? '▼' : '▲'}
-                                  </span>
-                                </div>
-                                {!comboCollapseStates[index] && (
-                                  <>
-                                    <div className="d-flex align-items-center mt-2">
-                                      <CImage
-                                        src={`${imageBaseUrl}${product.productImage}`}
-                                        alt={product.productTitle}
-                                        width={50}
-                                      />
-                                      <div className="ms-3">
-                                        <p>{product.productTitle}</p>
-                                        <p style={{ color: 'orange' }}>
-                                          {product.productPrice.toLocaleString()} đ
-                                        </p>
-                                      </div>
-                                      <div
-                                        className="ms-auto"
+                        {comboList && comboList.length > 0 && (
+                          <CCol>
+                            <div className="combo-list">
+                              {comboList.map((product, index) => (
+                                <div key={product.productId} className="border p-2 mb-3 bg-white">
+                                  <div className="d-flex justify-content-between">
+                                    <div className="d-flex align-items-center gap-3">
+                                      <h5 className="text-danger">Combo giảm giá {index + 1}</h5>
+                                      <CButton
+                                        onClick={() => handleDeleteCombo(product.productId)}
                                         style={{
-                                          flexShrink: 0,
+                                          fontSize: 13,
+                                          color: 'white',
+                                          fontWeight: 500,
                                         }}
+                                        color="danger"
+                                        size="sm"
                                       >
-                                        <CFormCheck
-                                          type="checkbox"
-                                          checked={product.discountApplied}
-                                          onChange={(e) =>
-                                            handleToggleDiscount(index, e.target.checked)
-                                          }
-                                        />
-                                        <CFormLabel className="ms-2 text-primary">
-                                          Áp dụng giá giảm
-                                        </CFormLabel>
-                                      </div>
+                                        Xóa combo
+                                      </CButton>
                                     </div>
-                                    {product.discountApplied && (
-                                      <div className="discount-box mt-3">
-                                        <CFormLabel>Nội dung giảm giá</CFormLabel>
-                                        <CFormTextarea
-                                          style={{
-                                            height: 70,
-                                          }}
-                                          type="text"
-                                          value={product.discountDetails.content}
-                                          onChange={(e) =>
-                                            handleDiscountChange(index, 'content', e.target.value)
-                                          }
-                                          className="form-control"
+                                    <span
+                                      className="toggle-pointer"
+                                      onClick={() => handleToggleComboCollapse(index)}
+                                    >
+                                      {comboCollapseStates[index] ? '▼' : '▲'}
+                                    </span>
+                                  </div>
+                                  {!comboCollapseStates[index] && (
+                                    <>
+                                      <div className="d-flex align-items-center mt-2">
+                                        <CImage
+                                          src={`${imageBaseUrl}${product.productImage}`}
+                                          alt={product.productTitle}
+                                          width={50}
                                         />
-                                        <CRow>
-                                          <CCol>
-                                            <label className="mr-3">
-                                              Ngày bắt đầu
-                                              <input
-                                                type="date"
-                                                value={product.discountDetails.startDate}
-                                                onChange={(e) =>
-                                                  handleDiscountChange(
-                                                    index,
-                                                    'startDate',
-                                                    e.target.value,
-                                                  )
-                                                }
-                                                className="form-control"
-                                              />
-                                              {product.discountDetails.startDate && (
-                                                <span>
-                                                  {moment(product.discountDetails.startDate).format(
-                                                    'DD-MM-YYYY',
-                                                  )}
-                                                </span>
-                                              )}
-                                            </label>
-                                          </CCol>
-                                          <CCol>
-                                            <label className="me-3">
-                                              Ngày kết thúc
-                                              <input
-                                                type="date"
-                                                value={product.discountDetails.endDate}
-                                                onChange={(e) =>
-                                                  handleDiscountChange(
-                                                    index,
-                                                    'endDate',
-                                                    e.target.value,
-                                                  )
-                                                }
-                                                className="form-control"
-                                              />
-                                              {product.discountDetails.endDate && (
-                                                <span>
-                                                  {moment(product.discountDetails.endDate).format(
-                                                    'DD-MM-YYYY',
-                                                  )}
-                                                </span>
-                                              )}
-                                            </label>
-                                          </CCol>
-                                        </CRow>
-                                        <label>
-                                          Giá giảm khi mua theo combo
-                                          <input
-                                            type="text"
-                                            value={formatNumber(
-                                              product.discountDetails.discountPrice.toString(),
-                                            )}
+                                        <div className="ms-3">
+                                          <p>{product.productTitle}</p>
+                                          <p style={{ color: 'orange' }}>
+                                            {product.productPrice.toLocaleString()} đ
+                                          </p>
+                                        </div>
+                                        <div
+                                          className="ms-auto"
+                                          style={{
+                                            flexShrink: 0,
+                                          }}
+                                        >
+                                          <CFormCheck
+                                            type="checkbox"
+                                            checked={product.discountApplied}
                                             onChange={(e) =>
-                                              handleDiscountChange(
-                                                index,
-                                                'discountPrice',
-                                                unformatNumber(e.target.value),
-                                              )
+                                              handleToggleDiscount(index, e.target.checked)
+                                            }
+                                          />
+                                          <CFormLabel className="ms-2 text-primary">
+                                            Áp dụng giá giảm
+                                          </CFormLabel>
+                                        </div>
+                                      </div>
+                                      {product.discountApplied && (
+                                        <div className="discount-box mt-3">
+                                          <CFormLabel>Nội dung giảm giá</CFormLabel>
+                                          <CFormTextarea
+                                            style={{
+                                              height: 70,
+                                            }}
+                                            type="text"
+                                            value={product.discountDetails.content}
+                                            onChange={(e) =>
+                                              handleDiscountChange(index, 'content', e.target.value)
                                             }
                                             className="form-control"
                                           />
-                                          <span style={{ fontSize: 13, color: 'gray' }}>
-                                            Set giá giảm cho combo. Mệnh giá VNĐ
-                                          </span>
-                                        </label>
-                                        {product.errors.date && (
-                                          <p style={{ color: 'red' }}>{product.errors.date}</p>
-                                        )}
-                                      </div>
-                                    )}
-                                  </>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </CCol>
-
-                        <CCol md={12}>
-                          <table className="filter-table">
-                            <thead>
-                              <tr>
-                                <th colSpan="2">
-                                  <div className="d-flex justify-content-between">
-                                    <span>Tìm kiếm sản phẩm</span>
-                                    <span className="toggle-pointer" onClick={handleToggleCollapse}>
-                                      {isCollapse ? '▼' : '▲'}
-                                    </span>
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            {!isCollapse && (
-                              <tbody>
-                                <tr>
-                                  <td>Lọc</td>
-                                  <td>
-                                    <div
-                                      className="d-flex"
-                                      style={{
-                                        columnGap: 10,
-                                      }}
-                                    >
-                                      <CFormSelect
-                                        className="component-size w-25"
-                                        aria-label="Chọn yêu cầu lọc"
-                                        value={selectedFilterCategory}
-                                        onChange={(e) => setSelectedFilterCategory(e.target.value)}
-                                        options={[
-                                          { label: 'Chọn danh mục', value: '' },
-                                          ...(categories && categories.length > 0
-                                            ? categories.map((cate) => ({
-                                                label: cate.category_desc.cat_name,
-                                                value: cate.cat_id,
-                                              }))
-                                            : []),
-                                        ]}
-                                      />
-                                    </div>
-                                  </td>
-                                </tr>
-
-                                <tr>
-                                  <td>Tìm kiếm</td>
-                                  <td>
-                                    <strong>Tìm kiếm theo Tiêu đề, Mã kho, Mã số, Giá bán</strong>
-                                    <input
-                                      type="text"
-                                      className="search-input"
-                                      value={dataSearch}
-                                      onChange={(e) => setDataSearch(e.target.value)}
-                                    />
-                                    {/* <button
-                                      onClick={() => handleSearch(dataSearch)}
-                                      className="submit-btn"
-                                    >
-                                      Submit
-                                    </button> */}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            )}
-                          </table>
-                        </CCol>
-                        <br />
-
-                        <div className="bg-white border p-3">
-                          <h5>LỰA CHỌN SẢN PHẨM COMBO ĐI KÈM</h5>
-                          <CCol>
-                            <div
-                              className="border p-3 bg-white"
-                              style={{
-                                maxHeight: 400,
-                                minHeight: 'auto',
-                                overflowY: 'scroll',
-                              }}
-                            >
-                              {isDataComboLoading ? (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    minHeight: '200px',
-                                    width: '100%',
-                                  }}
-                                >
-                                  <Loading />
-                                </div>
-                              ) : (
-                                <table
-                                  className="table-combo"
-                                  style={{
-                                    fontSize: 13,
-                                    width: '100%',
-                                    textAlign: 'left',
-                                    borderCollapse: 'collapse',
-                                  }}
-                                >
-                                  <thead
-                                    style={{
-                                      background: '#ddd',
-                                    }}
-                                  >
-                                    <tr>
-                                      <th>Tiêu đề</th>
-                                      <th>Hình ảnh</th>
-                                      <th>Giá bán</th>
-                                      <th>Tác vụ</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {dataProductList && dataProductList.length > 0 ? (
-                                      dataProductList.map((item) => (
-                                        <tr key={item.product_id}>
-                                          <td
-                                            style={{
-                                              maxWidth: 300,
-                                              fontWeight: 500,
-                                            }}
-                                          >
-                                            {item.product_desc.title}
-                                          </td>
-                                          <td>
-                                            <CImage
-                                              src={`${imageBaseUrl}${item.picture}`}
-                                              alt={`image_${item.product_id}`}
-                                              width={50}
-                                            />
-                                          </td>
-                                          <td style={{ color: 'orange', fontWeight: 500 }}>
-                                            {item?.price && item?.price !== null
-                                              ? item?.price.toLocaleString()
-                                              : 0}{' '}
-                                            đ
-                                          </td>
-                                          <td style={{ textAlign: 'center' }}>
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                handleAddCombo({
-                                                  productId: item.product_id,
-                                                  productTitle: item.product_desc.title,
-                                                  productImage: item.picture,
-                                                  productPrice: item.price,
-                                                })
+                                          <CRow>
+                                            <CCol>
+                                              <label className="mr-3">
+                                                Ngày bắt đầu
+                                                <input
+                                                  type="date"
+                                                  value={product.discountDetails.startDate}
+                                                  onChange={(e) =>
+                                                    handleDiscountChange(
+                                                      index,
+                                                      'startDate',
+                                                      e.target.value,
+                                                    )
+                                                  }
+                                                  className="form-control"
+                                                />
+                                                {product.discountDetails.startDate && (
+                                                  <span>
+                                                    {moment(product.discountDetails.startDate).format(
+                                                      'DD-MM-YYYY',
+                                                    )}
+                                                  </span>
+                                                )}
+                                              </label>
+                                            </CCol>
+                                            <CCol>
+                                              <label className="me-3">
+                                                Ngày kết thúc
+                                                <input
+                                                  type="date"
+                                                  value={product.discountDetails.endDate}
+                                                  onChange={(e) =>
+                                                    handleDiscountChange(
+                                                      index,
+                                                      'endDate',
+                                                      e.target.value,
+                                                    )
+                                                  }
+                                                  className="form-control"
+                                                />
+                                                {product.discountDetails.endDate && (
+                                                  <span>
+                                                    {moment(product.discountDetails.endDate).format(
+                                                      'DD-MM-YYYY',
+                                                    )}
+                                                  </span>
+                                                )}
+                                              </label>
+                                            </CCol>
+                                          </CRow>
+                                          <label>
+                                            Giá giảm khi mua theo combo
+                                            <input
+                                              type="text"
+                                              value={formatNumber(
+                                                product.discountDetails.discountPrice.toString(),
+                                              )}
+                                              onChange={(e) =>
+                                                handleDiscountChange(
+                                                  index,
+                                                  'discountPrice',
+                                                  unformatNumber(e.target.value),
+                                                )
                                               }
-                                              style={{
-                                                backgroundColor: '#008CBA',
-                                                color: 'white',
-                                                padding: '5px 10px',
-                                                border: 'none',
-                                              }}
-                                            >
-                                              +
-                                            </button>
-                                          </td>
-                                        </tr>
-                                      ))
-                                    ) : (
-                                      <tr>
-                                        <td
-                                          colSpan="4"
-                                          style={{ textAlign: 'center', padding: '20px' }}
-                                        >
-                                          Không có dữ liệu
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
-                              )}
+                                              className="form-control"
+                                            />
+                                            <span style={{ fontSize: 13, color: 'gray' }}>
+                                              Set giá giảm cho combo. Mệnh giá VNĐ
+                                            </span>
+                                          </label>
+                                          {product.errors.date && (
+                                            <p style={{ color: 'red' }}>{product.errors.date}</p>
+                                          )}
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              ))}
                             </div>
                           </CCol>
-                        </div>
+                        )}
                         <br />
 
                         <div className="bg-white border p-3">
@@ -1765,6 +1578,23 @@ function EditProductDetail() {
                             ]}
                           />
                           <ErrorMessage name="stock" component="div" className="text-danger" />
+                        </CCol>
+                        <br />
+
+                        <CCol md={12}>
+                          <label htmlFor="expected_delivery-input">Dự kiến hàng về</label>
+                          <Field
+                            name="expected_delivery"
+                            type="text"
+                            as={CFormInput}
+                            id="expected_delivery-input"
+                            placeholder="Ví dụ: Dự kiến về hàng ngày 15/10"
+                          />
+                          <ErrorMessage
+                            name="expected_delivery"
+                            component="div"
+                            className="text-danger"
+                          />
                         </CCol>
                         <br />
 

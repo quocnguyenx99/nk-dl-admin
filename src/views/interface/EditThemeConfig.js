@@ -57,7 +57,7 @@ const getProductOrnamentStyle = () => {
   }
 }
 
-// Preset Background Patterns & Wallpapers
+// Preset Background Options (Chỉ nền trơn hoặc tải ảnh riêng)
 const PRESET_BACKGROUNDS = [
   {
     key: 'none',
@@ -66,62 +66,6 @@ const PRESET_BACKGROUNDS = [
     description: 'Chỉ hiển thị màu nền website thuần túy',
     gradient: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
     tagColor: '#64748b',
-  },
-  {
-    key: 'mooncakes',
-    name: 'Bánh Trung Thu & Lồng Đèn',
-    badge: 'Lễ Hội',
-    description: 'Họa tiết bánh nướng sen, bánh dẻo & lồng đèn trung thu',
-    gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-    tagColor: '#d97706',
-  },
-  {
-    key: 'stars_moon',
-    name: 'Trăng Rằm & Tinh Tú',
-    badge: 'Ban Đêm / Rằm',
-    description: 'Mặt trăng vàng, mây ngũ sắc & chòm sao lung linh',
-    gradient: 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)',
-    tagColor: '#ca8a04',
-  },
-  {
-    key: 'noel_snow',
-    name: 'Giáng Sinh Tuyết Rơi & Chuông Vàng',
-    badge: 'Noel / Xmas',
-    description: 'Bông tuyết trắng tinh khôi, cây thông & chuông vàng Noel',
-    gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-    tagColor: '#16a34a',
-  },
-  {
-    key: 'tet_blossoms',
-    name: 'Tết Hoa Mai, Hoa Đào & Pháo Hoa',
-    badge: 'Tết Nguyên Đán',
-    description: 'Cành mai vàng, hoa đào hồng, thỏi vàng & bao lì xì',
-    gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)',
-    tagColor: '#e11d48',
-  },
-  {
-    key: 'cyber_grid',
-    name: 'Công Nghệ Cyber & Mạch Vi Xử Lý',
-    badge: 'Công Nghệ',
-    description: 'Lưới ma trận Cyber Matrix & vi mạch máy tính hiện đại',
-    gradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-    tagColor: '#2563eb',
-  },
-  {
-    key: 'backtoschool',
-    name: 'Tuổi Học Trò & Mùa Tựu Trường',
-    badge: 'Khai Trường',
-    description: 'Máy bay giấy, nón cử nhân, sách vở & ngôi sao học trò',
-    gradient: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
-    tagColor: '#7c3aed',
-  },
-  {
-    key: 'blackfriday',
-    name: 'Black Friday & Siêu Sale',
-    badge: 'Siêu Giảm Giá',
-    description: 'Họa tiết hộp quà, sấm sét neon & tag giảm giá hot',
-    gradient: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-    tagColor: '#0f172a',
   },
   {
     key: 'custom',
@@ -145,8 +89,8 @@ const ThemeBackgroundWatermarkLayer = ({ background, themeCode }) => {
         className="position-absolute top-0 start-0 w-100 h-100 pointer-events-none select-none"
         style={{
           backgroundImage: `url(${background.customUrl})`,
-          backgroundRepeat: background.mode === 'cover' ? 'no-repeat' : 'repeat',
-          backgroundSize: background.mode === 'cover' ? 'cover' : 'auto',
+          backgroundRepeat: background.mode === 'tile' ? 'repeat' : 'no-repeat',
+          backgroundSize: background.mode === 'tile' ? 'auto' : 'cover',
           backgroundPosition: 'center top',
           opacity: opacityVal,
           zIndex: 0,
@@ -502,6 +446,18 @@ function EditThemeConfig() {
   const handleCustomBgUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Preview ngay lập tức từ file trên máy người dùng
+    const localPreviewUrl = URL.createObjectURL(file)
+    setEditingTheme((prev) => ({
+      ...prev,
+      background: {
+        ...(prev?.background || {}),
+        preset: 'custom',
+        customUrl: localPreviewUrl,
+      },
+    }))
+
     try {
       const uploadedUrl = await uploadFileToServer(file)
       if (uploadedUrl) {
@@ -1714,9 +1670,45 @@ function EditThemeConfig() {
                       className="form-label fw-bold text-dark mb-1"
                       style={{ fontSize: '14px' }}
                     >
-                      Tải ảnh nền riêng
+                      Tải ảnh nền riêng từ máy tính
                     </label>
-                    <CFormInput type="file" onChange={handleCustomBgUpload} />
+                    <CFormInput type="file" accept="image/*" onChange={handleCustomBgUpload} />
+                    {editingTheme?.background?.customUrl && (
+                      <div className="d-flex align-items-center justify-content-between p-2 bg-white rounded border mt-2 shadow-2xs">
+                        <div className="d-flex align-items-center gap-2">
+                          <img
+                            src={editingTheme.background.customUrl}
+                            alt="Ảnh nền đã tải"
+                            style={{ width: '48px', height: '36px', objectFit: 'cover' }}
+                            className="rounded border p-0.5 bg-light"
+                          />
+                          <div>
+                            <span className="text-success small fw-bold d-block" style={{ fontSize: '12px' }}>
+                              Đã tải ảnh nền thành công
+                            </span>
+                            <small className="text-muted" style={{ fontSize: '11px' }}>
+                              Ảnh đang hiển thị trực tiếp ở khung xem trước bên phải
+                            </small>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger py-0.5 px-2"
+                          style={{ fontSize: '11.5px' }}
+                          onClick={() =>
+                            setEditingTheme((prev) => ({
+                              ...prev,
+                              background: {
+                                ...(prev?.background || {}),
+                                customUrl: '',
+                              },
+                            }))
+                          }
+                        >
+                          Xóa ảnh
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1730,16 +1722,16 @@ function EditThemeConfig() {
                       Độ đậm nhạt hoa văn (Opacity)
                     </label>
                     <span className="badge bg-primary px-2 py-1 font-monospace">
-                      {Math.round((localOpacity || 0.15) * 100)}%
+                      {Math.round((localOpacity !== undefined ? localOpacity : 1) * 100)}%
                     </span>
                   </div>
                   <input
                     type="range"
                     className="form-range"
-                    min="0.05"
-                    max="0.8"
+                    min="0.1"
+                    max="1"
                     step="0.05"
-                    value={localOpacity || 0.15}
+                    value={localOpacity !== undefined ? localOpacity : 1}
                     onChange={(e) => {
                       const val = parseFloat(e.target.value)
                       setLocalOpacity(val)
@@ -1753,7 +1745,7 @@ function EditThemeConfig() {
                     }}
                   />
                   <small className="text-muted d-block">
-                    Khuyên dùng 15% - 25% để không làm rối mắt người dùng khi đọc nội dung
+                    Kéo để điều chỉnh độ mờ / rõ nét của ảnh nền trên website
                   </small>
                 </div>
 
@@ -1763,7 +1755,7 @@ function EditThemeConfig() {
                     Chế độ áp dụng hoa văn
                   </label>
                   <CFormSelect
-                    value={editingTheme?.background?.mode || 'pattern'}
+                    value={editingTheme?.background?.mode || 'cover'}
                     onChange={(e) =>
                       setEditingTheme((prev) => ({
                         ...prev,
@@ -1774,9 +1766,8 @@ function EditThemeConfig() {
                       }))
                     }
                   >
-                    <option value="pattern">Áp dụng lặp lại toàn trang (Full Page)</option>
-                    <option value="banner_only">Chỉ áp dụng khu vực Banner chính</option>
-                    <option value="header_footer">Áp dụng khu vực Header &amp; Footer</option>
+                    <option value="cover">Phủ kín toàn nền website (Full Background / Không lặp)</option>
+                    <option value="tile">Lặp lại ô gạch (Tile Pattern)</option>
                   </CFormSelect>
                 </div>
               </CCol>
@@ -1791,16 +1782,29 @@ function EditThemeConfig() {
                     Xem trước trực tiếp hoa văn nền (Live Preview)
                   </label>
                   <div
-                    className="rounded border overflow-hidden position-relative shadow-xs"
+                    className="rounded border overflow-hidden position-relative shadow-xs d-flex align-items-center justify-content-center"
                     style={{
                       backgroundColor: editingTheme?.colors?.background || '#f7f7f7',
                       height: '260px',
                     }}
                   >
-                    <ThemeBackgroundWatermarkLayer
-                      background={{ ...bgConfig, opacity: localOpacity }}
-                      themeCode={editingTheme?.code}
-                    />
+                    {editingTheme?.background?.customUrl ? (
+                      <img
+                        src={editingTheme.background.customUrl}
+                        alt="Preview Background"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: editingTheme?.background?.mode === 'tile' ? 'none' : 'cover',
+                          opacity: localOpacity !== undefined ? localOpacity : 1,
+                        }}
+                      />
+                    ) : (
+                      <ThemeBackgroundWatermarkLayer
+                        background={{ ...bgConfig, opacity: localOpacity }}
+                        themeCode={editingTheme?.code}
+                      />
+                    )}
                   </div>
                 </div>
               </CCol>

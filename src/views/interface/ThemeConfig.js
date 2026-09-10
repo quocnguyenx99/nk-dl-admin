@@ -131,69 +131,6 @@ const PRESET_BACKGROUNDS = [
     tagColor: '#64748b',
   },
   {
-    key: 'mooncakes',
-    name: 'Bánh Trung Thu & Lồng Đèn',
-    icon: '🥮',
-    badge: 'Lễ Hội',
-    description: 'Họa tiết bánh nướng sen, bánh dẻo & lồng đèn trung thu',
-    gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-    tagColor: '#d97706',
-  },
-  {
-    key: 'stars_moon',
-    name: 'Trăng Rằm & Tinh Tú',
-    icon: '🌕',
-    badge: 'Ban Đêm / Rằm',
-    description: 'Mặt trăng vàng, mây ngũ sắc & chòm sao lung linh',
-    gradient: 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)',
-    tagColor: '#ca8a04',
-  },
-  {
-    key: 'noel_snow',
-    name: 'Giáng Sinh Tuyết Rơi & Chuông Vàng',
-    icon: '❄️',
-    badge: 'Noel / Xmas',
-    description: 'Bông tuyết trắng tinh khôi, cây thông & chuông vàng Noel',
-    gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-    tagColor: '#16a34a',
-  },
-  {
-    key: 'tet_blossoms',
-    name: 'Tết Hoa Mai, Hoa Đào & Pháo Hoa',
-    icon: '🌸',
-    badge: 'Tết Nguyên Đán',
-    description: 'Cành mai vàng, hoa đào hồng, thỏi vàng & bao lì xì',
-    gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)',
-    tagColor: '#e11d48',
-  },
-  {
-    key: 'cyber_grid',
-    name: 'Công Nghệ Cyber & Mạch Vi Xử Lý',
-    icon: '⚡',
-    badge: 'Công Nghệ',
-    description: 'Lưới ma trận Cyber Matrix & vi mạch máy tính hiện đại',
-    gradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-    tagColor: '#2563eb',
-  },
-  {
-    key: 'backtoschool',
-    name: 'Tuổi Học Trò & Mùa Tựu Trường',
-    icon: '🎓',
-    badge: 'Khai Trường',
-    description: 'Máy bay giấy, nón cử nhân, sách vở & ngôi sao học trò',
-    gradient: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
-    tagColor: '#7c3aed',
-  },
-  {
-    key: 'blackfriday',
-    name: 'Black Friday & Siêu Sale',
-    icon: '🛍️',
-    badge: 'Siêu Giảm Giá',
-    description: 'Hộp quà 3D, tag sale % & tia chớp neon ấn tượng',
-    gradient: 'linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%)',
-    tagColor: '#44403c',
-  },
-  {
     key: 'custom',
     name: 'Tải ảnh nền riêng từ máy tính',
     icon: '📤',
@@ -791,6 +728,13 @@ const ThemeConfig = () => {
           description: targetTheme.description,
           image: targetTheme.image,
           colors: newColors,
+          decorations: targetTheme.decorations || {},
+          background: targetTheme.background || {
+            preset: targetTheme.decorations?.particles || 'none',
+            customUrl: '',
+            opacity: 0.15,
+            mode: 'pattern',
+          },
           banners: banners, // Dùng chung bộ banner hoàn chỉnh
           sections: sections,
         },
@@ -1576,9 +1520,9 @@ const ThemeConfig = () => {
           aria-hidden="true"
           className="position-absolute top-0 start-0 w-100 h-100 pointer-events-none select-none"
           style={{
-            backgroundImage: `url(${background.customUrl})`,
-            backgroundRepeat: background.mode === 'cover' ? 'no-repeat' : 'repeat',
-            backgroundSize: background.mode === 'cover' ? 'cover' : 'auto',
+            backgroundImage: `url("${background.customUrl}")`,
+            backgroundRepeat: background.mode === 'tile' ? 'repeat' : 'no-repeat',
+            backgroundSize: background.mode === 'tile' ? 'auto' : 'cover',
             backgroundPosition: 'center top',
             opacity: opacityVal,
             zIndex: 0,
@@ -1902,6 +1846,18 @@ const ThemeConfig = () => {
     const handleCustomBgUpload = async (e) => {
       const file = e.target.files?.[0]
       if (!file) return
+
+      // Preview ngay lập tức từ file trên máy người dùng
+      const localPreviewUrl = URL.createObjectURL(file)
+      setTargetTheme({
+        ...currentTheme,
+        background: {
+          ...bgConfig,
+          preset: 'custom',
+          customUrl: localPreviewUrl,
+        },
+      })
+
       try {
         const uploadedUrl = await uploadFileToServer(file)
         if (uploadedUrl) {
