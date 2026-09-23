@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import {
   CBadge,
   CButton,
@@ -124,6 +124,19 @@ const EventGreetingManager = () => {
     author: 'Vi tính Nguyên Kim',
     is_active: true,
   })
+
+  const [wishSearch, setWishSearch] = useState('')
+
+  const filteredWishes = useMemo(() => {
+    if (!wishSearch.trim()) return wishes
+    const kw = wishSearch.toLowerCase().trim()
+    return wishes.filter(
+      (w) =>
+        (w.title && w.title.toLowerCase().includes(kw)) ||
+        (w.content && w.content.toLowerCase().includes(kw)) ||
+        (w.author && w.author.toLowerCase().includes(kw))
+    )
+  }, [wishes, wishSearch])
 
   // Thống kê
   const [stats, setStats] = useState({
@@ -339,11 +352,11 @@ const EventGreetingManager = () => {
 
   // Nạp lại câu chúc mẫu
   const handleSeedDefaults = async () => {
-    if (!window.confirm('Hành động này sẽ nạp lại bộ câu chúc Trung Thu chuẩn. Bạn có đồng ý không?')) return
+    if (!window.confirm('Hành động này sẽ nạp / bổ sung đầy đủ bộ 75 câu chúc Trung Thu & Công nghệ chuẩn cho Vi tính Nguyên Kim. Bạn có đồng ý không?')) return
     try {
-      const res = await axiosClient.post('event-greeting/admin/seed-defaults')
+      const res = await axiosClient.post('event-greeting/admin/seed-defaults', { force: false })
       if (res?.data?.status) {
-        toast.success('Đã nạp bộ câu chúc mẫu thành công!')
+        toast.success(res.data.message || 'Đã nạp bộ 75 câu chúc mẫu thành công!')
         fetchWishes()
         fetchStats()
       }
@@ -1241,24 +1254,32 @@ const EventGreetingManager = () => {
 
             {/* TAB 2: QUẢN LÝ LỜI CHÚC */}
             <CTabPane visible={activeTab === 2}>
-              <div className="d-flex justify-content-between align-items-center mb-3">
+              <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <div>
-                  <h5 className="fw-bold text-dark m-0">Kho Lời Chúc May Mắn</h5>
+                  <h5 className="fw-bold text-dark m-0">Kho Lời Chúc May Mắn ({wishes.length} câu)</h5>
                   <small className="text-muted">
-                    Khi người dùng bấm &quot;Mở quà ngay&quot;, hệ thống sẽ chọn ngẫu nhiên 1 lời chúc đang kích hoạt để trao tặng.
+                    Khi người dùng bấm &quot;Mở quà ngay&quot;, hệ thống sẽ chọn ngẫu nhiên 1 lời chúc đang kích hoạt để trao tặng (tự động loại trừ các câu đã xem gần đây).
                   </small>
                 </div>
-                <div className="d-flex gap-2">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  <div style={{ minWidth: '220px' }}>
+                    <CFormInput
+                      size="sm"
+                      placeholder="Tìm kiếm lời chúc..."
+                      value={wishSearch}
+                      onChange={(e) => setWishSearch(e.target.value)}
+                    />
+                  </div>
                   <CButton
                     color="light"
-                    className="border text-dark fw-semibold"
+                    className="border text-dark fw-semibold btn-sm"
                     onClick={handleSeedDefaults}
                   >
                     <CIcon icon={cilReload} className="me-1" /> Nạp Bộ Câu Chúc Mẫu
                   </CButton>
                   <CButton
                     color="danger"
-                    className="text-white fw-bold shadow-sm"
+                    className="text-white fw-bold shadow-sm btn-sm"
                     onClick={() => {
                       setEditingWish({
                         id: null,
@@ -1295,14 +1316,14 @@ const EventGreetingManager = () => {
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {wishes.length === 0 ? (
+                    {filteredWishes.length === 0 ? (
                       <CTableRow>
                         <CTableDataCell colSpan={7} className="text-center py-4 text-muted">
-                          Chưa có câu chúc nào. Hãy nhấn &quot;Nạp Bộ Câu Chúc Mẫu&quot; hoặc &quot;Thêm Câu Chúc Mới&quot;!
+                          {wishSearch ? 'Không tìm thấy câu chúc nào phù hợp với từ khóa tìm kiếm.' : 'Chưa có câu chúc nào. Hãy nhấn "Nạp Bộ Câu Chúc Mẫu" hoặc "Thêm Câu Chúc Mới"!'}
                         </CTableDataCell>
                       </CTableRow>
                     ) : (
-                      wishes.map((w) => (
+                      filteredWishes.map((w) => (
                         <CTableRow key={w.id}>
                           <CTableDataCell className="fw-semibold text-muted">{w.id}</CTableDataCell>
                           <CTableDataCell className="fw-bold text-primary">{w.title || 'Lời chúc'}</CTableDataCell>
