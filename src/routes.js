@@ -230,6 +230,7 @@ const EditThemeConfigView = React.lazy(() => import('./views/interface/EditTheme
 const MenuCategoryView = React.lazy(() => import('./views/interface/MenuCategory'))
 const StaticPagesView = React.lazy(() => import('./views/interface/StaticPages'))
 const BannerManagerView = React.lazy(() => import('./views/interface/BannerManager'))
+const EventGreetingManagerView = React.lazy(() => import('./views/interface/EventGreetingManager'))
 
 /** ------------------------------------------------------------------------------------------------------------------ */
 
@@ -242,9 +243,12 @@ const routes = [
   { path: '/admin/theme', name: 'Cấu hình giao diện', element: ThemeConfigView },
   { path: '/admin/theme/add', name: 'Thêm mới chiến dịch', element: AddThemeConfigView },
   { path: '/admin/theme/edit', name: 'Chỉnh sửa chiến dịch', element: EditThemeConfigView },
+  { path: '/admin/event-greeting', name: 'Sự kiện & Lời chúc', element: EventGreetingManagerView },
+  { path: '/theme-custom/event-greeting', name: 'Sự kiện & Lời chúc', element: EventGreetingManagerView },
   { path: '/theme-custom/menu-category', name: 'Menu & Danh mục', element: MenuCategoryView },
   { path: '/theme-custom/static-pages', name: 'Trang tĩnh', element: StaticPagesView },
   { path: '/theme-custom/banner', name: 'Banner', element: BannerManagerView },
+
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
