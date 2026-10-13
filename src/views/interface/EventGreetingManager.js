@@ -48,6 +48,7 @@ import {
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
+import EventOverlayEditor, { imageFallback, normalizeOverlayConfig } from './EventOverlayEditor'
 
 const sanitizeBlobs = (obj) => {
   if (!obj || typeof obj !== 'object') return obj
@@ -69,19 +70,19 @@ const EventGreetingManager = () => {
 
   const [eventData, setEventData] = useState({
     id: null,
-    title: 'Sự kiện Tết Trung Thu - Nhận Lời Chúc May Mắn',
-    code: 'mid_autumn_2026',
+    title: 'Nhận Lời Chúc May Mắn',
+    code: 'everyday_wishes',
     is_active: true,
     start_date: '',
     end_date: '',
     base_visitor_count: 120,
     display_frequency: 'once_per_day',
     popup_config: {
-      theme: 'mid_autumn',
+      theme: 'default',
       step1: {
         badge: 'Chúc mừng!',
         title: 'Bạn là khách truy cập thứ {number} hôm nay',
-        message: 'Nguyên Kim gửi đến bạn một lời chúc Trung Thu vui vẻ, an lành và nhiều may mắn!',
+        message: 'Nguyên Kim gửi đến bạn lời chúc vui vẻ, bình an và nhiều may mắn mỗi ngày!',
         image: '',
         btn_open: 'Mở quà ngay',
         btn_later: 'Để sau',
@@ -101,7 +102,7 @@ const EventGreetingManager = () => {
         btn_close: 'Đóng',
       },
       mini_badge: {
-        text: 'Bạn đã nhận lời chúc Trung Thu rồi!',
+        text: 'Bạn đã nhận lời chúc may mắn rồi!',
         image: 'https://api-nk.vitinhnguyenkim.vn/uploads/events/event_1790130032_xPSRBkDy.png',
         enabled: true,
       },
@@ -294,7 +295,7 @@ const EventGreetingManager = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const cleanConfig = sanitizeBlobs(eventData.popup_config || {})
+      const cleanConfig = normalizeOverlayConfig(sanitizeBlobs(eventData.popup_config || {}))
       const payload = {
         ...eventData,
         popup_config: cleanConfig,
@@ -352,9 +353,9 @@ const EventGreetingManager = () => {
 
   // Nạp lại câu chúc mẫu
   const handleSeedDefaults = async () => {
-    if (!window.confirm('Hành động này sẽ nạp / bổ sung đầy đủ bộ 75 câu chúc Trung Thu & Công nghệ chuẩn cho Vi tính Nguyên Kim. Bạn có đồng ý không?')) return
+    if (!window.confirm('Hành động này sẽ xóa toàn bộ câu chúc hiện tại và thay bằng 75 lời chúc dùng quanh năm, không gắn với dịp lễ nào. Lượt mở của các câu chúc cũ cũng sẽ được xóa. Bạn có đồng ý không?')) return
     try {
-      const res = await axiosClient.post('event-greeting/admin/seed-defaults', { force: false })
+      const res = await axiosClient.post('event-greeting/admin/seed-defaults', { force: true })
       if (res?.data?.status) {
         toast.success(res.data.message || 'Đã nạp bộ 75 câu chúc mẫu thành công!')
         fetchWishes()
@@ -478,7 +479,7 @@ const EventGreetingManager = () => {
                       <CFormInput
                         value={eventData.title}
                         onChange={(e) => setEventData({ ...eventData, title: e.target.value })}
-                        placeholder="VD: Sự kiện Tết Trung Thu - Nhận Lời Chúc May Mắn"
+                        placeholder="VD: Nhận Lời Chúc May Mắn"
                       />
                     </div>
 
@@ -564,7 +565,7 @@ const EventGreetingManager = () => {
                               alt="Logo Popup"
                               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                               onError={(e) => {
-                                e.target.src = 'https://api-nk.vitinhnguyenkim.vn/uploads/logo/logo.png'
+                                imageFallback(e, '/images/logo.png')
                               }}
                             />
                           </div>
@@ -605,7 +606,7 @@ const EventGreetingManager = () => {
                         <CFormCheck
                           id="checkMiniBadge"
                           className="fw-semibold mb-2"
-                          label="Hiển thị nút 'Bạn đã nhận lời chúc Trung Thu rồi!' trên Header (cạnh Giỏ hàng)"
+                          label="Hiển thị nút 'Bạn đã nhận lời chúc may mắn rồi!' trên Header (cạnh Giỏ hàng)"
                           checked={eventData.popup_config?.mini_badge?.enabled !== false}
                           onChange={(e) =>
                             setEventData({
@@ -628,7 +629,7 @@ const EventGreetingManager = () => {
                               <CFormLabel className="small fw-bold">Dòng chữ hiển thị trên nút Header:</CFormLabel>
                               <CFormInput
                                 size="sm"
-                                placeholder="VD: Bạn đã nhận lời chúc Trung Thu rồi!"
+                                placeholder="VD: Bạn đã nhận lời chúc may mắn rồi!"
                                 value={eventData.popup_config?.mini_badge?.text || ''}
                                 onChange={(e) =>
                                   setEventData({
@@ -684,8 +685,7 @@ const EventGreetingManager = () => {
                                     alt="Header Badge Icon"
                                     style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                                     onError={(e) => {
-                                      e.target.src =
-                                        'https://api-nk.vitinhnguyenkim.vn/uploads/events/event_1790130032_xPSRBkDy.png'
+                                      imageFallback(e, '/images/event-header-badge-gift.png')
                                     }}
                                   />
                                 </div>
@@ -834,7 +834,7 @@ const EventGreetingManager = () => {
                                     alt="Floating Icon"
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     onError={(e) => {
-                                      e.target.src = '/images/event-floating-icon-default.png'
+                                      imageFallback(e, '/images/event-floating-icon-default.png')
                                     }}
                                   />
                                 </div>
@@ -1011,6 +1011,19 @@ const EventGreetingManager = () => {
                       </div>
                     </div>
 
+                    <EventOverlayEditor
+                      step="step1"
+                      config={eventData.popup_config?.step1 || {}}
+                      wish={wishes[0]}
+                      onChange={(layout) => setEventData((prev) => ({
+                        ...prev,
+                        popup_config: {
+                          ...prev.popup_config,
+                          step1: { ...prev.popup_config?.step1, layout },
+                        },
+                      }))}
+                    />
+
                     {/* Bước 2 */}
                     <div className="p-3 mb-3 border rounded bg-white shadow-xs">
                       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -1110,6 +1123,19 @@ const EventGreetingManager = () => {
                         </div>
                       </div>
                     </div>
+
+                    <EventOverlayEditor
+                      step="step2"
+                      config={eventData.popup_config?.step2 || {}}
+                      wish={wishes[0]}
+                      onChange={(layout) => setEventData((prev) => ({
+                        ...prev,
+                        popup_config: {
+                          ...prev.popup_config,
+                          step2: { ...prev.popup_config?.step2, layout },
+                        },
+                      }))}
+                    />
 
                     {/* Bước 3: NHẬN LỜI CHÚC & ẢNH THIỆP CHÚC (ẢNH 4) */}
                     <div className="p-3 mb-3 border rounded bg-white shadow-xs border-success">
@@ -1236,6 +1262,19 @@ const EventGreetingManager = () => {
                       </div>
                     </div>
 
+                    <EventOverlayEditor
+                      step="step3"
+                      config={eventData.popup_config?.step3 || {}}
+                      wish={wishes[0]}
+                      onChange={(layout) => setEventData((prev) => ({
+                        ...prev,
+                        popup_config: {
+                          ...prev.popup_config,
+                          step3: { ...prev.popup_config?.step3, layout },
+                        },
+                      }))}
+                    />
+
                     <div className="text-end mt-4">
                       <CButton
                         type="submit"
@@ -1275,7 +1314,7 @@ const EventGreetingManager = () => {
                     className="border text-dark fw-semibold btn-sm"
                     onClick={handleSeedDefaults}
                   >
-                    <CIcon icon={cilReload} className="me-1" /> Nạp Bộ Câu Chúc Mẫu
+                    <CIcon icon={cilReload} className="me-1" /> Thay Toàn Bộ Lời Chúc Mẫu
                   </CButton>
                   <CButton
                     color="danger"
@@ -1319,7 +1358,7 @@ const EventGreetingManager = () => {
                     {filteredWishes.length === 0 ? (
                       <CTableRow>
                         <CTableDataCell colSpan={7} className="text-center py-4 text-muted">
-                          {wishSearch ? 'Không tìm thấy câu chúc nào phù hợp với từ khóa tìm kiếm.' : 'Chưa có câu chúc nào. Hãy nhấn "Nạp Bộ Câu Chúc Mẫu" hoặc "Thêm Câu Chúc Mới"!'}
+                          {wishSearch ? 'Không tìm thấy câu chúc nào phù hợp với từ khóa tìm kiếm.' : 'Chưa có câu chúc nào. Hãy nhấn "Thay Toàn Bộ Lời Chúc Mẫu" hoặc "Thêm Câu Chúc Mới"!'}
                         </CTableDataCell>
                       </CTableRow>
                     ) : (
