@@ -190,81 +190,83 @@ export default function EventOverlayEditor({ step, config, onChange, wish }) {
     )
   }
   return (
-    <div className="mt-3 p-3 border rounded bg-light">
-      <strong>Vị trí chữ trên ảnh</strong>
-      <div className="d-flex gap-2 align-items-center mb-3">
-        <select
-          aria-label="Phần cần điều chỉnh"
-          className="form-select form-select-sm"
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-        >
-          {keys.map((key) => (
-            <option key={key} value={key}>
-              {LABELS[key]}
-            </option>
-          ))}
-        </select>
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm text-nowrap"
-          onClick={() => update(OVERLAY_DEFAULTS[step][selected])}
-        >
-          Khôi phục vị trí
-        </button>
-      </div>
-      <label className="d-flex gap-2 align-items-center mb-2">
-        <input
-          type="checkbox"
-          checked={current.enabled !== false}
-          onChange={(e) => update({ enabled: e.target.checked })}
-        />
-        Hiển thị {LABELS[selected].toLowerCase()}
-      </label>
-      <div className="row g-2 mb-3">
-        {[
-          ['x', 'X (%)', 0, 100],
-          ['y', 'Y (%)', 0, 100],
-          ['width', 'Rộng (%)', 5, 100],
-          ['height', 'Cao (%)', 5, 100],
-          ['scale', 'Cỡ chữ (%)', 50, 200],
-        ].map(([key, label, min, max]) => (
-          <label className="col-6 col-md-4 small" key={key}>
-            {label}
-            <OverlayNumberInput
-              key={`${selected}-${key}`}
-              min={min}
-              max={max}
-              value={current[key]}
-              onChange={(value) => update({ [key]: value })}
-            />
-          </label>
-        ))}
-        {selected !== 'actions' && (
-          <>
-            <label className="col-6 col-md-4 small">
-              Màu chữ
-              <input
-                className="form-control form-control-color"
-                type="color"
-                value={current.color}
-                onChange={(e) => update({ color: e.target.value })}
+    <div className="event-overlay-editor">
+      <div className="event-overlay-controls">
+        <strong>Vị trí chữ trên ảnh</strong>
+        <div className="d-flex gap-2 align-items-center mb-3">
+          <select
+            aria-label="Phần cần điều chỉnh"
+            className="form-select form-select-sm"
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+          >
+            {keys.map((key) => (
+              <option key={key} value={key}>
+                {LABELS[key]}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm text-nowrap"
+            onClick={() => update(OVERLAY_DEFAULTS[step][selected])}
+          >
+            Khôi phục vị trí
+          </button>
+        </div>
+        <label className="d-flex gap-2 align-items-center mb-2">
+          <input
+            type="checkbox"
+            checked={current.enabled !== false}
+            onChange={(e) => update({ enabled: e.target.checked })}
+          />
+          Hiển thị {LABELS[selected].toLowerCase()}
+        </label>
+        <div className="row g-2 mb-3">
+          {[
+            ['x', 'X (%)', 0, 100],
+            ['y', 'Y (%)', 0, 100],
+            ['width', 'Rộng (%)', 5, 100],
+            ['height', 'Cao (%)', 5, 100],
+            ['scale', 'Cỡ chữ (%)', 50, 200],
+          ].map(([key, label, min, max]) => (
+            <label className="col-6 col-md-4 small" key={key}>
+              {label}
+              <OverlayNumberInput
+                key={`${selected}-${key}`}
+                min={min}
+                max={max}
+                value={current[key]}
+                onChange={(value) => update({ [key]: value })}
               />
             </label>
-            <label className="col-6 col-md-4 small">
-              Căn chữ
-              <select
-                className="form-select form-select-sm"
-                value={current.align}
-                onChange={(e) => update({ align: e.target.value })}
-              >
-                <option value="left">Trái</option>
-                <option value="center">Giữa</option>
-                <option value="right">Phải</option>
-              </select>
-            </label>
-          </>
-        )}
+          ))}
+          {selected !== 'actions' && (
+            <>
+              <label className="col-6 col-md-4 small">
+                Màu chữ
+                <input
+                  className="form-control form-control-color"
+                  type="color"
+                  value={current.color}
+                  onChange={(e) => update({ color: e.target.value })}
+                />
+              </label>
+              <label className="col-6 col-md-4 small">
+                Căn chữ
+                <select
+                  className="form-select form-select-sm"
+                  value={current.align}
+                  onChange={(e) => update({ align: e.target.value })}
+                >
+                  <option value="left">Trái</option>
+                  <option value="center">Giữa</option>
+                  <option value="right">Phải</option>
+                </select>
+              </label>
+            </>
+          )}
+        </div>
       </div>
       <div
         ref={preview}
