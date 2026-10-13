@@ -49,6 +49,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { axiosClient } from '../../axiosConfig'
 import EventOverlayEditor, { imageFallback, normalizeOverlayConfig } from './EventOverlayEditor'
+import HeaderGiftBackgroundControl from './HeaderGiftBackgroundControl'
 
 const sanitizeBlobs = (obj) => {
   if (!obj || typeof obj !== 'object') return obj
@@ -645,6 +646,14 @@ const EventGreetingManager = () => {
                                 }
                               />
                             </div>
+
+                            <HeaderGiftBackgroundControl
+                              config={eventData.popup_config?.mini_badge || {}}
+                              onChange={(mini_badge) => setEventData((prev) => ({
+                                ...prev,
+                                popup_config: { ...prev.popup_config, mini_badge },
+                              }))}
+                            />
 
                             {/* 2. Hình ảnh hộp quà / icon tự gắn */}
                             <div className="mb-2">
